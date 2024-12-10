@@ -1,0 +1,13 @@
+# Load the latest Python image from the Docker Hub
+FROM python:3
+
+# Set the working directory to /usr/src/app/backend
+WORKDIR /usr/src/app/backend/src
+
+# Copy the current directory contents into the container at /usr/src/app/backend
+COPY . .
+
+RUN apt update -y && \
+    apt upgrade -y && \
+    apt install -y python3 python3-pip && \
+    pip3 install --no-cache-dir -r requirements.txt
