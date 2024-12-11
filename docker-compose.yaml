@@ -18,16 +18,19 @@ services:
   nginx:
     build: ./Docker/backend/nginx
     container_name: nginx
-    depends_on:
-      - src
     ports:
       - "8080:80"
+      - "443:443"
     networks:
       - ft_transcendence
 
-  src:
+  web:
     build: ./Docker/backend/src
-    container_name: src
+    container_name: web
+    volumes:
+      - ./Docker/backend/src:/usr/src/app/backend/src
+    expose:
+      - "8000"
     networks:
       - ft_transcendence
 
