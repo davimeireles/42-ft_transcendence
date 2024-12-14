@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+    postgres:
+        build: ./db
+        container_name: postgres
+        hostname: postgres
+        restart: unless-stopped
+        ports:
+            - "5432:5432"
+        env_file:
+            - ../../.env
+        volumes:
+            - db-data:/var/lib/postgresql/data
+        networks:
+            - nginx_network
+
+volumes:
+    db-data:
+
+networks:
+    nginx_network:
+        external: true

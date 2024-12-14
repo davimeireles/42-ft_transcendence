@@ -1,42 +1,22 @@
 version: "3.8"
 
 services:
-  db:
-    build: ./Docker/backend/db
-    container_name: db
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    volumes:
-      - db-data:/var/lib/postgresql/data
-    networks:
-      - ft_transcendence
-  
-  nginx:
-    build: ./Docker/backend/nginx
-    container_name: nginx
-    ports:
-      - "8080:80"
-      - "443:443"
-    networks:
-      - ft_transcendence
-
-  web:
-    build: ./Docker/backend/src
-    container_name: web
-    volumes:
-      - ./Docker/backend/src:/usr/src/app/backend/src
-    expose:
-      - "8000"
-    networks:
-      - ft_transcendence
-
-networks:
-  ft_transcendence:
-    driver: bridge
+    postgres:
+        extends:
+            file: ./Docker/backend/db-compose.yaml
+            service: postgres
+        networks:
+            - nginx_network
+    nginx:
+        extends:
+            file: ./Docker/backend/nginx-compose.yaml
+            service: nginx
+        networks:
+            - nginx_network
 
 volumes:
-  db-data:
+    db-data:
+
+networks:
+    nginx_network:
+        driver: bridge
