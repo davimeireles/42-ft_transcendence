@@ -1,9 +1,6 @@
 # Load the latest Python image from the Docker Hub
 FROM python:3
 
-# Set the working directory to /usr/src/app/backend
-WORKDIR /usr/src/app/backend/src
-
 # Copy the current directory contents into the container at /usr/src/app/backend
 COPY . .
 
@@ -16,3 +13,5 @@ RUN apt update -y && \
 
 # Make port 8000 available to the world outside this container
 EXPOSE 8000
+
+ENTRYPOINT ["python3", "manage.py", "runserver"]
