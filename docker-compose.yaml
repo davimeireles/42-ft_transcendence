@@ -1,21 +1,19 @@
-version: "3.8"
-
 services:
-    postgres:
-        extends:
-            file: ./Docker/backend/db-compose.yaml
-            service: postgres
-        networks:
-            - nginx_network
     nginx:
         extends:
             file: ./Docker/backend/nginx-compose.yaml
             service: nginx
         networks:
             - nginx_network
+    user_db:
+        extends:
+            file: ./Docker/backend/user-compose.yaml
+            service: user_db
+        networks:
+            - nginx_network
 
 volumes:
-    db-data:
+    user_db-data:
 
 networks:
     nginx_network:
