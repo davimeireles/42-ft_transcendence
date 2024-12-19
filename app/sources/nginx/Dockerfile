@@ -1,15 +1,6 @@
 # Load the latest nginx image
 FROM nginx:latest
 
-# Set the working directory to /usr/src/app/backend/nginx
-WORKDIR /usr/src/app/backend/nginx
-
-# Copy the index.html file to the default nginx html directory
-COPY index.html /usr/share/nginx/html/index.html
-
-# Copy the foto.jpeg file to the default nginx html directory
-COPY foto.jpeg /usr/share/nginx/html/foto.jpeg
-
 # Copy the nginx configuration file to the default location
 COPY nginx.conf /etc/nginx/nginx.conf
 
