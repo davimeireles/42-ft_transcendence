@@ -3,11 +3,29 @@ from django.db import models
 # Create your models here.
 
 class User(models.Model):
-    name = models.CharField(max_length=100)
-    email = models.EmailField()
-    password = models.CharField(max_length=100)
+    username = models.CharField(max_length=32, null=False, unique=True)
+    password = models.CharField(max_length=128, null=False)
+    nickname = models.CharField(max_length=32, null=False, unique=True)
+    email = models.CharField(max_length=128, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+class Games(models.Model):
+    name = models.CharField(max_length=32, null=False, unique=True)
 
-    def __str__(self):
-        return self.name
+class GameType(models.Model):
+    type = models.CharField(max_length=32, null=False, unique=True)
+    
+class Tournament(models.Model):
+    winner = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+class Match(models.Model):
+    gameID = Games.id
+    userID = User.id
+    gameTypeID = GameType.id
+    tournamentID = Tournament.id
+
+class MatchParticipant(models.Model):
+    matchID = Match.id
+    userID = User.id
+    score = models.IntegerField(null=True)
