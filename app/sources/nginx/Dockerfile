@@ -1,6 +1,17 @@
 # Load the latest nginx image
 FROM nginx:latest
 
+# Install mkcert and dependencies
+RUN apt-get update && apt-get install -y libnss3-tools curl && \
+    curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64" && \
+    chmod +x mkcert-v*-linux-amd64 && \
+    mv mkcert-v*-linux-amd64 /usr/local/bin/mkcert && \
+    mkcert -install
+
+# Create a directory to store the certificates and generate the certificate
+RUN mkdir -p /etc/nginx/certs && \
+    mkcert -cert-file /etc/nginx/certs/nginx.crt -key-file /etc/nginx/certs/nginx.key localhost
+
 # Copy the nginx configuration file to the default location
 COPY nginx.conf /etc/nginx/nginx.conf
 
@@ -9,15 +20,6 @@ COPY default.conf /etc/nginx/conf.d/default.conf
 
 # Copy the nginx configuration file to the default location
 COPY nginx.conf /etc/nginx/sites-available/default
-
-# Install openssl
-RUN apt update && apt install openssl -y
-
-# Create a directory to store the certificates
-RUN mkdir -p /etc/nginx/certs
-
-# Generate a self-signed certificate
-RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/certs/nginx.key -out /etc/nginx/certs/nginx.crt -subj "/C=PT/ST=Porto/L=Porto/O=42-Porto/OU=Porto/CN=transcendence.pt"
 
 # This is the default port for nginx
 EXPOSE 80
