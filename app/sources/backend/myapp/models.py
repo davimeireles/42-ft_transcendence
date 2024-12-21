@@ -20,12 +20,12 @@ class Tournament(models.Model):
     winner = models.ForeignKey(User, on_delete=models.CASCADE)
     
 class Match(models.Model):
-    gameID = Games.id
-    userID = User.id
-    gameTypeID = GameType.id
-    tournamentID = Tournament.id
+    gameID = models.ForeignKey(Games, on_delete=models.CASCADE)
+    userID = models.ForeignKey(User, on_delete=models.CASCADE)
+    gameTypeID = models.ForeignKey(GameType, on_delete=models.CASCADE)
+    tournamentID = models.ForeignKey(Tournament, on_delete=models.CASCADE)
 
 class MatchParticipant(models.Model):
-    matchID = Match.id
-    userID = User.id
+    matchID = models.ForeignKey(Match, on_delete=models.CASCADE)
+    userID = models.ForeignKey(User, on_delete=models.CASCADE)
     score = models.IntegerField(null=True)
