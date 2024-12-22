@@ -1,0 +1,61 @@
+Metadata-Version: 2.1
+Name: TimeConvert
+Version: 3.0.13
+Summary: Time Convert for Humans™
+Home-page: https://github.com/xxx-convert/TimeConvert
+Author: Hackathon
+Author-email: kimi.huang@brightcells.com
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.5
+Description-Content-Type: text/markdown
+Requires-Dist: isoweek
+Requires-Dist: python-dateutil (>=2.8.1)
+Requires-Dist: tzlocal
+
+# TimeConvert
+TimeConvert is a simple time convert script(library) for Python, built for human beings.
+
+[![Gitter](https://badges.gitter.im/Brightcells/TimeConvert.svg)](https://gitter.im/Brightcells/TimeConvert?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge)
+
+# Installation
+```shell
+pip install TimeConvert
+```
+
+# Usage
+```python
+from TimeConvert import TimeConvert as tc
+
+tc.utc_timestamp()
+```
+
+# Comparison
+| Function Points | TimeConvert | Other |
+| ---- | ---- | ---- |
+| TimeStamp | tc.local_timestamp(ms=True) | time.time() |
+| ISOFormat | tc.local_isostring() | datetime.datetime.now().isoformat() |
+
+
+# Variable
+```python
+# Default Asia/Shanghai & %Y-%m-%d %H:%M:%S
+from TimeConvert import TIME_ZONE, TIME_FORMAT
+
+# Deassign TIME_ZONE & TIME_FORMAT
+tc.__init__(timezone='Asia/Shanghai', format='%Y-%m-%d %H:%M:%S')
+```
+
+# Reference
+* isoweek.py - https://github.com/gisle/isoweek
+* month.py - https://github.com/kstark/months
+
+
