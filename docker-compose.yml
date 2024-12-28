@@ -5,7 +5,7 @@ services:
       context: nginx
       dockerfile: Dockerfile
     volumes:
-      - ./sources/frontend/static/html:/usr/share/nginx/html
+      - ./sources/frontend/html:/usr/share/nginx/html
     ports:
       - "443:443"
     networks:
@@ -22,7 +22,19 @@ services:
       - .env
     networks:
       - app_network
-
+  
+  pg-admin:
+    image: elestio/pgadmin:latest
+    container_name: pg-admin
+    environment:
+        PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+        PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+        PGADMIN_LISTEN_PORT: 8080
+    ports:
+      - "8080:8080"
+    networks:
+      - app_network
+  
 networks:
   app_network:
     name: app_network

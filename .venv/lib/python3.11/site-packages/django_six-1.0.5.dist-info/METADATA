@@ -1,0 +1,30 @@
+Metadata-Version: 2.1
+Name: django-six
+Version: 1.0.5
+Summary: Django-six —— Django Compatibility Library
+Home-page: https://github.com/Brightcells/django-six
+Author: Hackathon
+Author-email: kimi.huang@brightcells.com
+Keywords: django-six
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Web Environment
+Classifier: Framework :: Django
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Office/Business :: Financial :: Spreadsheet
+Description-Content-Type: text/markdown
+
+# django-six
+Django-six —— Django Compatibility Library
+
+## Installation
+```
+pip install django-six
+```
+
+## Usage
+```
+from django_six import xxx
+
+```
