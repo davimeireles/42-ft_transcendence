@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="PATH DO bootstrap.css">
+    <title>Log in</title>
+</head>
+<body>
+    <script src="PATH DO bootstrap.bundle.js"></script>
+    <div id="register-page">
+      <form method="POST" action="/">
+        {% csrf_token %}
+        <div class="form-row" style="margin-bottom: 10px;">
+            <div class="form-group col-md-4">
+                <label for="setUsername">Username</label>
+                <input name="username" type="username" class="form-control" id="setUsername" placeholder="Enter your username">
+            </div>
+        </div>
+        <div class="form-row" style="margin-bottom: 10px;">
+            <div class="form-group col-md-4">
+                <label for="setPassword">Password</label>
+                <input name="password" type="password" class="form-control" id="setPassword" placeholder="Enter your password">
+            </div>
+        </div>
+        <div class="form-row" style="margin-bottom: 10px;">
+            <div class="form-group col-md-4">
+                <label for="setNickname">Nickname</label>
+                <input name="nickname" type="nickname" class="form-control" id="setNickname" placeholder="Enter your nickname">
+            </div>
+        </div>
+        <div class="form-row" style="margin-bottom: 10px;"">
+            <div class="form-group col-md-4">
+                <label for="setEmail">E-mail</label>
+                <input name="email" type="email" class="form-control" id="setEmail" placeholder="name@example.com">
+            </div>
+        </div>
+        <button type="button" style="margin-top: 20px;" class="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off">
+            Confirm
+          </button>
+      </form>
+    </div>
+</body>
+</html>
