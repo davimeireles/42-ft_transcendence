@@ -1,0 +1,11 @@
+README.rst
+setup.cfg
+setup.py
+screen/__init__.py
+screen/compat.py
+screen/old_str_util.py
+screen.egg-info/PKG-INFO
+screen.egg-info/SOURCES.txt
+screen.egg-info/dependency_links.txt
+screen.egg-info/top_level.txt
+source/str_util.c
