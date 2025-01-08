@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/static/node_modules/bootstrap/dist/css/bootstrap.css">
+    <script src="/static/node_modules/bootstrap/dist/js/bootstrap.js"></script>
+</head>
+<body>
+    <div id="login-page">
+        <form method="POST" action="">
+          {% csrf_token %}
+          <div class="form-row" style="margin-bottom: 10px;">
+              <div class="form-group col-md-4">
+                  <label for="">Username/Email</label>
+                  {{ form.username }}
+              </div>
+          </div>
+          <div class="form-row" style="margin-bottom: 10px;">
+              <div class="form-group col-md-4">
+                  <label for="">Password</label>
+                  {{ form.password }}
+              </div>
+          </div>
+          <button type="submit" style="margin-top: 20px;" class="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off" name="action" value="loginuser">
+              Confirm
+            </button>
+        </form>
+      </div>
+</body>
+</html>
