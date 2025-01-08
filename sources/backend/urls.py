@@ -4,5 +4,6 @@ from app import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.register_user, name='register_user'),
+    path('register/', views.register_user, name='register_user'),
+    path('login/', views.login_user, name='login_user'),
 ]
