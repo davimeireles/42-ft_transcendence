@@ -7,6 +7,9 @@ from app.forms import CustomUserForm, LoginForm
 from app.models import User
 from django.contrib.auth import authenticate, login
 
+def home_page(request):
+    return render(request, 'index.html')
+
 def register_user(request):
     action = request.POST.get('action')
     form = CustomUserForm(request.POST)
@@ -25,11 +28,11 @@ def register_user(request):
                 user_object.set_password(form.cleaned_data['password1'])  # Use set_password to hash the password
                 user_object.save()
                 context = {'form': form}
-                return render(request, 'new.html', context)  # Redirect to the appropriate page
+                return render(request, 'login.html', context)  # Redirect to the appropriate page
     else:
         form = CustomUserForm()
     context = {'form': form}
-    return render(request, 'index.html', context)
+    return render(request, 'register.html', context)
 
 
 def login_user(request):

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/static/node_modules/bootstrap/dist/css/bootstrap.css">
     <script src="/static/node_modules/bootstrap/dist/js/bootstrap.js"></script>
 </head>
-<body>
+<body style="display: grid; place-items: center;">
     <div id="login-page">
         <form method="POST" action="">
           {% csrf_token %}
@@ -23,7 +23,7 @@
                   {{ form.password }}
               </div>
           </div>
-          <button type="submit" style="margin-top: 20px;" class="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off" name="action" value="loginuser">
+          <button type="submit" style="margin-top: 20px;" class="btn btn-dark" data-toggle="button" aria-pressed="false" autocomplete="off" name="action" value="loginuser">
               Confirm
             </button>
         </form>

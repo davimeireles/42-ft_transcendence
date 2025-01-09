@@ -4,62 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/node_modules/bootstrap/dist/css/bootstrap.css">
-    <title>Register/Login</title>
+    <title>SPA</title>
 </head>
-<body>
-    <script src="/static/node_modules/bootstrap/dist/js/bootstrap.js"></script>
-      </div>
-        <form method="POST">
-          {% csrf_token %}
-          <div class="form-row" style="margin-bottom: 10px;">
-              <div class="form-group col-md-4">
-                  <label for="">Username</label>
-                  {{ form.username }}
-                  {% if form.errors.username %}
-                    <label class="text-error"> {{ form.errors.username }} </label>
-                  {% endif %}
-              </div>
-          </div>
-          <div class="form-row" style="margin-bottom: 10px;">
-              <div class="form-group col-md-4">
-                  <label for="">Password</label>
-                  {{ form.password1 }}
-                  {% if form.errors.password1 %}
-                    <label class="text-error"> {{ form.errors.password1 }} </label>
-                  {% endif %}
-              </div>
-          </div>
-          <div class="form-row" style="margin-bottom: 10px;">
-              <div class="form-group col-md-4">
-                  <label for="">Confirm Password</label>
-                  {{ form.password2 }}
-                  {% if form.errors.password2 %}
-                    <label class="text-error"> {{ form.errors.password2 }} </label>
-                  {% endif %}
-              </div>
-          </div>
-          <div class="form-row" style="margin-bottom: 10px;">
-              <div class="form-group col-md-4">
-                  <label for="">Nickname</label>
-                  {{ form.nickname }}
-                  {% if form.errors.nickname %}
-                    <label class="text-error"> {{ form.errors.nickname }} </label>
-                  {% endif %}
-              </div>
-          </div>
-          <div class="form-row" style="margin-bottom: 10px;">
-              <div class="form-group col-md-4">
-                  <label for="">E-mail</label>
-                  {{ form.email }}
-                  {% if form.errors.email %}
-                    <label class="text-error"> {{ form.errors.email }} </label>
-                  {% endif %}
-              </div>
-          </div>
-          <button type="submit" style="margin-top: 20px;" class="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off" name="action" value="register">
-              Confirm
-            </button>
-        </form>
-      </div>
+<script src="/sources/frontend/static/js/server.js"></script>
+<body onload="getPageContent('home')" style="box-sizing: border-box; padding: 0; margin: 0;">
+        <div style="background-color: black; height: 100vh; display: grid; place-items: center;">
+            <div>
+                <img src="https://c.tenor.com/rfib5QqA0ncAAAAd/tenor.gif" alt="Cat gif">
+            </div>
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-dark btn-block mx-3" style="width: 100px;">Login</button>
+                <button class="btn btn-dark btn-block mx-3" style="width: 100px;">Register</button>
+            </div>
+        </div>
 </body>
+<script src="/static/js/server.js"></script>
 </html>
