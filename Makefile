@@ -3,7 +3,7 @@ all: up
 
 # Build and run the Docker containers
 up:
-	docker-compose up --build
+	docker-compose up -d --build
 
 # Stop and remove the Docker containers
 down:
