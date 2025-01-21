@@ -5,7 +5,20 @@ class User(models.Model):
     password = models.CharField(max_length=128, null=False)
     nickname = models.CharField(max_length=32, null=False, unique=True)
     email = models.CharField(max_length=128, unique=True)
-    created = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+    photo = models.ImageField(upload_to='photos/', null=True, blank=True)
+    
+    
+    objects = UserManager()
+
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email']
+    
+    def __str__(self):
+        return self.username
 
 class Games(models.Model):
     name = models.CharField(max_length=32, null=False, unique=True)
