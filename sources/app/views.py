@@ -1,40 +1,39 @@
-import requests
-import datetime
-from . import models
-from django.contrib import messages
+from django.contrib.auth import authenticate, login, get_user_model
 from django.shortcuts import render, redirect
+from django.conf import settings
+from django.http import HttpResponse
 from app.forms import CustomUserForm, LoginForm
 from app.models import User
-from django.contrib.auth import authenticate, login, get_user_model
 import urllib.parse
-from django.http import HttpResponse
+import requests
 import os, sys
-from django.conf import settings
 
-
-def register_user(request):
+def render_home_page(request):
     action = request.POST.get('action')
     form = CustomUserForm(request.POST)
     if request.method == 'POST':
+        context = {'form': form}
         if action == 'login':
-            context = {'form': form}
             return render(request, 'login.html', context)
         elif action == 'register':
-            form = CustomUserForm(request.POST)
-            if form.is_valid():
-                user_object = form.save(commit=False)
-                user_object.nickname = form.cleaned_data['nickname']
-                user_object.email = form.cleaned_data['email']
-                user_object.set_password(form.cleaned_data['password1'])  # Use set_password to hash the password
-                user_object.save()
-                context = {'form': form}
-                login(request, user_object)
-                return render(request, 'new.html', context)  # Redirect to the appropriate page
+            return render(request, 'register.html, context')   
+    return render(request, 'index.html')
+
+def register_user(request):
+    form = CustomUserForm(request.POST)
+    if form.is_valid():
+        user_object = form.save(commit=False)
+        user_object.nickname = form.cleaned_data['nickname']
+        user_object.email = form.cleaned_data['email']
+        user_object.set_password(form.cleaned_data['password1'])  # Use set_password to hash the password
+        user_object.save()
+        context = {'form': form}
+        login(request, user_object)
+        return render(request, 'new.html', context)  # Redirect to the appropriate page
     else:
         form = CustomUserForm()
     context = {'form': form}
-    return render(request, 'index.html', context)
-
+    return render(request, 'register.html', context)
 
 def login_user(request):
     users = User.objects.all()
@@ -72,7 +71,6 @@ def redirect_42(request):
     }
     url = f"{authorization_url}?{urllib.parse.urlencode(params)}"
     return redirect(url)
-
 def new(request):
     code = request.GET.get('code') #code from the query that 42 gives if the authentication was approved
     if not code: #if 42 does not apporved or user did not accept 
@@ -91,7 +89,7 @@ def new(request):
     response = requests.post(token_url, data=payload)
     token_data = response.json()
     if 'access_token' not in token_data:
-        return render(request, 'error.html', {'error': token_data.get('error_description', 'Unknown error')})
+        return render(request, '404.html', {'error': token_data.get('error_description', 'Unknown error')})
     access_token = token_data['access_token']
     user_info_url = 'https://api.intra.42.fr/v2/me'
     headers = {'Authorization': f'Bearer {access_token}'}

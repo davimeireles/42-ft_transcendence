@@ -1,16 +1,7 @@
-form {
-    width: 24%;
-    margin: auto;
-    padding-top: 150px;
-    justify-items: center;
-}
-
-.bg {
-    background-color: red;
+.form-row {
+    margin-bottom: 10px;
 }
 
 .btn {
-    margin-top: 30px;
-    margin-right: 10px;
-    margin-left: 12px;
+    margin-top: 20px;
 }
