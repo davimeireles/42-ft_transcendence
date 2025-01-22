@@ -29,7 +29,7 @@ def register_user(request):
         user_object.save()
         context = {'form': form}
         # login(request, user_object)
-        return render(request, 'login.html', context)  # Redirect to the appropriate page
+        return render(request, 'new.html', context)  # Redirect to the appropriate page
     else:
         form = CustomUserForm()
     context = {'form': form}
@@ -45,11 +45,12 @@ def login_user(request):
         if action == 'loginuser':
             username = request.POST.get('username')
             password = request.POST.get('password')
-            user = authenticate(request, username=username, password=password)
+            print(f'{username} and {password}')
+            user_login = authenticate(request, username=username, password=password)
             context = {'form': form}
-            if user is not None:
+            if user_login is not None:
                 print(f'User and password correct')
-                login(request, user)
+                login(request, user_login)
                 return render(request, 'new.html', context)
             else:
                 print(f'User or Passoword Wrong')
@@ -71,6 +72,7 @@ def redirect_42(request):
     }
     url = f"{authorization_url}?{urllib.parse.urlencode(params)}"
     return redirect(url)
+
 def new(request):
     code = request.GET.get('code') #code from the query that 42 gives if the authentication was approved
     if not code: #if 42 does not apporved or user did not accept 
@@ -96,6 +98,8 @@ def new(request):
     user_response = requests.get(user_info_url, headers=headers)
     user_data = user_response.json()
     user, created = User.objects.get_or_create(username=user_data['login'])
+    # if user.email is None:
+    #     user.email = user_data['email']
     if created:
         user.nickname = user_data['displayname']
         user.email = user_data['email']
@@ -110,4 +114,3 @@ def new(request):
         file.write(requests.get(user_data['image']['versions']['small']).content)
     login(request, user)
     return render(request, 'new.html', {'user': request.user})
-
