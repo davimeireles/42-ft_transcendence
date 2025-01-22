@@ -25,11 +25,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+<<<<<<< HEAD
     last_login = models.DateTimeField(blank=True, null=True, verbose_name='last login')
     photo = models.ImageField(upload_to='photos/', null=True, blank=True)
     groups = models.ManyToManyField(Group, related_name='custom_user_set', blank=True)
     user_permissions = models.ManyToManyField(Permission, related_name='custom_user_set', blank=True)
 
+=======
+    photo = models.ImageField(upload_to='photos/', null=True, blank=True)
+    
+>>>>>>> bf524791c09d3489bbdae5acce8e37da1fc369f5
     objects = UserManager()
 
     USERNAME_FIELD = 'username'
