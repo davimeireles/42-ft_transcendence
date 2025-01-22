@@ -16,6 +16,7 @@ def render_home_page(request):
         if action == 'login':
             return render(request, 'login.html', context)
         elif action == 'register':
+<<<<<<< HEAD
             return render(request, 'register.html, context')   
     return render(request, 'index.html')
 
@@ -30,6 +31,18 @@ def register_user(request):
         context = {'form': form}
         login(request, user_object)
         return render(request, 'new.html', context)  # Redirect to the appropriate page
+=======
+            form = CustomUserForm(request.POST)
+            if form.is_valid():
+                user_object = form.save(commit=False)
+                user_object.nickname = form.cleaned_data['nickname']
+                user_object.email = form.cleaned_data['email']
+                user_object.set_password(form.cleaned_data['password1'])  # Use set_password to hash the password
+                user_object.save()
+                context = {'form': form}
+                login(request, user_object)
+                return render(request, 'new.html', context)  # Redirect to the appropriate page
+>>>>>>> bf524791c09d3489bbdae5acce8e37da1fc369f5
     else:
         form = CustomUserForm()
     context = {'form': form}
@@ -89,7 +102,11 @@ def new(request):
     response = requests.post(token_url, data=payload)
     token_data = response.json()
     if 'access_token' not in token_data:
+<<<<<<< HEAD
         return render(request, '404.html', {'error': token_data.get('error_description', 'Unknown error')})
+=======
+        return render(request, 'error.html', {'error': token_data.get('error_description', 'Unknown error')})
+>>>>>>> bf524791c09d3489bbdae5acce8e37da1fc369f5
     access_token = token_data['access_token']
     user_info_url = 'https://api.intra.42.fr/v2/me'
     headers = {'Authorization': f'Bearer {access_token}'}
@@ -110,4 +127,9 @@ def new(request):
         file.write(requests.get(user_data['image']['versions']['small']).content)
     login(request, user)
     print(f'{user_data}')
+<<<<<<< HEAD
     return render(request, 'new.html', {'user': request.user})
+=======
+    return render(request, 'new.html', {'user': request.user})
+
+>>>>>>> bf524791c09d3489bbdae5acce8e37da1fc369f5
