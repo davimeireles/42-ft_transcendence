@@ -9,14 +9,18 @@
     <h1>User Profile</h1>
     {% if user.is_authenticated %}
         <p><strong>Username:</strong> {{ user.username }}</p> 
+        <p><strong>Email:</strong> {{ user.email }}</p> 
+
         <!-- If user has a photo -->
         {% if user.photo %}
             <img src="../../media/{{ user.username }}.jpg" alt="Profile Photo">
         {% else %}
             <img src="../../media/default.jpg" alt="Profile Photo">
         {% endif %}
+        <a href="{% url 'chat' %}"> Chat</a>
     {% else %}
         <p>You are not logged in.</p>
+        <a href="{% url 'login_user' %}"> login</a>
     {% endif %}
 </body>
 </html>
