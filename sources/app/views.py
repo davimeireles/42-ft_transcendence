@@ -28,8 +28,8 @@ def register_user(request):
         user_object.set_password(form.cleaned_data['password1'])  # Use set_password to hash the password
         user_object.save()
         context = {'form': form}
-        login(request, user_object)
-        return render(request, 'new.html', context)  # Redirect to the appropriate page
+        # login(request, user_object)
+        return render(request, 'login.html', context)  # Redirect to the appropriate page
     else:
         form = CustomUserForm()
     context = {'form': form}
@@ -109,6 +109,5 @@ def new(request):
     with open(image_path, 'wb') as file:
         file.write(requests.get(user_data['image']['versions']['small']).content)
     login(request, user)
-    print(f'{user_data}')
     return render(request, 'new.html', {'user': request.user})
 
