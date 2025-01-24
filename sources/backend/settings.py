@@ -81,7 +81,17 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'backend.wsgi.application'
-ASGI_APPLICATION = "backend.asgi.application"
+ASGI_APPLICATION = 'backend.asgi.application'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],  # Adjust for your Redis server
+        },
+    },
+}
+
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -144,13 +154,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'photos')
 
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': "channels.layers.InMemoryChannelLayer"
-        }
-    }
-
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',  # Default authentication backend
+    'django.contrib.auth.backends.ModelBackend',
 ]
 AUTH_USER_MODEL = 'app.User' 
+

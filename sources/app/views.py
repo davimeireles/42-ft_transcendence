@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login, get_user_model
+from django.contrib.auth import authenticate, login, get_user_model, logout
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.http import HttpResponse
@@ -27,9 +27,10 @@ def register_user(request):
         user_object.email = form.cleaned_data['email']
         user_object.set_password(form.cleaned_data['password1'])  # Use set_password to hash the password
         user_object.save()
+        form = LoginForm(request.POST)
         context = {'form': form}
         # login(request, user_object)
-        return render(request, 'new.html', context)  # Redirect to the appropriate page
+        return redirect('login_user')  # Redirect to the appropriate page
     else:
         form = CustomUserForm()
     context = {'form': form}
@@ -40,20 +41,17 @@ def login_user(request):
     action = request.POST.get('action')
     form = LoginForm(request.POST)
     for user in users:
-        print(f"Username: {user.username}, Email: {user.email}")
+            print(f"Username: {user.username}, Email: {user.email}")
     if request.method == 'POST':
         if action == 'loginuser':
             username = request.POST.get('username')
             password = request.POST.get('password')
-            print(f'{username} and {password}')
             user_login = authenticate(request, username=username, password=password)
             context = {'form': form}
             if user_login is not None:
-                print(f'User and password correct')
                 login(request, user_login)
                 return render(request, 'new.html', context)
             else:
-                print(f'User or Passoword Wrong')
                 return render(request, 'login.html', context)
     else:
         form = LoginForm()
@@ -76,7 +74,7 @@ def redirect_42(request):
 def new(request):
     code = request.GET.get('code') #code from the query that 42 gives if the authentication was approved
     if not code: #if 42 does not apporved or user did not accept 
-        return HttpResponse('400 ERROR', status=400)
+        return render(request, '404.html')
     client_id = os.getenv('UID')
     client_secret = os.getenv('SECRET')
     redirect_uri = os.getenv('URI')
@@ -114,3 +112,9 @@ def new(request):
         file.write(requests.get(user_data['image']['versions']['small']).content)
     login(request, user)
     return render(request, 'new.html', {'user': request.user})
+
+
+def logout_user(request):
+    if request.user.is_authenticated:
+        logout(request)
+    return render(request, 'index.html')
