@@ -8,3 +8,6 @@ PyJWT>=2.0
 cryptography>=3.4
 paramiko>=2.7
 Pillow>=11.1
+daphne>=4.1.2
+channels>=4.2.0
+redis>=5.2.1
