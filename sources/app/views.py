@@ -41,7 +41,8 @@ def login_user(request):
     action = request.POST.get('action')
     form = LoginForm(request.POST)
     for user in users:
-            print(f"Username: {user.username}, Email: {user.email}")
+            if user.online == True:
+                print(f"Username: {user.username}, Email: {user.email}")
     if request.method == 'POST':
         if action == 'loginuser':
             username = request.POST.get('username')
@@ -50,7 +51,7 @@ def login_user(request):
             context = {'form': form}
             if user_login is not None:
                 login(request, user_login)
-                return render(request, 'new.html', context)
+                return render(request, 'profile.html', context)
             else:
                 return render(request, 'login.html', context)
     else:
@@ -71,7 +72,7 @@ def redirect_42(request):
     url = f"{authorization_url}?{urllib.parse.urlencode(params)}"
     return redirect(url)
 
-def new(request):
+def profile(request):
     code = request.GET.get('code') #code from the query that 42 gives if the authentication was approved
     if not code: #if 42 does not apporved or user did not accept 
         return render(request, '404.html')
@@ -111,10 +112,11 @@ def new(request):
     with open(image_path, 'wb') as file:
         file.write(requests.get(user_data['image']['versions']['small']).content)
     login(request, user)
-    return render(request, 'new.html', {'user': request.user})
+    return render(request, 'profile.html', {'user': request.user})
 
 
 def logout_user(request):
     if request.user.is_authenticated:
+        request.user.online = False
         logout(request)
     return render(request, 'index.html')
