@@ -18,6 +18,7 @@
             <img src="../../media/default.jpg" alt="Profile Photo">
         {% endif %}
         <a href="{% url 'chat' %}"> Chat</a>
+        <a href="{% url 'logout_user' %}" class="btn btn-danger"> Logout</a>
     {% else %}
         <p>You are not logged in.</p>
         <a href="{% url 'login_user' %}"> login</a>

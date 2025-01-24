@@ -18,16 +18,19 @@
     <div class="container">
         <div class="row d-flex justify-content-center">
             <div class="col-3">
-                <form>
-                    <div class="form-group">
-                        <label for="exampleFormControlTextarea1" class="h4 pt-5">Chatbox</label>
-                        <textarea class="form-control" id="chat-text" readonly rows="10"></textarea><br>
-                    </div>
+                <!-- <form>
                     <div class="form-group">
                         <input class="form-control" placeholder="Enter text here" id="input" type="text"></br>
                     </div>
                     <input class="btn btn-primary btn-lg btn-block" id="submit" type="button" value="Send">
-                </form>
+                </form> -->
+                <div class="form-group">
+                    <label for="" class="h4 pt-5">Livechat</label>
+                    <textarea class="form-control" id="chat-text" readonly rows="10"></textarea><br>
+                </div>
+                <input type="text" id="message-input" placeholder="Type a message">
+                <input class="btn btn-primary btn-lg btn-block" id="submit" type="button" value="Send">
+                <pre id="chat-text"></pre>  <!-- To display chat messages -->
             </div>
         </div>
     </div>
@@ -35,41 +38,25 @@
     <p>You are not logged in.</p>
     <a href="{% url 'login_user' %}"> Login</a>
 {% endif %}
-    {% comment %} Get data for username and chatbox name{% endcomment %}
-    {{ request.user.username|json_script:"user_username" }}
-    {{ chat_box_name|json_script:"room-name" }}
-
-
     <!-- Optional JavaScript -->
     <script>
-        // Get the injected values from Django context
-        const user_username = JSON.parse(document.getElementById('user_username').textContent);
-        const boxName = JSON.parse(document.getElementById('room_name').textContent);
-    
-        // Create a WebSocket connection
-        const chatSocket = new WebSocket(
-            'ws://' + window.location.host + '/ws/chat/' + boxName + '/'
-        );
-    
-        // Handle messages from WebSocket
-        chatSocket.onmessage = function(e) {
-            const data = JSON.parse(e.data);
-            document.querySelector('#chat-text').value += (data.message + ' sent by ' + data.username + '\n');
-        }
-    
-        // Send messages when the 'Send' button is clicked
-        document.querySelector('#submit').onclick = function(e) {
-            const messageInputDom = document.querySelector('#input');
-            const message = messageInputDom.value;
-    
-            chatSocket.send(JSON.stringify({
-                'message': message,
-                'username': user_username,
-            }));
-    
-            // Clear the input after sending the message
-            messageInputDom.value = '';
-        };
+        const roomName = 'myRoom';
+        const socket = new WebSocket('ws://' + window.location.host + '/ws/chat/' + roomName + '/');
+        
+        document.getElementById('submit').onclick = function() {
+            const message = document.getElementById('message-input').value;
+            if (message) {
+                socket.send(JSON.stringify({message}));
+                document.getElementById('message-input').value = '';
+            }
+            socket.onmessage = function (e) {
+                const data = JSON.parse(e.data);
+                console.log(data);
+                // window.alert(data.message);
+               document.getElementById('chat-text').value += `${data.user}: ${data.message}\n`;
+            };
+};
+
     </script>
     
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
