@@ -17,9 +17,9 @@ class UserManager(BaseUserManager):
         return self.create_user(username, password, **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField(max_length=32, null=False, unique=True)
+    username = models.CharField(max_length=128, null=False, unique=True)
     password = models.CharField(max_length=128, null=False)
-    nickname = models.CharField(max_length=32, null=False, unique=True)
+    nickname = models.CharField(max_length=128, null=False, unique=True)
     email = models.CharField(max_length=128, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -29,6 +29,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     photo = models.ImageField(upload_to='photos/', null=True, blank=True)
     groups = models.ManyToManyField(Group, related_name='custom_user_set', blank=True)
     user_permissions = models.ManyToManyField(Permission, related_name='custom_user_set', blank=True)
+    online = models.BooleanField(default=True)
     
     objects = UserManager()
 
