@@ -8,8 +8,15 @@
 <body>
     <h1>User Profile</h1>
     {% if user.is_authenticated %}
-        <p><strong>Username:</strong> {{ user.username }}</p> 
-        <p><strong>Email:</strong> {{ user.email }}</p> 
+        <h1>Username: </h1><h3>{{ user.username }}</h3>
+        <h1>Email: </h1><h3>{{ user.email }}</h3>
+        <h1>Created: </h1><h3>{{ user.created_at }}</h3>
+        {% if user.online %}
+            <h3>Online</h3>
+        {% else %}
+           <h3>Offline</h3>
+        {% endif %}
+        <h1>Score: </h1><h3>{{ user.score }}</h3>
 
         <!-- If user has a photo -->
         {% if user.photo %}

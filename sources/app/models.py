@@ -29,6 +29,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     photo = models.ImageField(upload_to='photos/', null=True, blank=True)
     groups = models.ManyToManyField(Group, related_name='custom_user_set', blank=True)
     user_permissions = models.ManyToManyField(Permission, related_name='custom_user_set', blank=True)
+    online = models.BooleanField(default=True)
     
     objects = UserManager()
 
