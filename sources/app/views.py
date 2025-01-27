@@ -1,9 +1,13 @@
 from django.contrib.auth import authenticate, login, get_user_model, logout
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.http import HttpResponse
+from django.utils import timezone
 from app.forms import CustomUserForm, LoginForm
-from app.models import User
+from app.models import User, TwoFactorAuth
+from app.utils.send_email import send_verification_email
+from datetime import datetime, timedelta
 import urllib.parse
 import requests
 import os, sys
@@ -50,6 +54,11 @@ def login_user(request):
             user_login = authenticate(request, username=username, password=password)
             context = {'form': form}
             if user_login is not None:
+                if user_login.two_fa_enable:
+                    tfa = TwoFactorAuth.objects.get(user=user_login)
+                    if not tfa.is_verified:
+                        send_verification_email(user=user_login)
+                        return redirect('verify_2fa')
                 login(request, user_login)
                 return render(request, 'profile.html', context)
             else:
@@ -97,8 +106,6 @@ def profile(request):
     user_response = requests.get(user_info_url, headers=headers)
     user_data = user_response.json()
     user, created = User.objects.get_or_create(username=user_data['login'])
-    # if user.email is None:
-    #     user.email = user_data['email']
     if created:
         user.nickname = user_data['displayname']
         user.email = user_data['email']
@@ -120,3 +127,22 @@ def logout_user(request):
         request.user.online = False
         logout(request)
     return render(request, 'index.html')
+
+# Using the @login_required means that the view will only be executed if the request coming in is authenticated.
+# If the person is not authenticated, they will be redirected - usually to the login page
+@login_required
+def verify_2fa(request):
+    if request.method == 'POST':
+        code = request.POST.get('code')
+        try:
+            tfa = TwoFactorAuth.objects.get(user=request.user)
+            if tfa.verification_code == code and timezone.now() < tfa.expiration_time:
+                tfa.is_verified = True
+                tfa.save()
+                return render(request, 'profile.html', {'user': request.user})
+            else:
+                return HttpResponse('Invalid or expired code')
+        except TwoFactorAuth.DoesNotExist:
+            return HttpResponse('No verification process found.')
+    
+    return render(request, 'verify_2fa.html')

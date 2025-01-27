@@ -32,7 +32,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# AUTH_USER_MODEL = 'app.User'
 # Application definition
 
 INSTALLED_APPS = [
@@ -157,5 +156,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'photos')
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
-AUTH_USER_MODEL = 'app.User' 
 
+AUTH_USER_MODEL = 'app.User' 

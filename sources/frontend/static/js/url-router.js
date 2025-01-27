@@ -25,6 +25,11 @@ const urlRoutes = {
         template: "/sources/frontend/static/templates/register.html",
         title: "Register | " + urlPageTitle,
         description: "Register page"
+    },
+    "/verify_2fa": {
+        template: "/sources/frontend/static/templates/verify_2fa.html",
+        title: "2FA | " + urlPageTitle,
+        description: "2FA page"
     }
 }
 
