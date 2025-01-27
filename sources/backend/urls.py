@@ -15,6 +15,7 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('chat/', livechat.views.chat, name='chat'),
     path('logout/', views.logout_user, name='logout_user'),
+    path('verify-2fa/', views.verify_2fa, name='verify_2fa'),
 ] 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

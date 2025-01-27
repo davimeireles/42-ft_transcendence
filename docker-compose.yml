@@ -5,7 +5,7 @@ services:
       context: nginx
       dockerfile: Dockerfile
     volumes:
-      - ./sources/frontend/html:/usr/share/nginx/html
+      - ./sources/frontend/static/templates:/usr/share/nginx/html
     ports:
       - "10443:443"
     networks:

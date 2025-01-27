@@ -29,6 +29,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     photo = models.ImageField(upload_to='photos/', null=True, blank=True)
     groups = models.ManyToManyField(Group, related_name='custom_user_set', blank=True)
     user_permissions = models.ManyToManyField(Permission, related_name='custom_user_set', blank=True)
+    two_fa_enable = models.BooleanField(default=False) # True for test.
     online = models.BooleanField(default=True)
     
     objects = UserManager()
@@ -58,3 +59,9 @@ class MatchParticipant(models.Model):
     matchID = Match.id
     userID = User.id
     score = models.IntegerField(null=True)
+    
+class TwoFactorAuth(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    verification_code = models.CharField(max_length=6)
+    expiration_time = models.DateTimeField()
+    is_verified = models.BooleanField(default=False)
