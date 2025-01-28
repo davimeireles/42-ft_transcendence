@@ -120,3 +120,13 @@ def logout_user(request):
         request.user.online = False
         logout(request)
     return render(request, 'index.html')
+
+
+def profiles(request, username):
+    try:
+        # Fetch the user from the database by username
+        userget = User.objects.get(username=username)
+    except User.DoesNotExist:
+        # Redirect to an error page or handle the error gracefully
+        return render(request, '404.html')
+    return render(request, 'profiles.html', {'userget': userget})

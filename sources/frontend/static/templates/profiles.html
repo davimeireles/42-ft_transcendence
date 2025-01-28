@@ -11,20 +11,20 @@
         <button class="btn btn-outline-secondary" type="submit">Search</button>
     </form>
     <h1>User Profile</h1>
-    {% if user.is_authenticated %}
-        <h1>Username: </h1><h3>{{ user.username }}</h3>
-        <h1>Email: </h1><h3>{{ user.email }}</h3>
-        <h1>Created: </h1><h3>{{ user.created_at }}</h3>
-        {% if user.online %}
+    {% if userget.is_authenticated %}
+        <h1>Username: </h1><h3>{{ userget.username }}</h3>
+        <h1>Email: </h1><h3>{{ userget.email }}</h3>
+        <h1>Created: </h1><h3>{{ userget.created_at }}</h3>
+        {% if userget.online %}
             <h3>Online</h3>
         {% else %}
            <h3>Offline</h3>
         {% endif %}
-        <h1>Score: </h1><h3>{{ user.score }}</h3>
+        <h1>Score: </h1><h3>{{ userget.score }}</h3>
 
-        <!-- If user has a photo -->
-        {% if user.photo %}
-            <img src="../../media/{{ user.username }}.jpg" alt="Profile Photo">
+        <!-- If userget has a photo -->
+        {% if userget.photo %}
+            <img src="../../media/{{ userget.username }}.jpg" alt="Profile Photo">
         {% else %}
             <img src="../../media/default.jpg" alt="Profile Photo">
         {% endif %}
@@ -35,15 +35,4 @@
         <a href="{% url 'login_user' %}"> login</a>
     {% endif %}
 </body>
-<script>
-    function redirectToProfile(form) {
-            const username = document.getElementById("searchQuery").value.trim();
-            if (username) {
-                const profileUrl = `/profiles/${username}/`;
-                window.location.href = profileUrl;
-                return false;
-            }
-            return true;
-        }
-</script>
 </html>
