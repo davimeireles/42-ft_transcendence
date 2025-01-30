@@ -6,6 +6,10 @@
     <title>User Profile</title>
 </head>
 <body>
+    <form action="" method="get" class="d-flex" role="search" onsubmit="return redirectToProfile(this);">
+        <input  class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="searchQuery" name="q">
+        <button class="btn btn-outline-secondary" type="submit">Search</button>
+    </form>
     <h1>User Profile</h1>
     {% if user.is_authenticated %}
         <h1>Username: </h1><h3>{{ user.username }}</h3>
@@ -31,4 +35,15 @@
         <a href="{% url 'login_user' %}"> login</a>
     {% endif %}
 </body>
+<script>
+    function redirectToProfile(form) {
+            const username = document.getElementById("searchQuery").value.trim();
+            if (username) {
+                const profileUrl = `/profiles/${username}/`;
+                window.location.href = profileUrl;
+                return false;
+            }
+            return true;
+        }
+</script>
 </html>

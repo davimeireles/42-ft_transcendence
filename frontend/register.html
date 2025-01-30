@@ -1,0 +1,32 @@
+<div class="screen-content">
+    <h1 class="fw-bold mb-2 fs-3 text-center text-white">Come play Pong!</h1>
+    
+	<form id="registrationForm" class="p-2">
+		<div id="errorMessages" class="alert alert-danger d-none"></div>
+        <div class="form-floating mb-2">
+            <input type="text" class="form-control form-control-sm rounded-2" id="floatingUsername" placeholder="Username">
+            <label for="floatingUsername">Username</label>
+        </div>
+        <div class="form-floating mb-2">
+            <input type="email" class="form-control form-control-sm rounded-2" id="floatingInput" placeholder="name@example.com">
+            <label for="floatingInput">Email</label>
+        </div>
+        <div class="form-floating mb-2">
+            <input type="password" class="form-control form-control-sm rounded-2" id="floatingPassword" placeholder="Password">
+            <label for="floatingPassword">Password</label>
+        </div>
+        <div class="form-floating mb-2">
+            <input type="password" class="form-control form-control-sm rounded-2" id="floatingRepeatPassword" placeholder="Repeat Password">
+            <label for="floatingRepeatPassword">Repeat</label>
+        </div>
+        <div class="form-floating mb-2">
+            <input type="nickname" class="form-control form-control-sm rounded-2" id="floatingNickname" placeholder="Nickname">
+            <label for="floatingNickname">Nickname</label>
+        </div>
+        <button class="w-100 mb-2 btn btn-sm rounded-2 btn-primary" type="submit">Sign up</button>
+        <p class="text-center text-white small mb-2">
+            Already have an account? 
+            <a href="/login" onclick="event.preventDefault(); renderPage('login')" class="text-primary text-decoration-none fw-bold">Login here</a>
+        </p>
+    </form>
+</div>
