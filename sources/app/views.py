@@ -66,59 +66,10 @@ def user_signup(request):
 #     url = f"{authorization_url}?{urllib.parse.urlencode(params)}"
 #     return redirect(url)
 
-# @api_view(['GET', 'POST'])
-# @permission_classes([IsAuthenticated])
-# def profile(request):
-#     code = request.GET.get('code')  # code from the query that 42 gives if the authentication was approved
-#     if not code:  # if 42 does not approve or user did not accept
-#         return Response({"message": "Invalid Code"}, status=status.HTTP_404_NOT_FOUND)
-    
-#     client_id = os.getenv('UID')
-#     client_secret = os.getenv('SECRET')
-#     redirect_uri = os.getenv('URI')
-#     token_url = 'https://api.intra.42.fr/oauth/token'
-#     payload = {
-#         'grant_type': 'authorization_code',
-#         'client_id': client_id,
-#         'client_secret': client_secret,
-#         'code': code,
-#         'redirect_uri': redirect_uri,
-#     }
-#     response = requests.post(token_url, data=payload)
-#     token_data = response.json()
-#     if 'access_token' not in token_data:
-#         return Response({"message": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
-    
-#     access_token = token_data['access_token']
-#     user_info_url = 'https://api.intra.42.fr/v2/me'
-#     headers = {'Authorization': f'Bearer {access_token}'}
-#     user_response = requests.get(user_info_url, headers=headers)
-#     user_data = user_response.json()
-    
-#     user, created = User.objects.get_or_create(username=user_data['login'])
-#     if created:
-#         user.nickname = user_data['displayname']
-#         user.email = user_data['email']
-#         user.set_unusable_password()
-#         user.photo = f'{user_data["login"]}.jpg'
-#         user.save()
-    
-#     folder_path = settings.MEDIA_ROOT
-#     if not os.path.exists(folder_path):
-#         os.makedirs(folder_path)
-    
-#     image_path = os.path.join(folder_path, f'{user_data["login"]}.jpg')
-#     with open(image_path, 'wb') as file:
-#         file.write(requests.get(user_data['image']['versions']['small']).content)
-    
-#     user_info = {
-#         "username": user.username,
-#         "nickname": user.nickname,
-#         "email": user.email,
-#         "photo": user.photo,
-#     }
-    
-#     return Response({"message": "Profile retrieved successfully", "user": user_info}, status=status.HTTP_200_OK)
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def fetch_user():
+
 
 
 # # def logout_user(request):

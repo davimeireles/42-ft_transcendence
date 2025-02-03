@@ -11,6 +11,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', app.views.user_signin, name='user_signin'),
     path('register/', app.views.user_signup, name='user_signup'),
+    path('api/', include('api.urls')),
 ]
 
 # urlpatterns = [
