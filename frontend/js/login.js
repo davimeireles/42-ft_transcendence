@@ -1,5 +1,5 @@
 function LoginFormListener() {
-    
+
     const form = document.getElementById("loginForm");
 
     if (!form) {
@@ -33,4 +33,5 @@ function LoginFormListener() {
         console.log("Error:", error);
       }
     });
+
   }

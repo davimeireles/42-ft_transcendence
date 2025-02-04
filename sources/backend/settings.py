@@ -185,6 +185,7 @@ SIMPLE_JWT = {
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(" ")
 ALLOWED_HOSTS.append('0.0.0.0')
 ALLOWED_HOSTS.append('localhost')
+ALLOWED_HOSTS.append('127.0.0.1')
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True

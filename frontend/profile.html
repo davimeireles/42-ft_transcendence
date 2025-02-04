@@ -1,49 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
-</head>
-<body>
-    <form action="" method="get" class="d-flex" role="search" onsubmit="return redirectToProfile(this);">
-        <input  class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="searchQuery" name="q">
-        <button class="btn btn-outline-secondary" type="submit">Search</button>
-    </form>
-    <h1>User Profile</h1>
-    {% if user.is_authenticated %}
-        <h1>Username: </h1><h3>{{ user.username }}</h3>
-        <h1>Email: </h1><h3>{{ user.email }}</h3>
-        <h1>Created: </h1><h3>{{ user.created_at }}</h3>
-        {% if user.online %}
-            <h3>Online</h3>
-        {% else %}
-           <h3>Offline</h3>
-        {% endif %}
-        <h1>Score: </h1><h3>{{ user.score }}</h3>
-
-        <!-- If user has a photo -->
-        {% if user.photo %}
-            <img src="../../media/{{ user.username }}.jpg" alt="Profile Photo">
-        {% else %}
-            <img src="../../media/default.jpg" alt="Profile Photo">
-        {% endif %}
-        <a href="{% url 'chat' %}"> Chat</a>
-        <a href="{% url 'logout_user' %}" class="btn btn-danger"> Logout</a>
-    {% else %}
-        <p>You are not logged in.</p>
-        <a href="{% url 'login_user' %}"> login</a>
-    {% endif %}
-</body>
-<script>
-    function redirectToProfile(form) {
+<div>
+    <p>ola</p>
+</div>
+<!-- <form action="" method="get" class="d-flex" role="search" onsubmit="return redirectToProfile(this);">
+    <script>
+        function redirectToProfile(form) {
             const username = document.getElementById("searchQuery").value.trim();
             if (username) {
-                const profileUrl = `/profiles/${username}/`;
-                window.location.href = profileUrl;
-                return false;
+                    const profileUrl = `/profiles/${username}/`;
+                    window.location.href = profileUrl;
+                    return false;
+                }
+                return true;
             }
-            return true;
-        }
-</script>
-</html>
+    </script>
+    <input  class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="searchQuery" name="q">
+    <button class="btn btn-outline-secondary" type="submit">Search</button>
+</form>
+<h1>User Profile</h1>
+{% if user.is_authenticated %}
+    <h1>Username: </h1><h3>{{ user.username }}</h3>
+    <h1>Email: </h1><h3>{{ user.email }}</h3>
+    <h1>Created: </h1><h3>{{ user.created_at }}</h3>
+    {% if user.online %}
+        <h3>Online</h3>
+    {% else %}
+       <h3>Offline</h3>
+    {% endif %}
+    <h1>Score: </h1><h3>{{ user.score }}</h3>
+    {% if user.photo %}
+        <img src="../../media/{{ user.username }}.jpg" alt="Profile Photo">
+    {% else %}
+        <img src="../../media/default.jpg" alt="Profile Photo">
+    {% endif %}
+    <a href="{% url 'chat' %}"> Chat</a>
+    <a href="{% url 'logout_user' %}" class="btn btn-danger"> Logout</a>
+{% else %}
+    <p>You are not logged in.</p>
+    <a href="{% url 'login_user' %}"> login</a>
+{% endif %} -->

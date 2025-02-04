@@ -1,3 +1,4 @@
+
 // Router state
 const router = {
     currentPage: null,
@@ -20,7 +21,8 @@ const router = {
       const response = await fetch(router.pages[page]);
       const html = await response.text();
       mainContent.innerHTML = html;
-  
+      
+      console.log(page)
       if (page === "register")
         RegisterFormListener();
       else if (page == "login")
