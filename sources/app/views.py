@@ -67,120 +67,64 @@ def redirect_42(request):
     url = f"{authorization_url}?{urllib.parse.urlencode(params)}"
     return JsonResponse({'url': url})
 
-@api_view(['GET', 'POST'])
+@api_view(['POST'])
 def profile(request):
-    code = request.GET.get('code')  
-    if not code:  
-        return JsonResponse({"message": "Invalid Code"}, status=status.HTTP_401_UNAUTHORIZED)
+    print(f"Request method: {request.method}")
+    if request.method == 'POST':
+        try:
+            code = request.data.get('code')
+            if not code:  
+                return Response({"message": "Invalid Code"}, status=status.HTTP_400_BAD_REQUEST)
+            client_id = os.getenv('UID')
+            client_secret = os.getenv('SECRET')
+            redirect_uri = os.getenv('URI')
+            token_url = 'https://api.intra.42.fr/oauth/token'
+            payload = {
+                'grant_type': 'authorization_code',
+                'client_id': client_id,
+                'client_secret': client_secret,
+                'code': code,
+                'redirect_uri': redirect_uri,
+            }
+            response = requests.post(token_url, data=payload)
+            if response.status_code != 200:
+                return Response({'message': 'error'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            token_data = response.json()
+            if 'access_token' not in token_data:
+                return Response({"message": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+            access_token = token_data['access_token']
+            user_info_url = 'https://api.intra.42.fr/v2/me'
+            headers = {'Authorization': f'Bearer {access_token}'}
+            user_response = requests.get(user_info_url, headers=headers)
+            
+            user_data = user_response.json()
 
-    client_id = os.getenv('UID')
-    client_secret = os.getenv('SECRET')
-    redirect_uri = os.getenv('URI')
-    token_url = 'https://api.intra.42.fr/oauth/token'
-    payload = {
-        'grant_type': 'authorization_code',
-        'client_id': client_id,
-        'client_secret': client_secret,
-        'code': code,
-        'redirect_uri': redirect_uri,
-    }
-    response = requests.post(token_url, data=payload)
-    token_data = response.json()
+            try:
+                user = User.objects.filter(username=user_data['login']).first()
+                if user:
+                    return Response({'user': user}, status=status.HTTP_200_OK) 
+                created = False
+            except Exception as e:
+                created = True
+            if created:
+                user.username = user_data['login']
+                user.set_unusable_password()
+                user.photo = f'{user_data["login"]}.jpg'
+                user.save()
+                folder_path = settings.MEDIA_ROOT
+                if not os.path.exists(folder_path):
+                    os.makedirs(folder_path)
+                image_path = os.path.join(folder_path, f'{user_data["login"]}.jpg')
+                with open(image_path, 'wb') as file:
+                    file.write(requests.get(user_data['image']['versions']['small']).content)
+                return Response({'user': user_data}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
-    if 'access_token' not in token_data:
-        return JsonResponse({"message": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
-
-    access_token = token_data['access_token']
-    user_info_url = 'https://api.intra.42.fr/v2/me'
-    headers = {'Authorization': f'Bearer {access_token}'}
-    user_response = requests.get(user_info_url, headers=headers)
-    user_data = user_response.json()
-
-    # user, created = User.objects.get_or_create(username=user_data['login'], defaults={
-    #     "email": user_data['email']
-    # })
-    try:
-        user = User.objects.filter(username=user_data['login']).first()
-        created = False
-    except Exception as e:
-        created = True
     
-    if created:
-        user.username = user_data['login']
-        user.set_unusable_password()
-        user.photo = f'{user_data["login"]}.jpg'
-        user.save()
 
-        folder_path = settings.MEDIA_ROOT
-        if not os.path.exists(folder_path):
-            os.makedirs(folder_path)
-
-        image_path = os.path.join(folder_path, f'{user_data["login"]}.jpg')
-        with open(image_path, 'wb') as file:
-            file.write(requests.get(user_data['image']['versions']['small']).content)
-
-        return JsonResponse({"message": "User Created", "redirect": "/profile"}, status=status.HTTP_200_OK)
-
-    return JsonResponse({"message": "User already exists", "redirect": "/profile"}, status=status.HTTP_200_OK)
-
-
-# @api_view(['GET', 'POST'])
-# # @permission_classes([IsAuthenticated])
-# def profile(request):
-#     code = request.GET.get('code')  # code from the query that 42 gives if the authentication was approved
-#     if not code:  # if 42 does not approve or user did not accept
-#         return  Response({"message": "Invalid Code"},  status=status.HTTP_401_UNAUTHORIZED)
-#     client_id = os.getenv('UID')
-#     client_secret = os.getenv('SECRET')
-#     redirect_uri = os.getenv('URI')
-#     token_url = 'https://api.intra.42.fr/oauth/token'
-#     payload = {
-#         'grant_type': 'authorization_code',
-#         'client_id': client_id,
-#         'client_secret': client_secret,
-#         'code': code,
-#         'redirect_uri': redirect_uri,
-#     }
-#     response = requests.post(token_url, data=payload)
-#     token_data = response.json()
-#     if 'access_token' not in token_data:
-#         return  Response({"message": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
-    
-#     access_token = token_data['access_token']
-#     user_info_url = 'https://api.intra.42.fr/v2/me'
-#     headers = {'Authorization': f'Bearer {access_token}'}
-#     user_response = requests.get(user_info_url, headers=headers)
-#     user_data = user_response.json()
-
-#     try:
-#         user = User.objects.filter(username=user_data['login']).first()
-#         created = False
-#     except Exception as e:
-#         created = True
-#     if created:
-#         user = User.objects.create(username=user_data['login'])
-#         user.username = user_data['login']
-#         user.email = user_data['email']
-#         user.set_unusable_password()
-#         user.photo = f'{user_data["login"]}.jpg'
-#         user.save()
-#         folder_path = settings.MEDIA_ROOT
-#         if not os.path.exists(folder_path):
-#             os.makedirs(folder_path)
-        
-#         image_path = os.path.join(folder_path, f'{user_data["login"]}.jpg')
-#         with open(image_path, 'wb') as file:
-#             file.write(requests.get(user_data['image']['versions']['small']).content)
-
-#         # user_info = {
-#         #     "username": user.username,
-#         #     "email": user.email,
-#         #     "photo": user.photo.url if user.photo else None,
-#         # }
-#         return  Response({"message": "User Created"}, status=status.HTTP_200_OK)
-#     else:
-#         return  Response({"message": "User already exists"}, status=status.HTTP_401_UNAUTHORIZED)
-#     return  Response({"message": "Unknown Error"}, status=status.HTTP_401_UNAUTHORIZED)
 
 # # def logout_user(request):
 # #     if request.user.is_authenticated:

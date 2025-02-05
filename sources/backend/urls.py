@@ -12,7 +12,7 @@ urlpatterns = [
     path('login/', app.views.user_signin, name='user_signin'),
     path('register/', app.views.user_signup, name='user_signup'),
     path('auth-42/', app.views.redirect_42, name='redirect_42'),
-    path('profile/', app.views.profile, name='profile'),
+    path('profile/', app.views.profile),
 ]
 
 # urlpatterns = [

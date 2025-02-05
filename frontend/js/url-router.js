@@ -39,6 +39,7 @@ const router = {
   window.addEventListener("popstate", (e) => {
     if (e.state?.page) {
       renderPage(e.state.page);
+      console.log(window.location.herf)
     }
   });
   
