@@ -3,7 +3,7 @@ all: up
 
 # Build and run the Docker containers
 up:
-	docker-compose up -d --build
+	docker-compose up --build
 
 # Stop and remove the Docker containers
 down:
@@ -29,4 +29,6 @@ clean-volumes:
 clean-networks:
 	docker network rm $$(docker network ls -q)
 
-.PHONY: all up down clean clean-images clean-containers clean-volumes clean-networks
+restart: clean up
+
+.PHONY: all up down clean clean-images clean-containers clean-volumes clean-networks restart
