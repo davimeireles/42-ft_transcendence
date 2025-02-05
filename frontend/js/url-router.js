@@ -25,6 +25,8 @@ const router = {
         RegisterFormListener();
       else if (page == "login")
         LoginFormListener();
+      else if (page == "home")
+        createBouncingBallBackground();
 
       history.pushState({ page: page }, "", `/${page}`);
       router.currentPage = page;
