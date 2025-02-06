@@ -1,4 +1,3 @@
-
 // Router state
 const router = {
     currentPage: null,

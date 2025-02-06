@@ -1,3 +1,4 @@
+console.log('Loaded register.js');
 function RegisterFormListener() {
     const form = document.getElementById("registrationForm");
     if (!form) {

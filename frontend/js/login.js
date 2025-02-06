@@ -1,3 +1,4 @@
+console.log('Loaded login.js');
 function LoginFormListener() {
 
     const form = document.getElementById("loginForm");

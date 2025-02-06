@@ -1,6 +1,4 @@
-
 const redi42  = async function(){
-    console.log('ola')
     try{
         const response = await fetch('http://localhost:8000/auth-42/', {
             method: 'POST',
@@ -17,21 +15,41 @@ const redi42  = async function(){
 };
 
 window.onload = async function(){
-    console.log('aaaaa')
     const url = new URLSearchParams(window.location.search)
     const code = url.get('code')
     if (code){
         console.log(code)
         try{
-            const response = await fetch('http://localhost:8000/profile/', {
+            const response = await fetch('http://localhost:8000/oauth42/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({code: code})
-            })
+                body: JSON.stringify({code})
+                })
             const res = await response.json();
-            window.location.replace(res)
+            console.log('Getting user was a success')
+            // console.log(res.user.first_name)
+            // console.log(res.user.last_name)
+            // console.log(res.user.email)
+            const login = res.user.login
+            console.log(login)
+            try{
+                const response = await fetch(`http://localhost:8000/return_user/${login}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({})
+                })
+                const u = await response.json();
+                document.getElementById('profile-container').innerHTML = `
+                    <h1>Profile: ${u.user.username}</h1>
+                    <p>Email: ${u.user.email}</p>
+                    <p>Nickname: ${u.user.nickname}</p>`;
+            }catch(error){
+                console.log(error)
+            }
         }catch(error){
             console.log(error)
         }

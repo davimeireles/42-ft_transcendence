@@ -68,8 +68,7 @@ def redirect_42(request):
     return JsonResponse({'url': url})
 
 @api_view(['POST'])
-def profile(request):
-    print(f"Request method: {request.method}")
+def oauth42(request):
     if request.method == 'POST':
         try:
             code = request.data.get('code')
@@ -120,11 +119,18 @@ def profile(request):
                     file.write(requests.get(user_data['image']['versions']['small']).content)
                 return Response({'user': user_data}, status=status.HTTP_200_OK)
         except Exception as e:
-            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-    return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-    
-    
+            return Response({"user": user_data}, status=status.HTTP_200_OK)
+    return Response({"message": "ERROR"}, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['POST'])
+def return_user(request, user):
+    if request.method == 'POST':
+        user = User.objects.get(username=user)
+        if user:
+            return JsonResponse({'user': user}, status=status.HTTP_200_OK)
+        return JsonResponse({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    return JsonResponse({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    
 
 # # def logout_user(request):
 # #     if request.user.is_authenticated:
