@@ -1,7 +1,21 @@
-.form-row {
-    margin-bottom: 10px;
+body, html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+.card {
+    width: 400px;
 }
 
-.btn {
-    margin-top: 20px;
+.btn-custom {
+    display: block;
+    margin: 0 auto;
 }
