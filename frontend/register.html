@@ -1,32 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - PONG Game</title>
+    <link rel="stylesheet" href="css/register.css">
+</head>
+
 <div class="screen-content">
-    <h1 class="fw-bold mb-2 fs-3 text-center text-white">Come play Pong!</h1>
-    
-	<form id="registrationForm" class="p-2">
-		<div id="errorMessages" class="alert alert-danger d-none"></div>
-        <div class="form-floating mb-2">
-            <input type="text" class="form-control form-control-sm rounded-2" id="floatingUsername" placeholder="Username">
-            <label for="floatingUsername">Username</label>
+
+    <body>
+        <div class="container d-flex justify-content-center align-items-center vh-100">
+            <div class="card bg-dark text-white p-4" style="width: 400px;">
+                <h2 class="text-center mb-4">Register</h2>
+                <form id="registrationForm">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="floatingUsername" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nickname" class="form-label">Nickname</label>
+                        <input type="text" class="form-control" id="floatingNickname" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">E-mail</label>
+                        <input type="email" class="form-control" id="floatingInput" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="floatingPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" id="floatingRepeatPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-custom w-100">Register</button>
+                </form>
+                <p class="text-center mt-3">
+                    Already have an account?
+                    <a href="/login" onclick="event.preventDefault(); renderPage('login')"
+                        class="text-primary text-decoration-none fw-bold">Login here</a>
+                </p>
+            </div>
         </div>
-        <div class="form-floating mb-2">
-            <input type="email" class="form-control form-control-sm rounded-2" id="floatingInput" placeholder="name@example.com">
-            <label for="floatingInput">Email</label>
-        </div>
-        <div class="form-floating mb-2">
-            <input type="password" class="form-control form-control-sm rounded-2" id="floatingPassword" placeholder="Password">
-            <label for="floatingPassword">Password</label>
-        </div>
-        <div class="form-floating mb-2">
-            <input type="password" class="form-control form-control-sm rounded-2" id="floatingRepeatPassword" placeholder="Repeat Password">
-            <label for="floatingRepeatPassword">Repeat</label>
-        </div>
-        <div class="form-floating mb-2">
-            <input type="nickname" class="form-control form-control-sm rounded-2" id="floatingNickname" placeholder="Nickname">
-            <label for="floatingNickname">Nickname</label>
-        </div>
-        <button class="w-100 mb-2 btn btn-sm rounded-2 btn-primary" type="submit">Sign up</button>
-        <p class="text-center text-white small mb-2">
-            Already have an account? 
-            <a href="/login" onclick="event.preventDefault(); renderPage('login')" class="text-primary text-decoration-none fw-bold">Login here</a>
-        </p>
-    </form>
 </div>
+</body>
