@@ -38,10 +38,12 @@ def user_signup(request):
         password = data.get('password')
         email = data.get('email')
         nickname = data.get('nickname')
-        if not username or not password or not email or not nickname:
-            return Response({"message": "Missing fields"}, status=status.HTTP_400_BAD_REQUEST)
         if User.objects.filter(username=username).exists():
             return Response({"message": "Username already taken"}, status=status.HTTP_400_BAD_REQUEST)
+        if User.objects.filter(email=email).exists():
+            return Response({"message": "Email already taken"}, status=status.HTTP_400_BAD_REQUEST)
+        if User.objects.filter(nickname=nickname).exists():
+            return Response({"message": "Nickname already taken"}, status=status.HTTP_400_BAD_REQUEST)
         user = User.objects.create_user(username=username, password=password, email=email, nickname=nickname)
         return Response({
             "message": "Register successful",
