@@ -20,14 +20,13 @@ const router = {
       const response = await fetch(router.pages[page]);
       const html = await response.text();
       mainContent.innerHTML = html;
-      
-      console.log(page)
       if (page === "register")
         RegisterFormListener();
       else if (page == "login")
         LoginFormListener();
       else if (page == "home")
         createBouncingBallBackground();
+
 
       history.pushState({ page: page }, "", `/${page}`);
       router.currentPage = page;
@@ -40,7 +39,6 @@ const router = {
   window.addEventListener("popstate", (e) => {
     if (e.state?.page) {
       renderPage(e.state.page);
-      console.log(window.location.herf)
     }
   });
   
