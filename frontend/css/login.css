@@ -19,3 +19,29 @@ body, html {
     display: block;
     margin: 0 auto;
 }
+
+.position-relative {
+    position: relative;
+}
+
+.input-group {
+    position: relative;
+}
+
+.input-group .form-control {
+    padding-right: 2.5rem; /* Padding to make space for the icon */
+}
+
+.input-group-text {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #adb5bd; /* Icon color */
+    background: none;
+    border: none;
+}
+.input-group-text:hover {
+    color: white; /* Change color on hover */
+}
