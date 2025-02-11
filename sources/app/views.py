@@ -33,7 +33,7 @@ def user_signin(request):
         login(request, user)
         refresh = RefreshToken.for_user(user)
         access_token = str(refresh.access_token)
-        response = Response({"message": "User authenticated successfully", "user": user_data, "access_token": access_token}, status=status.HTTP_200_OK)
+        response = Response({"message": "User authenticated successfully", "access_token": access_token}, status=status.HTTP_200_OK)
         response.set_cookie(
             key="jwt_access",
             value=access_token,
@@ -129,7 +129,7 @@ def oauth42(request):
             user = User.objects.get(username=user_data['login'])
             refresh = RefreshToken.for_user(user)
             access_token = str(refresh.access_token)
-            response = Response({"message": "User already exists", "user": user_data, "access_token": access_token}, status=status.HTTP_200_OK)
+            response = Response({"message": "User already exists", "access_token": access_token}, status=status.HTTP_200_OK)
             response.set_cookie(
                 key="jwt_access",
                 value=access_token,
@@ -150,7 +150,7 @@ def oauth42(request):
                 user.save()
                 refresh = RefreshToken.for_user(user)
                 access_token = str(refresh.access_token)
-                response = Response({"message": "User created", "user": user_data, "access_token": access_token}, status=status.HTTP_200_OK)
+                response = Response({"message": "User created", "access_token": access_token}, status=status.HTTP_200_OK)
                 response.set_cookie(
                     key="jwt_access",
                     value=access_token,
@@ -178,25 +178,18 @@ def return_user(request, str_user):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def session_user(request):
-    user = request.user  # Now this will work!
+    user = request.user
     return Response({"email": user.email, "username": user.username, "nickname": user.nickname})
 
-
-# # # Using the @login_required means that the view will only be executed if the request coming in is authenticated.
-# # # If the person is not authenticated, they will be redirected - usually to the login page
-# # @login_required
-# # def verify_2fa(request):
-# #     if request.method == 'POST':
-# #         code = request.POST.get('code')
-# #         try:
-# #             tfa = TwoFactorAuth.objects.get(user=request.user)
-# #             if tfa.verification_code == code and timezone.now() < tfa.expiration_time:
-# #                 tfa.is_verified = True
-# #                 tfa.save()
-# #                 return render(request, 'profile.html', {'user': request.user})
-# #             else:
-# #                 return HttpResponse('Invalid or expired code')
-# #         except TwoFactorAuth.DoesNotExist:
-# #             return HttpResponse('No verification process found.')
-    
-# #     return render(request, 'verify_2fa.html')
+# @api_view(['POST'])
+# @permission_classes([IsAuthenticated])
+# def logout(request):
+#     try:
+#         refresh_token = request.data.get("refresh_token")
+#         if not refresh_token:
+#             return Response({"message": "No refresh token provided"}, status=status.HTTP_400_BAD_REQUEST)
+#         token = RefreshToken(refresh_token)
+#         token.blacklist()
+#         return Response({"message": "Successfully logged out"}, status=status.HTTP_200_OK)
+#     except Exception as e:
+#         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

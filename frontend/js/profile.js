@@ -1,20 +1,33 @@
-const render_user = async function(username){
-    try{
-        const response = await fetch(`http://localhost:8000/return_user/${username}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({})
-        })
-        const user = await response.json();
-        const profile_container = document.getElementById("profile-container");
-        if (profile_container){
-            profile_container.innerHTML = `<h1>Welcome</h1><h4>${user.username}</h4>`
-        }else{
-            console.log('doesnt exist')
+const renderProfile = async function(username){
+    try {
+        const token = localStorage.getItem("access_token")
+        if (!token)
+        {
+            console.log("Token not found !")
+            return ;
         }
-    }catch(error){
-        console.log(error)
+        else{
+            
+            const response = await fetch("http://localhost:8000/session_user/", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`,  // Send token in headers
+                }
+            });
+            if (!response.ok) {
+                throw new Error("Failed to fetch user");
+            }
+            const user = await response.json();
+            console.log(user.username);
+            console.log(user.email);
+            console.log(user.nickname);
+            const text = document.getElementById("text-text")
+            const text_user = document.getElementById("text-user")
+            if (text_user){
+                text_user.innerHTML = `${user.username}`
+            }
+        }
+    } catch (error) {
+        console.log("Error:", error);
     }
 }

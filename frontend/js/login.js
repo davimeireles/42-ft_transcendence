@@ -32,8 +32,9 @@ function LoginFormListener() {
 
       if (response.ok) {
         console.log("User Login Succesfully");
-        renderPage("profile");
-        render_user(username)
+        renderPage("home");
+        const res = await response.json();
+        localStorage.setItem("access_token", res.access_token)
       } else {
         const result = await response.json();
         errorMessage.textContent = result.message;

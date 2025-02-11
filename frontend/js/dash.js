@@ -1,4 +1,4 @@
-const getProfile = async () => {
+const renderUser = async () => {
     try {
         const token = localStorage.getItem("access_token")
         if (!token)
@@ -7,6 +7,7 @@ const getProfile = async () => {
             return ;
         }
         else{
+            
             const response = await fetch("http://localhost:8000/session_user/", {
                 method: "GET",
                 headers: {
@@ -20,6 +21,14 @@ const getProfile = async () => {
             console.log(user.username);
             console.log(user.email);
             console.log(user.nickname);
+            const welcome_user = document.getElementById("welcome_user");
+            console.log(welcome_user)
+            if (welcome_user)
+                welcome_user.innerHTML= `Welcome, ${user.username}`;
+            const mode = document.getElementById("mode");
+            console.log(mode)
+            if (mode)
+                mode.innerHTML= `Select game mode`;
         }
     } catch (error) {
         console.log("Error:", error);

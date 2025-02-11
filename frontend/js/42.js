@@ -28,24 +28,8 @@ window.onload = async function () {
             })
             if (response.ok) {
                 const res = await response.json();
-                const login = res.user.login
-                console.log(login)
-                console.log(res.access_token);
+                console.log(res.message)
                 localStorage.setItem("access_token", res.access_token)
-                // try{
-                //     const response = await fetch(`http://localhost:8000/return_user/${login}`, {
-                //         method: 'POST',
-                //         headers: {
-                //             'Content-Type': 'application/json',
-                //         },
-                //         body: JSON.stringify({})
-                //     })
-                //     const user = await response.json();
-                //     console.log(user.photo)
-                //     console.log(user.folder)
-                // }catch(error){
-                //     console.log(error)
-                // }
             }
             else {
                 console.log('ERROR')
@@ -54,6 +38,6 @@ window.onload = async function () {
             console.log(error)
         }
     } else {
-        console.log('code does not exists')
+        return ;
     }
 }

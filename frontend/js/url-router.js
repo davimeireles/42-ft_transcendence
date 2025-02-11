@@ -2,13 +2,14 @@
 const router = {
   currentPage: null,
   pages: {
-    home: "/intro.html",
+    intro: "/intro.html",
     login: "/login.html",
     register: "/register.html",
     pongpage: "/pong-page.html",
     localgame: "/local-game.html",
     aigame: "/ai-game.html",
-    dash: "home.html",
+    home: "/home.html",
+    profile: "/profile.html",
   },
 };
 
@@ -29,12 +30,16 @@ async function renderPage(page) {
         RegisterFormListener();
       } else if (page === "login") {
         LoginFormListener();
-      } else if (page === "home") {
+      } else if (page === "intro") {
         createBouncingBallBackground();
       } else if (page === "localgame") {
         renderPongGame();
       } else if (page === "aigame") {
         renderAIgame();
+      } else if (page == "home"){
+        renderUser();
+      }else if (page == "profile"){
+        renderProfile();
       }
 
     history.pushState({ page: page }, "", `/${page}`);
@@ -54,7 +59,7 @@ window.addEventListener("popstate", (e) => {
 
 // Load initial page
 window.addEventListener("load", () => {
-  const initialPage = window.location.pathname.slice(1) || "home";
+  const initialPage = window.location.pathname.slice(1) || "intro";
   renderPage(initialPage);
 });
 
