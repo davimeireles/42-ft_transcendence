@@ -3,7 +3,7 @@ from django.urls import path, include
 from django.conf.urls.static import static
 import app.views
 # from app import views
-# from django.conf import settings
+from django.conf import settings
 # import livechat.views
 
 
@@ -13,8 +13,10 @@ urlpatterns = [
     path('register/', app.views.user_signup, name='user_signup'),
     path('auth-42/', app.views.redirect_42, name='redirect_42'),
     path('oauth42/', app.views.oauth42),
-    path('return_user/<str:user>', app.views.return_user),
+    path('return_user/<str:str_user>', app.views.return_user, name="return_user"),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # urlpatterns = [
 #     path('admin/', admin.site.urls),
@@ -26,5 +28,3 @@ urlpatterns = [
 #     path('logout/', views.logout_user, name='logout_user'),
 #     path('verify-2fa/', views.verify_2fa, name='verify_2fa'),
 # ] 
-# if settings.DEBUG:
-#     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

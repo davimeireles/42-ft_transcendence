@@ -14,6 +14,8 @@ from django.http import HttpResponse, JsonResponse
 # from app.forms import CustomUserForm, LoginForm
 # from app.utils.send_email import send_verification_email
 import urllib.parse
+from django.forms.models import model_to_dict
+
 
 
 @api_view(['POST'])
@@ -97,28 +99,34 @@ def oauth42(request):
         headers = {'Authorization': f'Bearer {access_token}'}
         user_response = requests.get(user_info_url, headers=headers)
         user_data = user_response.json()
-        user, created = User.objects.get_or_create(
-        username=user_data['login'],
-        defaults={
-            'email': user_data['email'],
-            'nickname': user_data['login'],
-            'password': set_unusable_password(),
-            'photo': f'{user_data["login"]}.jpg'
-        })
-    # if created:
-        return Response({'user': user_data}, status=status.HTTP_201_CREATED)
-    # else:
-    #     return Response({'message': 'User already exists', 'user': user_data}, status=status.HTTP_200_OK)
+        folder_path = settings.MEDIA_ROOT
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+        image_path = os.path.join(folder_path, f'{user_data["login"]}.jpg')
+        with open(image_path, 'wb') as file:
+            file.write(requests.get(user_data['image']['versions']['small']).content)
+        if User.objects.filter(username=user_data['login']).exists():
+            return Response({"message": "user already exists", "user": user_data}, status=status.HTTP_200_OK)
+        else:
+            user, created =  User.objects.get_or_create(username=user_data['login'], nickname=user_data['login'], email=user_data['email'], photo= f'{user_data["login"]}.jpg')
+            if created:
+                user.set_unusable_password()
+                user.save()
+                return Response({"message": "user created", "user": user_data}, status=status.HTTP_200_OK)
     return Response({"message": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
-def return_user(request, user):
+def return_user(request, str_user):
     if request.method == 'POST':
-        user = User.objects.get(username=user)
-        if user:
-            return JsonResponse({'user': user}, status=status.HTTP_200_OK)
-        return JsonResponse({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
-    return JsonResponse({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        if User.objects.filter(username=str_user).exists():
+            user = User.objects.get(username=str_user)
+            user_data = model_to_dict(user, fields=['nickname', 'username', 'email'])
+            if user.photo:
+                user_data['photo'] = user.photo.url
+            return JsonResponse(user_data)
+        else:
+            return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    return Response({'message': 'Error'}, status=status.HTTP_404_NOT_FOUND)
     
 
 # # def logout_user(request):

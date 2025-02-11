@@ -18,7 +18,6 @@ window.onload = async function () {
     const url = new URLSearchParams(window.location.search)
     const code = url.get('code')
     if (code) {
-        console.log(code)
         try {
             const response = await fetch('http://localhost:8000/oauth42/', {
                 method: 'POST',
@@ -27,12 +26,8 @@ window.onload = async function () {
                 },
                 body: JSON.stringify({ code })
             })
-            const res = await response.json();
-
-                console.log('Getting user was a success')
-                console.log(res.user.first_name)
-                console.log(res.user.last_name)
-                console.log(res.user.email)
+            if (response.ok) {
+                const res = await response.json();
                 const login = res.user.login
                 console.log(login)
                 try{
@@ -43,14 +38,22 @@ window.onload = async function () {
                         },
                         body: JSON.stringify({})
                     })
-                    const u = await response.json();
-                    document.getElementById('profile-container').innerHTML = `
-                        <h1>Profile: ${u.user.username}</h1>
-                        <p>Email: ${u.user.email}</p>
-                        <p>Nickname: ${u.user.nickname}</p>`;
+                    const user = await response.json();
+                    console.log(user.photo)
+                    console.log(user.folder)
+                    const profile_container = document.getElementById("profile-container");
+                    if (profile_container){
+                        profile_container.innerHTML = `<h1>Welcome</h1><h4>${user.username}</h4>`
+                    }else{
+                        console.log('doesnt exist')
+                    }
                 }catch(error){
                     console.log(error)
                 }
+            }
+            else {
+                console.log('ERROR')
+            }
         } catch (error) {
             console.log(error)
         }
