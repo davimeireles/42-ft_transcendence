@@ -1,46 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
+<link rel="stylesheet" href="css/register.css">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - PONG Game</title>
-    <link rel="stylesheet" href="css/register.css">
-</head>
-
-<body>
-    <div class="container d-flex justify-content-center align-items-center vh-100">
-        <div class="card bg-dark text-white p-4" style="width: 400px;">
-            <h2 class="text-center mb-4">Register</h2>
-            <form id="registrationForm">
-                <div class="mb-3">
-                    <label for="username" class="form-label">Username</label>
-                    <input type="text" class="form-control" id="floatingUsername" minlength="3" maxlength="128" required title="Username must be between 3 and 128 characters.">
-                </div>
-                <div class="mb-3">
-                    <label for="nickname" class="form-label">Nickname</label>
-                    <input type="text" class="form-control" id="floatingNickname" minlength="3" maxlength="128" required title="Nickname must be between 3 and 128 characters.">
-                </div>
-                <div class="mb-3">
-                    <label for="email" class="form-label">E-mail</label>
-                    <input type="email" class="form-control" id="floatingInput" required title="Please enter a valid email address.">
-                </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="floatingPassword" minlength="8" maxlength="128" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}" title="Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.">
-                </div>
-                <div class="mb-3">
-                    <label for="confirmPassword" class="form-label">Confirm Password</label>
-                    <input type="password" class="form-control" id="floatingRepeatPassword" minlength="8" maxlength="128" required title="Please enter the same password as above.">
-                </div>
-                <button type="submit" class="btn btn-custom w-100">Register</button>
-            </form>
-            <p class="text-center mt-3">
-                Already have an account?
-                <a href="/login" onclick="event.preventDefault(); renderPage('login')" class="text-primary text-decoration-none fw-bold">Login here</a>
-            </p>
-        </div>
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card bg-dark text-white p-4" style="width: 400px;">
+        <h2 class="text-center mb-4">Register</h2>
+        <form id="registrationForm">
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="floatingUsername" minlength="3" maxlength="128" required
+                    title="Username must be between 3 and 128 characters.">
+            </div>
+            <div class="mb-3">
+                <label for="nickname" class="form-label">Nickname</label>
+                <input type="text" class="form-control" id="floatingNickname" minlength="3" maxlength="128" required
+                    title="Nickname must be between 3 and 128 characters.">
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">E-mail</label>
+                <input type="email" class="form-control" id="floatingInput" required
+                    title="Please enter a valid email address.">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="floatingPassword" minlength="8" maxlength="128" required
+                    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}"
+                    title="Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.">
+            </div>
+            <div class="mb-3">
+                <label for="confirmPassword" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" id="floatingRepeatPassword" minlength="8" maxlength="128"
+                    required title="Please enter the same password as above.">
+            </div>
+            <button type="submit" class="btn btn-custom w-100">Register</button>
+        </form>
+        <p class="text-center mt-3">
+            Already have an account?
+            <a href="/login" onclick="event.preventDefault(); renderPage('login')"
+                class="text-primary text-decoration-none fw-bold">Login here</a>
+        </p>
     </div>
-</body>
-
-</html>
+</div>
