@@ -1,41 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
+<link rel="stylesheet" href="css/login.css">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - PONG Game</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="css/login.css">
-</head>
-
-<body>
-    <div class="container d-flex justify-content-center align-items-center vh-100">
-        <div class="card bg-dark text-white p-4" style="width: 400px;">
-            <h2 class="text-center mb-4">Login</h2>
-            <form id="loginForm">
-                <div class="mb-3">
-                    <label for="username" class="form-label">Username</label>
-                    <input type="text" class="form-control" id="username" required>
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card bg-dark text-white p-4" style="width: 400px;">
+        <h2 class="text-center mb-4">Login</h2>
+        <form id="loginForm">
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" required>
+            </div>
+            <div class="mb-3 position-relative">
+                <label for="password" class="form-label">Password</label>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="password" required>
+                    <span class="input-group-text toggle-password" onclick="togglePasswordVisibility()">
+                        <i class="fa fa-eye" id="togglePasswordIcon"></i>
+                    </span>
                 </div>
-                <div class="mb-3 position-relative">
-                    <label for="password" class="form-label">Password</label>
-                    <div class="input-group">
-                        <input type="password" class="form-control" id="password" required>
-                        <span class="input-group-text toggle-password" onclick="togglePasswordVisibility()">
-                            <i class="fa fa-eye" id="togglePasswordIcon"></i>
-                        </span>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-custom w-100 mb-3" name="action" value="loginuser">Login</button>
-            </form>
-            <button id="link42" onclick="redi42()">Login with 42</button>
-            <p class="text-center mt-3">
-                Don't have an account? <a href="/register" class="text-primary">Register</a>
-            </p>
-        </div>
+            </div>
+            <button type="submit" class="btn btn-custom w-100 mb-3" name="action" value="loginuser">Login</button>
+        </form>
+        <button id="link42" onclick="redi42()">Login with 42</button>
+        <p class="text-center mt-3">
+            Don't have an account? <a href="/register" class="text-primary text-decoration-none fw-bold">Register</a>
+        </p>
     </div>
-    <script src="js/login.js"></script>
-</body>
-
-</html>
+</div>

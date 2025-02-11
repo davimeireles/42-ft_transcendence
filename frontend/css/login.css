@@ -1,47 +1,94 @@
-body, html {
-    height: 100%;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
+    position: relative;
+    z-index: 1;
 }
+
 .card {
-    width: 400px;
+    background-color: black !important;
+    border: 2px solid #00ff00;
+    box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
 }
 
-.btn-custom {
-    display: block;
-    margin: 0 auto;
+.card h2 {
+    color: #00ff00;
+    text-shadow: 2px 2px black;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.5rem;
 }
 
-.position-relative {
-    position: relative;
+.form-label {
+    color: #00ff00;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.8rem;
+    text-shadow: 1px 1px black;
 }
 
-.input-group {
-    position: relative;
+.form-control {
+    background-color: #1a1a1a;
+    border: 1px solid #00ff00;
+    color: white;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.8rem;
+    padding: 0.5rem;
 }
 
-.input-group .form-control {
-    padding-right: 2.5rem; /* Padding to make space for the icon */
+.form-control:focus {
+    border-color: black;
+    box-shadow: 0 0 5px black, 0 0 10px black;
+    outline: none;
 }
 
 .input-group-text {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
+    background-color: #1a1a1a;
+    border: 1px solid #00ff00;
+    color: #00ff00;
     cursor: pointer;
-    color: #adb5bd; /* Icon color */
-    background: none;
-    border: none;
 }
+
 .input-group-text:hover {
-    color: white; /* Change color on hover */
+    background-color: #00ff00;
+    color: #0d0d0d;
+}
+
+.btn-custom {
+    background-color: #0d0d0d;
+    border: 2px solid #00ff00;
+    color: #00ff00;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.8rem;
+    text-shadow: 1px 1px black;
+    transition: all 0.3s ease;
+}
+
+.btn-custom:hover {
+    background-color: #00ff00;
+    color: #0d0d0d;
+    border-color:black;
+    transform: scale(1.05);
+}
+
+#link42 {
+    background-color: #0d0d0d;
+    border: 2px solid #00ff00;
+    color: #00ff00;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.8rem;
+    text-shadow: 1px 1px black;
+    padding: 0.5rem 1rem;
+    width: 100%;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+#link42:hover {
+    background-color: #00ff00;
+    color: #0d0d0d;
+    border-color: black;
+    transform: scale(1.05);
+}
+
+.text-primary {
+    color: #00ff00 !important;
+    text-shadow: 1px 1px black;
+    text-decoration: none;
 }
