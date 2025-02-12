@@ -6,7 +6,7 @@ const router = {
       login: "/login.html",
       register: "/register.html",
       pongpage: "/pong-page.html",
-      gamepage: "/game.html",
+      localgame: "/local-game.html",
     },
   };
   
@@ -29,7 +29,7 @@ const router = {
         LoginFormListener();
       else if (page == "home")
         createBouncingBallBackground();
-      else if (page == "gamepage")
+      else if (page == "localgame")
         renderPongGame();
 
       history.pushState({ page: page }, "", `/${page}`);
