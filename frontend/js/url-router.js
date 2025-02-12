@@ -6,6 +6,7 @@ const router = {
       login: "/login.html",
       register: "/register.html",
       profile: "/profile.html",
+      dash: "home.html"
     },
   };
   

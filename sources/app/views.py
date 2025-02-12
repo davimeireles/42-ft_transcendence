@@ -1,7 +1,9 @@
 import requests
 import os
 from app.models import User
+from pathlib import Path
 from django.conf import settings
+from django.contrib.auth import login
 from django.contrib.auth import authenticate
 from rest_framework import status
 from rest_framework.response import Response
@@ -15,20 +17,31 @@ from django.http import HttpResponse, JsonResponse
 # from app.utils.send_email import send_verification_email
 import urllib.parse
 from django.forms.models import model_to_dict
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
 
 
 
 @api_view(['POST'])
 def user_signin(request):
     data = request.data
-    
     username = data.get('username')
     password = data.get('password')
-    
     user = authenticate(request, username=username, password=password)
-    
     if user is not None:
-        return Response({"message": "User authenticated successfully"}, status=status.HTTP_200_OK)
+        login(request, user)
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)
+        response = Response({"message": "User authenticated successfully", "user": user_data, "access_token": access_token}, status=status.HTTP_200_OK)
+        response.set_cookie(
+            key="jwt_access",
+            value=access_token,
+            httponly=True,
+            secure=True,
+            samesite="Lax"
+        )
+        return response
     else:
         return Response({"message": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -77,9 +90,13 @@ def oauth42(request):
         code = request.data.get('code')
         if not code:  
             return Response({"message": "Invalid Code"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Get credentials from environment variables
         client_id = os.getenv('UID')
         client_secret = os.getenv('SECRET')
         redirect_uri = os.getenv('URI')
+        
+        # URL for getting the token from 42 API
         token_url = 'https://api.intra.42.fr/oauth/token'
         payload = {
             'grant_type': 'authorization_code',
@@ -88,34 +105,64 @@ def oauth42(request):
             'code': code,
             'redirect_uri': redirect_uri,
         }
+
+        # Make the request for the access token
         response = requests.post(token_url, data=payload)
         if response.status_code != 200:
-            return Response({'message': 'erroraaaaa'}, status=status.HTTP_400_BAD_REQUEST)   
+            return Response({'message': 'Error getting token'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Extract token data from the response
         token_data = response.json()
         if 'access_token' not in token_data:
             return Response({"message": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+
         access_token = token_data['access_token']
+        
+        # Get user info from 42 API using the access token
         user_info_url = 'https://api.intra.42.fr/v2/me'
         headers = {'Authorization': f'Bearer {access_token}'}
         user_response = requests.get(user_info_url, headers=headers)
         user_data = user_response.json()
-        folder_path = settings.MEDIA_ROOT
-        if not os.path.exists(folder_path):
-            os.makedirs(folder_path)
-        image_path = os.path.join(folder_path, f'{user_data["login"]}.jpg')
-        with open(image_path, 'wb') as file:
-            file.write(requests.get(user_data['image']['versions']['small']).content)
+
+        # Check if the user already exists in the database
         if User.objects.filter(username=user_data['login']).exists():
-            return Response({"message": "user already exists", "user": user_data}, status=status.HTTP_200_OK)
+            user = User.objects.get(username=user_data['login'])
+            refresh = RefreshToken.for_user(user)
+            access_token = str(refresh.access_token)
+            response = Response({"message": "User already exists", "user": user_data, "access_token": access_token}, status=status.HTTP_200_OK)
+            response.set_cookie(
+                key="jwt_access",
+                value=access_token,
+                httponly=True,
+                secure=True,
+                samesite="Lax"
+            )
+            return response
         else:
-            user, created =  User.objects.get_or_create(username=user_data['login'], nickname=user_data['login'], email=user_data['email'], photo= f'{user_data["login"]}.jpg')
+            user, created = User.objects.get_or_create(
+                username=user_data['login'],
+                nickname=user_data['login'],
+                email=user_data['email'],
+                photo=f'{user_data["login"]}.jpg'
+            )
             if created:
                 user.set_unusable_password()
                 user.save()
-                return Response({"message": "user created", "user": user_data}, status=status.HTTP_200_OK)
+                refresh = RefreshToken.for_user(user)
+                access_token = str(refresh.access_token)
+                response = Response({"message": "User created", "user": user_data, "access_token": access_token}, status=status.HTTP_200_OK)
+                response.set_cookie(
+                    key="jwt_access",
+                    value=access_token,
+                    httponly=True,
+                    secure=True,
+                    samesite="Lax"
+                )
+                return response
     return Response({"message": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
+# @permission_classes([IsAuthenticated])
 def return_user(request, str_user):
     if request.method == 'POST':
         if User.objects.filter(username=str_user).exists():
@@ -128,12 +175,12 @@ def return_user(request, str_user):
             return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
     return Response({'message': 'Error'}, status=status.HTTP_404_NOT_FOUND)
     
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def session_user(request):
+    user = request.user  # Now this will work!
+    return Response({"email": user.email, "username": user.username, "nickname": user.nickname})
 
-# # def logout_user(request):
-# #     if request.user.is_authenticated:
-# #         request.user.online = False
-# #         logout(request)
-# #     return render(request, 'index.html')
 
 # # # Using the @login_required means that the view will only be executed if the request coming in is authenticated.
 # # # If the person is not authenticated, they will be redirected - usually to the login page
