@@ -34,22 +34,6 @@ window.onload = async function(){
             // console.log(res.user.email)
             const login = res.user.login
             console.log(login)
-            try{
-                const response = await fetch(`http://localhost:8000/return_user/${login}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({})
-                })
-                const u = await response.json();
-                document.getElementById('profile-container').innerHTML = `
-                    <h1>Profile: ${u.user.username}</h1>
-                    <p>Email: ${u.user.email}</p>
-                    <p>Nickname: ${u.user.nickname}</p>`;
-            }catch(error){
-                console.log(error)
-            }
         }catch(error){
             console.log(error)
         }
@@ -57,3 +41,20 @@ window.onload = async function(){
         console.log('code does not exists')
     }
 }
+
+/*  try{
+    const response = await fetch(`http://localhost:8000/return_user/${login}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({})
+    })
+    const u = await response.json();
+    document.getElementById('profile-container').innerHTML = `
+        <h1>Profile: ${u.user.username}</h1>
+        <p>Email: ${u.user.email}</p>
+        <p>Nickname: ${u.user.nickname}</p>`;
+}catch(error){
+    console.log(error)
+} */
