@@ -64,15 +64,15 @@ function renderAIgame() {
       AIboard.width = AIboardWidth;
       AIcontext = AIboard.getContext("2d"); // Used for drawing on the AIboard
     
-      requestAnimationFrame(update);
-      document.addEventListener("keyup", stopPlayer);
-      document.addEventListener("keydown", movePlayer);
+      requestAnimationFrame(updateAI);
+      document.addEventListener("keyup", AIstopPlayer);
+      document.addEventListener("keydown", AImovePlayer);
   }
 }
 
 // Main game loop
-function update(time) {
-  requestAnimationFrame(update);
+function updateAI(time) {
+  requestAnimationFrame(updateAI);
 
   const deltaTime = time - AIlastTime;
   AIlastTime = time;
@@ -122,19 +122,19 @@ function update(time) {
   }
 
   // AIball collision with players
-  if (detectCollision(AIball, AIplayer1)) {
-    handleCollision(AIball, AIplayer1);
-  } else if (detectCollision(AIball, AIplayer2)) {
-    handleCollision(AIball, AIplayer2);
+  if (AIDetectCollision(AIball, AIplayer1)) {
+    AIhandleCollision(AIball, AIplayer1);
+  } else if (AIDetectCollision(AIball, AIplayer2)) {
+    AIhandleCollision(AIball, AIplayer2);
   }
 
   // AIball out of bounds (score)
   if (AIball.x < 0) {
     AIplayer2Score++;
-    resetGame(1);
+    AIresetGame(1);
   } else if (AIball.x + AIballWidth > AIboardWidth) {
     AIplayer1Score++;
-    resetGame(-1);
+    AIresetGame(-1);
   }
 
   // Draw scores
@@ -144,14 +144,14 @@ function update(time) {
 }
 
 // Handle player 1 movement
-function movePlayer(e) {
+function AImovePlayer(e) {
   // Player 1
   if (e.code == "KeyW") AIplayerSpeedY = -AIPlayerMaxSpeed;
   else if (e.code == "KeyS") AIplayerSpeedY = AIPlayerMaxSpeed;
 }
 
 // Stop player 1 movement
-function stopPlayer(e) {
+function AIstopPlayer(e) {
   // Player 1
   if (e.code == "KeyW" || e.code == "KeyS") AIplayerSpeedY = 0;
 }
@@ -213,7 +213,7 @@ function moveAIHard() {
 }
 
 // Detect collision between two objects
-function detectCollision(a, b) {
+function AIDetectCollision(a, b) {
   return (
     a.x < b.x + b.width &&
     a.x + a.width > b.x &&
@@ -223,7 +223,7 @@ function detectCollision(a, b) {
 }
 
 // Handle ball collision with players
-function handleCollision(AIball, player) {
+function AIhandleCollision(AIball, player) {
   if (player === AIplayer1 && AIball.x <= AIplayer1.x + AIplayer1.width) {
     // Collision with AIplayer1 (left paddle)
     AIball.x = AIplayer1.x + AIplayer1.width; // Correct the AIball's position
@@ -248,7 +248,7 @@ function handleCollision(AIball, player) {
 }
 
 // Reset game after a score
-function resetGame(direction) {
+function AIresetGame(direction) {
   AIball = {
     x: AIboardWidth / 2,
     y: AIboardHeight / 2,
