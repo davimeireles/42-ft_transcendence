@@ -48,13 +48,17 @@ let lastTime = 0;
 // Initialize the game
 function renderPongGame() {
   board = document.getElementById("board");
-  board.height = boardHeight;
-  board.width = boardWidth;
-  context = board.getContext("2d"); // Used for drawing on the board
 
-  requestAnimationFrame(update);
-  document.addEventListener("keyup", stopPlayer);
-  document.addEventListener("keydown", movePlayer);
+  if (board)
+  {
+      board.height = boardHeight;
+      board.width = boardWidth;
+      context = board.getContext("2d"); // Used for drawing on the board
+    
+      requestAnimationFrame(update);
+      document.addEventListener("keyup", stopPlayer);
+      document.addEventListener("keydown", movePlayer);
+  }
 }
 
 // Main game loop
@@ -172,6 +176,3 @@ function resetGame(direction) {
     speedY: ballBaseSpeed,
   };
 }
-
-// Start the game
-renderPongGame();

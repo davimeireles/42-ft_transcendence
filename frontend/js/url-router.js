@@ -1,54 +1,59 @@
 // Router state
 const router = {
-    currentPage: null,
-    pages: {
-      home: "/intro.html",
-      login: "/login.html",
-      register: "/register.html",
-      pongpage: "/pong-page.html",
-      localgame: "/local-game.html",
-    },
-  };
-  
-  // Page loader
-  async function renderPage(page) {
-    console.log(`Attempting to render page: ${page}`);
-    if (router.currentPage === page) return;
-  
-    try {
-      // Load the new page
-      const mainContent = document.getElementById("main-content");
-      const response = await fetch(router.pages[page]);
-      const html = await response.text();
-      mainContent.innerHTML = html;
-      
-      console.log(page)
-      if (page === "register")
-        RegisterFormListener();
-      else if (page == "login")
-        LoginFormListener();
-      else if (page == "home")
-        createBouncingBallBackground();
-      else if (page == "localgame")
-        renderPongGame();
+  currentPage: null,
+  pages: {
+    home: "/intro.html",
+    login: "/login.html",
+    register: "/register.html",
+    pongpage: "/pong-page.html",
+    localgame: "/local-game.html",
+    aigame: "/ai-game.html",
+  },
+};
 
-      history.pushState({ page: page }, "", `/${page}`);
-      router.currentPage = page;
-    } catch (error) {
-      console.error("Error loading page:", error);
-    }
+// Page loader
+async function renderPage(page) {
+  console.log(`Attempting to render page: ${page}`);
+  if (router.currentPage === page) return;
+
+  try {
+    // Load the new page
+    const mainContent = document.getElementById("main-content");
+    const response = await fetch(router.pages[page]);
+    const html = await response.text();
+    mainContent.innerHTML = html;
+
+    console.log(page);
+    if (page === "register") {
+        RegisterFormListener();
+      } else if (page === "login") {
+        LoginFormListener();
+      } else if (page === "home") {
+        createBouncingBallBackground();
+      } else if (page === "localgame") {
+        renderPongGame();
+      } else if (page === "aigame") {
+        renderAIgame();
+      }
+
+    history.pushState({ page: page }, "", `/${page}`);
+    router.currentPage = page;
+  } catch (error) {
+    console.error("Error loading page:", error);
   }
-  
-  // Handle browser back/forward
-  window.addEventListener("popstate", (e) => {
-    if (e.state?.page) {
-      renderPage(e.state.page);
-      console.log(window.location.herf)
-    }
-  });
-  
-  // Load initial page
-  window.addEventListener("load", () => {
-    const initialPage = window.location.pathname.slice(1) || "home";
-    renderPage(initialPage);
-  });
+}
+
+// Handle browser back/forward
+window.addEventListener("popstate", (e) => {
+  if (e.state?.page) {
+    renderPage(e.state.page);
+    console.log(window.location.herf);
+  }
+});
+
+// Load initial page
+window.addEventListener("load", () => {
+  const initialPage = window.location.pathname.slice(1) || "home";
+  renderPage(initialPage);
+});
+
