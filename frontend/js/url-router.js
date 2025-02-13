@@ -8,6 +8,7 @@ const router = {
     pongpage: "/pong-page.html",
     localgame: "/local-game.html",
     aigame: "/ai-game.html",
+    dash: "home.html",
   },
 };
 

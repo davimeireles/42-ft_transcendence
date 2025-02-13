@@ -32,7 +32,8 @@ function LoginFormListener() {
 
       if (response.ok) {
         console.log("User Login Succesfully");
-        renderPage("pongpage");
+        renderPage("profile");
+        render_user(username)
       } else {
         const result = await response.json();
         errorMessage.textContent = result.message;

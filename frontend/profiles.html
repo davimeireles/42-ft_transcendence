@@ -6,33 +6,6 @@
     <title>User Profile</title>
 </head>
 <body>
-    <form action="" method="get" class="d-flex" role="search" onsubmit="return redirectToProfile(this);">
-        <input  class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="searchQuery" name="q">
-        <button class="btn btn-outline-secondary" type="submit">Search</button>
-    </form>
-    <h1>User Profile</h1>
-    {% if userget.is_authenticated %}
-        <h1>Username: </h1><h3>{{ userget.username }}</h3>
-        <h1>Email: </h1><h3>{{ userget.email }}</h3>
-        <h1>Created: </h1><h3>{{ userget.created_at }}</h3>
-        {% if userget.online %}
-            <h3>Online</h3>
-        {% else %}
-           <h3>Offline</h3>
-        {% endif %}
-        <h1>Score: </h1><h3>{{ userget.score }}</h3>
-
-        <!-- If userget has a photo -->
-        {% if userget.photo %}
-            <img src="../../media/{{ userget.username }}.jpg" alt="Profile Photo">
-        {% else %}
-            <img src="../../media/default.jpg" alt="Profile Photo">
-        {% endif %}
-        <a href="{% url 'chat' %}"> Chat</a>
-        <a href="{% url 'logout_user' %}" class="btn btn-danger"> Logout</a>
-    {% else %}
-        <p>You are not logged in.</p>
-        <a href="{% url 'login_user' %}"> login</a>
-    {% endif %}
+   
 </body>
 </html>
