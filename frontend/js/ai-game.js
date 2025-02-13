@@ -3,6 +3,7 @@ let AIboard;
 let AIboardWidth = 600;
 let AIboardHeight = 300;
 let AIcontext;
+let isResetting = false;
 
 // Players configs
 let AIplayerWidth = 10;
@@ -43,6 +44,7 @@ let AIball = {
 };
 
 let AIlastTime = 0;
+let AIanimationFrameId; // To store the animation frame ID
 
 // Difficulty settings
 const DIFFICULTY = {
@@ -54,25 +56,73 @@ const DIFFICULTY = {
 let currentDifficulty = DIFFICULTY.MEDIUM; // Default difficulty
 
 // Initialize the game
+function startGame(difficulty) {
+  currentDifficulty = difficulty;
+  console.log(`Difficulty set to: ${difficulty}`);
+
+  // Hide the difficulty overlay
+  const overlay = document.getElementById("difficulty-overlay");
+  overlay.classList.add("hidden");
+
+  // Show the game board
+  const board = document.getElementById("ai-board");
+  board.classList.add("visible");
+
+  // Set the resetting flag
+  isResetting = true;
+
+  AIresetGameState();
+
+  renderAIgame();
+
+  setTimeout(() => {
+    isResetting = false;
+  }, 100);
+}
+
 function renderAIgame() {
-    
   AIboard = document.getElementById("ai-board");
 
-  if (AIboard)
-  {
-      AIboard.height = AIboardHeight;
-      AIboard.width = AIboardWidth;
-      AIcontext = AIboard.getContext("2d"); // Used for drawing on the AIboard
-    
-      requestAnimationFrame(updateAI);
-      document.addEventListener("keyup", AIstopPlayer);
-      document.addEventListener("keydown", AImovePlayer);
+  if (AIboard) {
+    AIboard.height = AIboardHeight;
+    AIboard.width = AIboardWidth;
+    AIcontext = AIboard.getContext("2d");
+
+    // Cancel previous animation frame if it exists
+    if (AIanimationFrameId) {
+      cancelAnimationFrame(AIanimationFrameId);
+    }
+
+    AIresetGameState(); // Reset the game state
+    document.addEventListener("keyup", AIstopPlayer);
+    document.addEventListener("keydown", AImovePlayer);
+    updateAI(); // Start the game loop
   }
+}
+
+function AIresetGameState() {
+  // Reset player positions
+  AIplayer1.y = AIboardHeight / 2 - AIplayer1.height / 2;
+  AIplayer2.y = AIboardHeight / 2 - AIplayer2.height / 2;
+
+  // Reset scores
+  AIplayer1Score = 0;
+  AIplayer2Score = 0;
+
+  // Reset ball position and speed
+  AIball.x = AIboardWidth / 2 - AIballWidth / 2;
+  AIball.y = AIboardHeight / 2 - AIballHeight / 2;
+  AIball.speedX = AIballBaseSpeed * (Math.random() > 0.5 ? 1 : -1); // Randomize initial direction
+  AIball.speedY = AIballBaseSpeed * (Math.random() > 0.5 ? 1 : -1); // Randomize initial direction
 }
 
 // Main game loop
 function updateAI(time) {
-  requestAnimationFrame(updateAI);
+  AIanimationFrameId = requestAnimationFrame(updateAI);
+
+  if (!time) {
+    time = 0;
+  }
 
   const deltaTime = time - AIlastTime;
   AIlastTime = time;
@@ -110,16 +160,27 @@ function updateAI(time) {
     Math.min(AIplayer2.y, AIboardHeight - AIplayer2.height)
   );
 
-  // Draw ball
-  AIcontext.fillStyle = "white";
+  // If the game is resetting, do not move the ball or check for collisions
+  if (isResetting) {
+    return;
+  }
+
+  // Move ball
   AIball.x += AIball.speedX * (deltaTime / 16);
   AIball.y += AIball.speedY * (deltaTime / 16);
-  AIcontext.fillRect(AIball.x, AIball.y, AIball.width, AIball.height);
 
-  // AIball collision with top and bottom walls
-  if (AIball.y <= 0 || AIball.y + AIball.height >= AIboardHeight) {
+  // Ball collision with top and bottom walls
+  if (AIball.y <= 0) {
+    AIball.y = 0;
+    AIball.speedY *= -1;
+  } else if (AIball.y + AIball.height >= AIboardHeight) {
+    AIball.y = AIboardHeight - AIball.height;
     AIball.speedY *= -1;
   }
+
+  // Draw ball
+  AIcontext.fillStyle = "white";
+  AIcontext.fillRect(AIball.x, AIball.y, AIball.width, AIball.height);
 
   // AIball collision with players
   if (AIDetectCollision(AIball, AIplayer1)) {
@@ -176,8 +237,8 @@ function moveAI() {
 // Easy mode: Slow reaction time
 function moveAIEasy() {
   const reactionTime = 30; // Slower reaction time
-  if (Math.abs(AIplayer2.y + AIplayer2.height / 2 - ball.y) > reactionTime) {
-    if (AIplayer2.y + AIplayer2.height / 2 < ball.y) {
+  if (Math.abs(AIplayer2.y + AIplayer2.height / 2 - AIball.y) > reactionTime) {
+    if (AIplayer2.y + AIplayer2.height / 2 < AIball.y) {
       AIplayer2.y += AIPlayerMaxSpeed * 0.5; // Move down slowly
     } else {
       AIplayer2.y -= AIPlayerMaxSpeed * 0.5; // Move up slowly
@@ -225,23 +286,20 @@ function AIDetectCollision(a, b) {
 // Handle ball collision with players
 function AIhandleCollision(AIball, player) {
   if (player === AIplayer1 && AIball.x <= AIplayer1.x + AIplayer1.width) {
-    // Collision with AIplayer1 (left paddle)
-    AIball.x = AIplayer1.x + AIplayer1.width; // Correct the AIball's position
-    AIball.speedX *= -1; // Reverse X direction
-    AIball.speedY = (AIball.y - (AIplayer1.y + AIplayer1.height / 2)) / 10; // Adjust Y direction based on where it hits the paddle
+    AIball.x = AIplayer1.x + AIplayer1.width;
+    AIball.speedX *= -1;
+    AIball.speedY = (AIball.y - (AIplayer1.y + AIplayer1.height / 2)) / 10;
   } else if (player === AIplayer2 && AIball.x + AIball.width >= AIplayer2.x) {
-    // Collision with AIplayer2 (right paddle)
-    AIball.x = AIplayer2.x - AIball.width; // Correct the AIball's position
-    AIball.speedX *= -1; // Reverse X direction
-    AIball.speedY = (AIball.y - (AIplayer2.y + AIplayer2.height / 2)) / 10; // Adjust Y direction based on where it hits the paddle
+    AIball.x = AIplayer2.x - AIball.width;
+    AIball.speedX *= -1;
+    AIball.speedY = (AIball.y - (AIplayer2.y + AIplayer2.height / 2)) / 10;
   }
 
-  // Increase speed after collision (capped at AImaxBallSpeed)
   AIball.speedX = Math.min(
     Math.max(AIball.speedX * 1.1, -AImaxBallSpeed),
     AImaxBallSpeed
   );
-  ball.speedY = Math.min(
+  AIball.speedY = Math.min(
     Math.max(AIball.speedY * 1.1, -AImaxBallSpeed),
     AImaxBallSpeed
   );
@@ -249,12 +307,8 @@ function AIhandleCollision(AIball, player) {
 
 // Reset game after a score
 function AIresetGame(direction) {
-  AIball = {
-    x: AIboardWidth / 2,
-    y: AIboardHeight / 2,
-    width: AIballWidth,
-    height: AIballHeight,
-    speedX: direction * AIballBaseSpeed,
-    speedY: AIballBaseSpeed,
-  };
+  AIball.x = AIboardWidth / 2 - AIballWidth / 2;
+  AIball.y = AIboardHeight / 2 - AIballHeight / 2;
+  AIball.speedX = direction * AIballBaseSpeed;
+  AIball.speedY = AIballBaseSpeed * (Math.random() > 0.5 ? 1 : -1); // Randomize initial direction
 }
