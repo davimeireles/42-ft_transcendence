@@ -2,13 +2,14 @@
 const router = {
   currentPage: null,
   pages: {
-    home: "/intro.html",
+    intro: "/intro.html",
     login: "/login.html",
     register: "/register.html",
     pongpage: "/pong-page.html",
     localgame: "/local-game.html",
     aigame: "/ai-game.html",
-    dash: "home.html",
+    home: "/home.html",
+    profile: "/profile.html",
   },
 };
 
@@ -33,8 +34,6 @@ async function renderPage(page) {
         createBouncingBallBackground();
       } else if (page === "localgame") {
         renderPongGame();
-      } else if (page === "aigame") {
-        renderAIgame();
       }
 
     history.pushState({ page: page }, "", `/${page}`);
