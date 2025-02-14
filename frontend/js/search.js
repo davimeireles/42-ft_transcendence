@@ -50,7 +50,7 @@ async function ola(){
                         } else {
                             console.log('Profile section not loaded');
                         }
-                    }, 10); // Wait for 500ms before checking DOM
+                    }, 100); // Wait for 500ms before checking DOM
                 }
                 else {
                     console.log('ERROR')

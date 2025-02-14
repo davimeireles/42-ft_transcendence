@@ -43,6 +43,9 @@ async function renderPage(page) {
       }else if (page == "profile"){
         renderProfile();
       }
+      else if (page == "profiles"){
+        renderProfiles();
+      }
     history.pushState({ page: page }, "", `/${page}`);
     router.currentPage = page;
   } catch (error) {

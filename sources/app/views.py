@@ -193,3 +193,27 @@ def session_user(request):
 #         return Response({"message": "Successfully logged out"}, status=status.HTTP_200_OK)
 #     except Exception as e:
 #         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(["POST"])
+def add_user(request):
+    if request.method == 'POST':
+        profile_username = request.data.get('profileUsername')
+        try:
+            user = User.objects.get(username=profile_username)
+            request.user.add_friend(user)
+            return Response({'message': 'User added as a friend'}, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    return Response({'message': 'Error'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(["POST"])
+def remove_user(request):
+    if request.method == 'POST':
+        profile_username = request.data.get('profileUsername')
+        try:
+            user = User.objects.get(username=profile_username)
+            request.user.remove_friend(user)
+            return Response({'message': 'User removed as a friend'}, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    return Response({'message': 'Error'}, status=status.HTTP_400_BAD_REQUEST)
