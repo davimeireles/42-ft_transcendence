@@ -21,6 +21,17 @@ const renderUser = async () => {
             console.log(user.username);
             console.log(user.email);
             console.log(user.nickname);
+            if (user.friends && user.friends.length > 0) {
+                user.friends.forEach(friend => {
+                    const friends_list = document.getElementById('friends-list');
+                    const friendItem = document.createElement("li");
+                    friendItem.textContent = `${friend.username}`;
+                    friends_list.appendChild(friendItem);
+                    console.log(friend)
+                });
+            } else {
+                console.log("No friends found.");
+            }
             const welcome_user = document.getElementById("welcome_user");
             console.log(welcome_user)
             if (welcome_user)

@@ -11,6 +11,7 @@ const router = {
     home: "/home.html",
     profile: "/profile.html",
     profiles: "/profiles.html",
+    edit: "/edit-profile.html"
 
   },
 };
@@ -42,8 +43,7 @@ async function renderPage(page) {
         renderUser();
       }else if (page == "profile"){
         renderProfile();
-      }
-      else if (page == "profiles"){
+      }else if (page == "profiles"){
         renderProfiles();
       }
     history.pushState({ page: page }, "", `/${page}`);

@@ -167,7 +167,10 @@ def return_user(request, str_user):
     if request.method == 'POST':
         if User.objects.filter(username=str_user).exists():
             user = User.objects.get(username=str_user)
+            friends = user.friends.all()
+            friends_data = [{"username": friend.username, "email": friend.email, "nickname": friend.nickname} for friend in friends]
             user_data = model_to_dict(user, fields=['nickname', 'username', 'email'])
+            user_data['friends'] = friends_data
             if user.photo:
                 user_data['photo'] = user.photo.url
             return JsonResponse(user_data)
@@ -179,7 +182,9 @@ def return_user(request, str_user):
 @permission_classes([IsAuthenticated])
 def session_user(request):
     user = request.user
-    return Response({"email": user.email, "username": user.username, "nickname": user.nickname})
+    friends = user.friends.all()
+    friends_data = [{"username": friend.username, "email": friend.email, "nickname": friend.nickname} for friend in friends]
+    return Response({"email": user.email, "username": user.username, "nickname": user.nickname, "friends": friends_data})
 
 # @api_view(['POST'])
 # @permission_classes([IsAuthenticated])

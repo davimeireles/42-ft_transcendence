@@ -1,3 +1,3 @@
-const logout = function async (){
-
+const logout = function (){
+    renderPage('intro')
 }

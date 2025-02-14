@@ -21,6 +21,20 @@ const renderProfile = async function(username){
             console.log(user.username);
             console.log(user.email);
             console.log(user.nickname);
+            if (user.friends && user.friends.length > 0) {
+                user.friends.forEach(friend => {
+                    const friends_list = document.getElementById('friends-list');
+                    const friendItem = document.createElement("li");
+                    friendItem.textContent = `${friend.username}`;
+                    friends_list.appendChild(friendItem);
+                    console.log(friend)
+                });
+            } else {
+                const friends_list = document.getElementById('friends-list');
+                const friendItem = document.createElement("li");
+                friendItem.textContent = 'You have no friends :(';
+                friends_list.appendChild(friendItem);
+            }
             const text = document.getElementById("text-text")
             const text_user = document.getElementById("text-user")
             if (text_user){
@@ -108,6 +122,3 @@ async function add_remove_friend(){
     }
 }
 
-async function renderProfiles(){
-    console.log('needs fixing')
-}

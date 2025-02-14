@@ -59,6 +59,10 @@
             height: 26vh;
             padding: 10px;
             margin: 0.3rem;
+            background-image:url('media/0730933b-0177-4460-b723-05b371fd31f7.jpg');
+            background-size: cover; /* Ensures the image covers the entire div */
+            background-position: center; /* Centers the image */
+            background-repeat: no-repeat; /* Prevents tiling */
         }
         .remote{
             cursor: pointer;
@@ -66,9 +70,17 @@
             height: 26vh;
             padding: 10px;
             margin: 0.3rem;
+            background-image:url('media/remotee.png');
+            background-size: cover; /* Ensures the image covers the entire div */
+            background-position: center; /* Centers the image */
+            background-repeat: no-repeat; /
         }
         .ai{
             cursor: pointer;
+            background-image:url('media/00486486-e0ac-4da8-80eb-3b4bf0dfb4b5.jpg');
+            background-size: cover; /* Ensures the image covers the entire div */
+            background-position: center; /* Centers the image */
+            background-repeat: no-repeat;
             background-color: #252525;
             height: 26vh;
             padding: 10px;
@@ -76,28 +88,25 @@
         }
         .local:hover{
             cursor: pointer;
-            background-image:url('media/0730933b-0177-4460-b723-05b371fd31f7.jpg');
             color: #000000;
-            background-size: cover; /* Ensures the image covers the entire div */
-            background-position: center; /* Centers the image */
-            background-repeat: no-repeat; /* Prevents tiling */
+            background-color: rgb(255, 255, 255, 0.5);
+            opacity: 0.8;
+
         }
         .ai:hover
         {
             cursor: pointer;
-            background-image:url('media/00486486-e0ac-4da8-80eb-3b4bf0dfb4b5.jpg');
+            /* background-image: url('media/image.png'); */
+            background-color: rgb(255, 255, 255, 0.5);
             color: #000000;
-            background-size: cover; /* Ensures the image covers the entire div */
-            background-position: center; /* Centers the image */
-            background-repeat: no-repeat; /* Prevents tiling */
+            opacity: 0.8;
+
         }
         .remote:hover{
             cursor: pointer;
-            background-image:url('media/remotee.png');
+            background-color: rgb(255, 255, 255, 0.5);
             color:#000000;
-            background-size: cover; /* Ensures the image covers the entire div */
-            background-position: center; /* Centers the image */
-            background-repeat: no-repeat; /
+            opacity: 0.8;
         }
 
     </style>
@@ -116,11 +125,9 @@
                 <br>
                 <h6 style="cursor: pointer;">Tournaments</h6>
                 <br>
-                <h6 style="cursor: pointer;">Games</h6>
+                <h6 style="cursor: pointer;" onclick="renderPage('edit')">Setting</h6>
                 <br>
-                <h6 style="cursor: pointer;">Setting</h6>
-                <br>
-                <h6 style="cursor: pointer;">Logout</h6>
+                <h6 style="cursor: pointer;" onclick="logout()">Logout</h6>
             </div>
         </div>
         
@@ -153,12 +160,12 @@
         <div class="col-md-3">
             <div class="input-group mb-3">
                 <input id="user-search" class="form-control" placeholder="Search users">
-                <button class="btn-search" id="btn-search" onclick="ola()">🔍</button>
+                <button class="btn-search" id="btn-search" onclick="searchProfile()">🔍</button>
             </div>
 
             <div class="friend-list mb-3 mt-5">
                 <h5>Friend List</h5>
-                <ul class="friends">
+                <ul id="friends-list">
 
                 </ul>
             </div>

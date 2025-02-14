@@ -1,9 +1,8 @@
-async function ola(){
-    console.log('ola')
+
+async function searchProfile(){
     const btn = document.getElementById('btn-search');
     const search = document.getElementById('user-search');
     if (btn && search){
-            console.log(search.value);  // You can log it or use it however you need
             try{
                 const token = localStorage.getItem("access_token")
                 if (!token)
@@ -39,18 +38,28 @@ async function ola(){
                     body: JSON.stringify({})
                 })
                 if (response.ok) {
-                    const res = await response.json();
-                    console.log(res.useranme)
+                    const user = await response.json();
+                    console.log(`USER ${user.username}`)
+                    console.log(`EMAIL ${user.email}`)
+                    if (user.friends && user.friends.length > 0) {
+                        user.friends.forEach(friend => {
+                            const friends_list = document.getElementById('friends-list');
+                            const friendItem = document.createElement("li");
+                            friendItem.textContent = `${friend.username}`;
+                            friends_list.appendChild(friendItem);
+                            console.log(friend)
+                        });
+                    } else {
+                        const friends_list = document.getElementById('friends-list');
+                        const friendItem = document.createElement("li");
+                        friendItem.textContent = `${user.username} has no friends`;
+                        friends_list.appendChild(friendItem);
+                    }
+                    localStorage.setItem('searchedUser', search.value);
                     renderPage('profiles')
-                    console.log('after rendering')
                     setTimeout(() => {
-                        const user = document.getElementById('text-user');
-                        if (user) {
-                            user.innerHTML = `${res.username}`;  // Update the username after the render
-                        } else {
-                            console.log('Profile section not loaded');
-                        }
-                    }, 100); // Wait for 500ms before checking DOM
+                        renderProfiles();
+                    }, 100);
                 }
                 else {
                     console.log('ERROR')
@@ -61,5 +70,17 @@ async function ola(){
             search.value = ''
     }else{
         console.log('error')
+    }
+}
+
+function renderProfiles(){
+    const userFromStorage = localStorage.getItem('searchedUser');
+    if (userFromStorage){
+        const user = document.getElementById('text-user');
+        if (user) {
+            user.innerHTML = userFromStorage;  // Update the username after the render
+        } else {
+            console.log('Profile section not loaded');
+        }
     }
 }

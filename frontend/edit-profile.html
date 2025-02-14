@@ -1,0 +1,35 @@
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card bg-dark text-white p-4" style="width: 400px;">
+        <h2 class="text-center mb-4">Edit profile</h2>
+        <form id="registrationForm">
+            <div class="mb-3">
+                <label for="username" class="form-label">Change Username</label>
+                <input type="text" class="form-control" id="floatingUsername" minlength="3" maxlength="128" required
+                    title="Username must be between 3 and 128 characters.">
+            </div>
+            <div class="mb-3">
+                <label for="nickname" class="form-label">Change Nickname</label>
+                <input type="text" class="form-control" id="floatingNickname" minlength="3" maxlength="128" required
+                    title="Nickname must be between 3 and 128 characters.">
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Change E-mail</label>
+                <input type="email" class="form-control" id="floatingInput" required
+                    title="Please enter a valid email address.">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Change Password</label>
+                <input type="password" class="form-control" id="floatingPassword" minlength="8" maxlength="128" required
+                    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}"
+                    title="Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.">
+            </div>
+            <div class="mb-3">
+                <label for="confirmPassword" class="form-label">Confirm Changed Password</label>
+                <input type="password" class="form-control" id="floatingRepeatPassword" minlength="8" maxlength="128"
+                    required title="Please enter the same password as above.">
+            </div>
+            <button type="submit" class="btn btn-custom w-100">Edit Profile</button>
+        </form>
+    </div>
+    
+</div>
