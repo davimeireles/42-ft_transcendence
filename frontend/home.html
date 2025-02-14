@@ -76,19 +76,28 @@
         }
         .local:hover{
             cursor: pointer;
-            background-image:url('default.jpg');
+            background-image:url('media/0730933b-0177-4460-b723-05b371fd31f7.jpg');
             color: #000000;
+            background-size: cover; /* Ensures the image covers the entire div */
+            background-position: center; /* Centers the image */
+            background-repeat: no-repeat; /* Prevents tiling */
         }
         .ai:hover
         {
             cursor: pointer;
-            background-image:url('default.jpg');
+            background-image:url('media/00486486-e0ac-4da8-80eb-3b4bf0dfb4b5.jpg');
             color: #000000;
+            background-size: cover; /* Ensures the image covers the entire div */
+            background-position: center; /* Centers the image */
+            background-repeat: no-repeat; /* Prevents tiling */
         }
         .remote:hover{
             cursor: pointer;
-            background-image:url('default.jpg');
+            background-image:url('media/remotee.png');
             color:#000000;
+            background-size: cover; /* Ensures the image covers the entire div */
+            background-position: center; /* Centers the image */
+            background-repeat: no-repeat; /
         }
 
     </style>
@@ -100,7 +109,7 @@
         <!-- Sidebar -->
         <div class="col-md-2 sidebar me-3" style="border-radius: 10px;">
             <div class="img m-1">
-                <img src="default.jpg" alt="" style="border-radius: 50%;" width="60rem" height="60rem">
+                <img src="media/default.jpg" alt="" style="border-radius: 50%;" width="60rem" height="60rem">
             </div>
             <div class="col mt-5">
                 <h6 onclick="renderPage('profile')" style="cursor: pointer;">Profile</h6>
@@ -143,8 +152,8 @@
         <!-- Right Sidebar -->
         <div class="col-md-3">
             <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Search users">
-                <span class="input-group-text">🔍</span>
+                <input id="user-search" class="form-control" placeholder="Search users">
+                <button class="btn-search" id="btn-search" onclick="ola()">🔍</button>
             </div>
 
             <div class="friend-list mb-3 mt-5">

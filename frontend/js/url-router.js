@@ -10,6 +10,8 @@ const router = {
     aigame: "/ai-game.html",
     home: "/home.html",
     profile: "/profile.html",
+    profiles: "/profiles.html",
+
   },
 };
 
@@ -41,7 +43,6 @@ async function renderPage(page) {
       }else if (page == "profile"){
         renderProfile();
       }
-
     history.pushState({ page: page }, "", `/${page}`);
     router.currentPage = page;
   } catch (error) {
