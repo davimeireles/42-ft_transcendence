@@ -19,3 +19,9 @@ class LoginForm(forms.Form):
     class Meta:
         model = User
         fields = ['username', 'password']
+
+class UsernameForm(forms.Form):
+        username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Change your username'}))
+        class Meta:
+            model = User
+            fields = ['username']

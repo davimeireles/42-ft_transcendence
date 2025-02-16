@@ -28,8 +28,35 @@ window.onload = async function () {
             })
             if (response.ok) {
                 const res = await response.json();
-                console.log(res.message)
-                localStorage.setItem("access_token", res.access_token)
+                localStorage.removeItem("sessionUser"); 
+                console.log(res.message);
+                localStorage.setItem('access_token', res.access_token);
+                try {
+                    const token = localStorage.getItem("access_token")
+                    if (!token)
+                    {
+                      console.log("Token not found !")
+                      return ;
+                    }
+                    else{
+                        const response = await fetch("http://localhost:8000/session_user/", {
+                            method: "GET",
+                            headers: {
+                                "Authorization": `Bearer ${token}`,  // Send token in headers
+                            }
+                        });
+                        if (!response.ok) {
+                          throw new Error("Failed to fetch user");
+                        }
+                        const user = await response.json();
+                          const sessionUser = {username: user.username, 
+                            email: user.email, nickiname: user.nickname, 
+                            friends: user.friends, online: user.online}
+                          localStorage.setItem('sessionUser', JSON.stringify(sessionUser));
+                        }
+                      } catch (error) {
+                        console.log("Error:", error);
+                      }
             }
             else {
                 console.log('ERROR')

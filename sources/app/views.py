@@ -161,9 +161,18 @@ def oauth42(request):
                 return response
     return Response({"message": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['POST'])
+# @api_view(['POST'])
 # @permission_classes([IsAuthenticated])
-def return_user(request, str_user):
+def return_user(request):
+    query = request.GET.get('q', '')
+    if query:
+        users = User.objects.filter(username__icontains=query)[:10]
+        results = [{'username': user.username, 'email': user.email} for user in users]
+        return JsonResponse(results, safe=False)
+    return JsonResponse([], safe=False)
+
+@api_view(['POST'])
+def get_user(request, str_user):
     if request.method == 'POST':
         if User.objects.filter(username=str_user).exists():
             user = User.objects.get(username=str_user)
@@ -184,7 +193,7 @@ def session_user(request):
     user = request.user
     friends = user.friends.all()
     friends_data = [{"username": friend.username, "email": friend.email, "nickname": friend.nickname} for friend in friends]
-    return Response({"email": user.email, "username": user.username, "nickname": user.nickname, "friends": friends_data})
+    return Response({"email": user.email, "username": user.username, "nickname": user.nickname, "friends": friends_data, "online": user.online})
 
 # @api_view(['POST'])
 # @permission_classes([IsAuthenticated])
@@ -217,8 +226,24 @@ def remove_user(request):
         profile_username = request.data.get('profileUsername')
         try:
             user = User.objects.get(username=profile_username)
-            request.user.remove_friend(user)
-            return Response({'message': 'User removed as a friend'}, status=status.HTTP_200_OK)
+            if user:
+                request.user.remove_friend(user)
+                return Response({'message': 'User removed as a friend', "user": user.username}, status=status.HTTP_200_OK)
         except User.DoesNotExist:
             return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
     return Response({'message': 'Error'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def change_username(request):
+    name = request.data.get('user')
+    data = request.data.get('username')
+    if User.objects.filter(username=data).exists():
+        return Response({"message": "Username already taken"}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+            user = User.objects.get(username=name)
+            user.username = data
+            user.save()
+            return Response({'message': 'Changed Username'}, status=status.HTTP_200_OK)
+    except User.DoesNotExist:
+            return Response({'message': 'Error'}, status=status.HTTP_404_NOT_FOUND)

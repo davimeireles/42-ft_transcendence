@@ -106,9 +106,10 @@
         <!-- Right Sidebar -->
         <div class="col-md-3">
             <div class="input-group mb-3">
-                <input id="user-search" class="form-control" placeholder="Search users">
-                <button class="btn-search" id="btn-search" onclick="searchProfile()">🔍</button>
+                <input id="user-search" class="form-control" placeholder="Search users" oninput="searchProfile()" autocomplete="off">
             </div>
+            <div id="results" style="cursor: pointer;"></div>
+            
             <div class="settings-box mb-3">
                 <h5>Settings</h5>
             </div>

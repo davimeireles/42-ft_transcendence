@@ -45,6 +45,8 @@ async function renderPage(page) {
         renderProfile();
       }else if (page == "profiles"){
         renderProfiles();
+      }else if (page == "edit"){
+        UsernameForm();
       }
     history.pushState({ page: page }, "", `/${page}`);
     router.currentPage = page;

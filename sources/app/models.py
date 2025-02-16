@@ -28,7 +28,7 @@ class User(AbstractUser):
 
     def remove_friend(self, user):
         """Remove friend another user."""
-        if user not in self.friends.all():
+        if user in self.friends.all():
             self.friends.remove(user)
             self.save()
 

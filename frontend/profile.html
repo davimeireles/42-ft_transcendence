@@ -85,7 +85,7 @@
                 <img src="media/default.jpg" alt="" style="border-radius: 50%; margin-bottom: 0.8rem;" width="60rem" height="60rem" >
                 <h4 id="text-user" class="user"></h4>
             </div>
-            <button onclick="editProfile()" id="btn-friend">Edit Profile</button>
+            <button onclick="renderPage('edit')" id="btn-friend">Edit Profile</button>
             <div class="container-custom m-4">
                 <div class="row">
                     <div class="col sidebar-achi" style="border-radius: 10px;">
@@ -106,9 +106,9 @@
         <!-- Right Sidebar -->
         <div class="col-md-3">
             <div class="input-group mb-3">
-                <input id="user-search" class="form-control" placeholder="Search users">
-                <button class="btn-search" id="btn-search" onclick="searchProfile()">🔍</button>
+                <input id="user-search" class="form-control" placeholder="Search users" oninput="searchProfile()" autocomplete="off">
             </div>
+            <div id="results" onclick="getProfile()" style="cursor: pointer;"></div>
             <div class="settings-box mb-3">
                 <h5>Settings</h5>
             </div>
