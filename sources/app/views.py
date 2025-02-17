@@ -1,5 +1,5 @@
 import requests
-import os
+import os, sys
 from app.models import User
 from pathlib import Path
 from django.conf import settings
@@ -162,6 +162,12 @@ def oauth42(request):
             if created:
                 user.set_unusable_password()
                 user.save()
+                folder_path = settings.MEDIA_ROOT
+                if not os.path.exists(folder_path):
+                    os.makedirs(folder_path)
+                image_path = os.path.join(folder_path, f'{user_data["login"]}.jpg')
+                with open(image_path, 'wb') as file:
+                    file.write(requests.get(user_data['image']['versions']['small']).content)
                 refresh = RefreshToken.for_user(user)
                 access_token = str(refresh.access_token)
                 refresh_token = str(refresh)
