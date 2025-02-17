@@ -2,91 +2,180 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gaming Dashboard</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Game Mode Selection</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            background-color: #121212;
+       body {
+            background-color: #000000;
             color: #fff;
         }
+        .container-custom {
+            /* max-width: 1000px; */
+            margin: auto;
+        }
         .sidebar {
-            height: 100vh;
-            background-color: #1e1e1e;
-            padding: 20px;
+            background-color: #161616;
+            padding: 18px;
+            /* border-right: 2px solid #ddd; */
+            text-align: center;
         }
-        .game-card {
+        .sidebar:hover{
             background-color: #252525;
+        }
+        .game-mode {
+            background-color: #161616;
+            /* paddin: 18px; */
             border-radius: 10px;
-            padding: 20px;
-            transition: 0.3s;
+            text-align: center;
+            height:86vh;
         }
-        .game-card:hover {
-            background-color: #333;
+        /* .game-mode:hover{
+            background-color: #252525;
+        } */
+        .friend-list {
+            text-align: center;
+            background-color: #161616;
+            padding: 15px;
+            height: 45%;
+            border-radius: 10px;
         }
+        .friend-list:hover{
+            background-color: #252525;
+        }
+        .chat-box {
+            text-align: center;
+            background-color: #161616;
+            padding: 15px;
+            height: 44%;
+            border-radius: 10px;
+        }
+        .chat-box:hover{
+            background-color: #252525;
+        }
+        .local{
+            cursor: pointer;
+            background-color: #252525;
+            height: 26vh;
+            padding: 10px;
+            margin: 0.3rem;
+            background-image:url('media/0730933b-0177-4460-b723-05b371fd31f7.jpg');
+            background-size: cover; /* Ensures the image covers the entire div */
+            background-position: center; /* Centers the image */
+            background-repeat: no-repeat; /* Prevents tiling */
+        }
+        .remote{
+            cursor: pointer;
+            background-color: #252525;
+            height: 26vh;
+            padding: 10px;
+            margin: 0.3rem;
+            background-image:url('media/remotee.png');
+            background-size: cover; /* Ensures the image covers the entire div */
+            background-position: center; /* Centers the image */
+            background-repeat: no-repeat; /
+        }
+        .ai{
+            cursor: pointer;
+            background-image:url('media/00486486-e0ac-4da8-80eb-3b4bf0dfb4b5.jpg');
+            background-size: cover; /* Ensures the image covers the entire div */
+            background-position: center; /* Centers the image */
+            background-repeat: no-repeat;
+            background-color: #252525;
+            height: 26vh;
+            padding: 10px;
+            margin: 0.3rem;
+        }
+        .local:hover{
+            cursor: pointer;
+            color: #000000;
+            background-color: rgb(255, 255, 255, 0.5);
+            opacity: 0.8;
+
+        }
+        .ai:hover
+        {
+            cursor: pointer;
+            /* background-image: url('media/image.png'); */
+            background-color: rgb(255, 255, 255, 0.5);
+            color: #000000;
+            opacity: 0.8;
+
+        }
+        .remote:hover{
+            cursor: pointer;
+            background-color: rgb(255, 255, 255, 0.5);
+            color:#000000;
+            opacity: 0.8;
+        }
+
     </style>
 </head>
 <body>
 
-<div class="container-fluid">
+<div class="container-custom m-4">
     <div class="row">
         <!-- Sidebar -->
-        <nav class="col-md-2 sidebar d-flex flex-column">
-            <h2 class="text-center">Dashboard</h2>
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link text-light" href="#" onclick="getProfile()">Profile</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-light" href="#">Games</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-light" href="#">Leaderboard</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-light" href="#">Settings</a>
-                </li>
-            </ul>
-        </nav>
-
+        <div class="col-md-2 sidebar me-3" style="border-radius: 10px;">
+            <div class="img m-1">
+                <img src="media/default.jpg" alt="" style="border-radius: 50%;" width="60rem" height="60rem">
+            </div>
+            <div class="col mt-5">
+                <h6 onclick="renderPage('profile')" style="cursor: pointer;">Profile</h6>
+                <br>
+                <h6 style="cursor: pointer;">Tournaments</h6>
+                <br>
+                <h6 style="cursor: pointer;" onclick="renderPage('edit')">Setting</h6>
+                <br>
+                <h6 style="cursor: pointer;" onclick="logout()">Logout</h6>
+            </div>
+        </div>
+        
         <!-- Main Content -->
-        <main class="col-md-10 p-4">
-            <h1>Welcome to Transcendence</h1>
-            
-            <div class="row mt-4">
-                <!-- Game Cards -->
-                <div class="col-md-4">
-                    <div class="game-card text-center">
-                        <h3>Game 1</h3>
-                        <p>Score: 1200</p>
-                        <a href="/game3d">
-                            <button class="btn btn-primary">Play Now</button>
-                        </a>
+        <div class="col" >
+            <h1 id="welcome_user"></h1>
+            <h4 id="mode"></h4>
+            <div class="game-mode">
+                <div class="container mt-4">
+                    <div class="row">
+                        <div class="col local p-3 text-center" style="border-radius: 10px;">
+                            1V1 LOCAL
+                        </div>
                     </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="game-card text-center">
-                        <h3>Game 2</h3>
-                        <p>Score: 850</p>
-                        <a href="/localgame">
-                            <button class="btn btn-primary">Play Now</button>
-                        </a>
+                    <div class="row mt-3">
+                        <div class="col ai p-3 text-center" style="border-radius: 10px;">
+                            1V1 AI
+                        </div>
                     </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="game-card text-center">
-                        <h3>Game 3</h3>
-                        <p>Score: 670</p>
-                        <button class="btn btn-primary">Play Now</button>
+                    <div class="row mt-3">
+                        <div class="col remote p-3 text-center" style="border-radius: 10px;">
+                            1V1 REMOTE
+                        </div>
                     </div>
                 </div>
             </div>
-        </main>
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="col-md-3">
+            <div class="input-group mb-3">
+                <input id="user-search" class="form-control" placeholder="Search users" oninput="searchProfile()" autocomplete="off">
+            </div>
+            <div id="results" style="cursor: pointer;"></div>
+
+            <div class="friend-list mb-3 mt-5">
+                <h5>Friend List</h5>
+                <ul id="friends-list">
+
+                </ul>
+            </div>
+
+            <div class="chat-box">
+                <h5>Chat</h5>
+            </div>
+        </div>
     </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

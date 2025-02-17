@@ -28,12 +28,44 @@ function LoginFormListener() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
+        credentials: "include",
       });
 
       if (response.ok) {
         console.log("User Login Succesfully");
-        renderPage("profile");
-        render_user(username)
+        localStorage.removeItem("sessionUser");
+        const result = await response.json();
+        console.log(result.access_token)
+        localStorage.setItem('access_token', result.access_token);
+        try {
+          const token = localStorage.getItem("access_token")
+          if (!token)
+          {
+            console.log("Token not found !")
+            return ;
+          }
+          else{
+              const response = await fetch("http://localhost:8000/session_user/", {
+                  method: "GET",
+                  headers: {
+                      "Authorization": `Bearer ${token}`,  // Send token in headers
+                  }
+              });
+              if (!response.ok) {
+                throw new Error("Failed to fetch user");
+              }
+              const user = await response.json();
+              // console.log(user.access_token)
+                const sessionUser = {username: user.username, 
+                  email: user.email, nickiname: user.nickname, 
+                  friends: user.friends, online: user.online}
+                localStorage.setItem('sessionUser', JSON.stringify(sessionUser));
+              }
+            } catch (error) {
+              console.log("Error:", error);
+            }
+
+        renderPage("home");
       } else {
         const result = await response.json();
         errorMessage.textContent = result.message;

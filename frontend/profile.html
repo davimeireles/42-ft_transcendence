@@ -1,82 +1,126 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gaming Dashboard</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <style>
-        body {
-            background-color: #121212;
-            color: #fff;
-        }
-        .sidebar {
-            height: 100vh;
-            background-color: #1e1e1e;
-            padding: 20px;
-        }
-        .game-card {
-            background-color: #252525;
+<style>
+    body {
+         background-color: #000000;
+         color: #fff;
+     }
+     .container-custom {
+         /* max-width: 1000px; */
+         margin: auto;
+     }
+     .sidebar {
+         background-color: #161616;
+         padding: 18px;
+         /* border-right: 2px solid #ddd; */
+         text-align: center;
+         height: 95vh;
+         border-radius: 10px;
+     }
+     .game-mode {
+         background-color: #161616;
+         /* paddin: 18px; */
+         border-radius: 10px;
+         text-align: center;
+         height:86vh;
+     }
+     .friends-box {
+            text-align: center;
+            background-color: #161616;
+            padding: 15px;
+            height: 47%;
             border-radius: 10px;
-            padding: 20px;
-            transition: 0.3s;
         }
-        .game-card:hover {
-            background-color: #333;
-        }
-    </style>
-</head>
-<body>
+    .friends-box:hover{
+        background-color: #252525;
+    }
+    .settings-box{
+        text-align: center;
+            background-color: #161616;
+            padding: 15px;
+            height: 45%;
+            border-radius: 10px;
+    }
+    .settings-box:hover{
+        background-color: #252525;
+    }
+    .sidebar-achi{
+        cursor: pointer;
+        background-color: #252525;
+        height: 38vh;
+        padding: 10px;
+        margin: 0.3rem;
+    }
+    .sidebar-tour{
+        cursor: pointer;
+        background-color: #252525;
+        height: 38vh;
+        padding: 10px;
+        margin: 0.3rem;
+    }
+    .sidebar-game{
+        cursor: pointer;
+        background-color: #252525;
+        height: 38vh;
+        padding: 10px;
+        margin: 0.3rem;
+    }
+    .row-over{
+        cursor: pointer;
+        background-color: #252525;
+        height: 38vh;
+        padding: 10px;
+        margin: 0.3rem;
+    }
+    .search{
+        cursor: pointer;
+    }
+    .btn-home{
 
-<div class="container-fluid">
+    }
+/* if user is incative  */
+ </style>
+<div class="container-custom m-4">
+    <button onclick="renderPage('home')" id="btn-home">Home</button>
     <div class="row">
         <!-- Sidebar -->
-        <nav class="col-md-2 sidebar d-flex flex-column">
-            <h2 class="text-center">Dashboard</h2>
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link text-light" onclick="getProfile()">Profile</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-light">Settings</a>
-                </li>
-            </ul>
-        </nav>
-
         <!-- Main Content -->
-        <main class="col-md-10 p-4">
-            <h1>Welcome to Transcendence</h1>
-            
-            <div class="row mt-4">
-                <!-- Game Cards -->
-                <div class="col-md-4">
-                    <div class="game-card text-center">
-                        <h3>Game 1</h3>
-                        <p>Score: 1200</p>
-                        <button class="btn btn-primary">Play Now</button>
+        <div class="col sidebar">
+            <div class="img m-1">
+                <img src="media/default.jpg" alt="" style="border-radius: 50%; margin-bottom: 0.8rem;" width="60rem" height="60rem" >
+                <h4 id="text-user" class="user"></h4>
+            </div>
+            <button onclick="renderPage('edit')" id="btn-friend">Edit Profile</button>
+            <div class="container-custom m-4">
+                <div class="row">
+                    <div class="col sidebar-achi" style="border-radius: 10px;">
+                        Achievements
+                    </div>
+                    <div class="col sidebar-tour" style="border-radius: 10px;">
+                        Tournaments
+                    </div>
+                    <div class="col sidebar-game" style="border-radius: 10px;">
+                        Match History
                     </div>
                 </div>
-
-                <div class="col-md-4">
-                    <div class="game-card text-center">
-                        <h3>Game 2</h3>
-                        <p>Score: 850</p>
-                        <button class="btn btn-primary">Play Now</button>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="game-card text-center">
-                        <h3>Game 3</h3>
-                        <p>Score: 670</p>
-                        <button class="btn btn-primary">Play Now</button>
-                    </div>
+                <div class="row-over" style="border-radius: 10px;">
+                    Overview
                 </div>
             </div>
-        </main>
+        </div>
+        <!-- Right Sidebar -->
+        <div class="col-md-3">
+            <div class="input-group mb-3">
+                <input id="user-search" class="form-control" placeholder="Search users" oninput="searchProfile()" autocomplete="off">
+            </div>
+            <div id="results" onclick="getProfile()" style="cursor: pointer;"></div>
+            <div class="settings-box mb-3">
+                <h5>Settings</h5>
+            </div>
+            <div class="friends-box">
+                <h5>Friends</h5>
+                <ul id="friends-list">
+                </ul>
+            </div>
+
+        </div>
     </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>

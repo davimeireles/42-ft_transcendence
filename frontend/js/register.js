@@ -55,7 +55,7 @@ function RegisterFormListener() {
       if (response.ok) {
         alert("Registered Succesfully");
         console.log("User Registered Succesfully");
-        renderPage("home");
+        renderPage("intro");
       } else {
         const result = await response.json();
         errorMessage.textContent = result.message;

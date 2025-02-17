@@ -28,32 +28,47 @@ window.onload = async function () {
             })
             if (response.ok) {
                 const res = await response.json();
-                const login = res.user.login
-                console.log(login)
-                console.log(res.access_token);
-                localStorage.setItem("access_token", res.access_token)
-                // try{
-                //     const response = await fetch(`http://localhost:8000/return_user/${login}`, {
-                //         method: 'POST',
-                //         headers: {
-                //             'Content-Type': 'application/json',
-                //         },
-                //         body: JSON.stringify({})
-                //     })
-                //     const user = await response.json();
-                //     console.log(user.photo)
-                //     console.log(user.folder)
-                // }catch(error){
-                //     console.log(error)
-                // }
+                localStorage.removeItem("sessionUser"); 
+                console.log(res.message);
+                console.log(res.access_token)
+                localStorage.setItem('access_token', res.access_token);
+                localStorage.setItem('refresh_token', res.refresh_token);
+                try {
+                    const token = localStorage.getItem("access_token")
+                    if (!token)
+                    {
+                      console.log("Token not found !")
+                      return ;
+                    }
+                    else{
+                        const response_user = await fetch("http://localhost:8000/session_user/", {
+                            method: "GET",
+                            headers: {
+                                "Authorization": `Bearer ${token}`,  // Send token in headers
+                            }
+                        });
+                        if (!response.ok) {
+                          throw new Error("Failed to fetch user");
+                        }
+                        const user = await response_user.json();
+                        console.log('hello')
+                          const sessionUser = {username: user.username, 
+                            email: user.email, nickiname: user.nickname, 
+                            friends: user.friends, online: user.online}
+                          localStorage.setItem('sessionUser', JSON.stringify(sessionUser));
+                        }
+                      } catch (error) {
+                        console.log("Error:", error);
+                      }
             }
             else {
+                const res = await response.json();
                 console.log('ERROR')
             }
         } catch (error) {
             console.log(error)
         }
     } else {
-        console.log('code does not exists')
+        return ;
     }
 }

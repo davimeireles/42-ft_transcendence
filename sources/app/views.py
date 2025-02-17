@@ -18,9 +18,7 @@ from django.http import HttpResponse, JsonResponse
 import urllib.parse
 from django.forms.models import model_to_dict
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.authentication import JWTAuthentication
-
-
+# from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 @api_view(['POST'])
@@ -33,10 +31,18 @@ def user_signin(request):
         login(request, user)
         refresh = RefreshToken.for_user(user)
         access_token = str(refresh.access_token)
-        response = Response({"message": "User authenticated successfully", "user": user_data, "access_token": access_token}, status=status.HTTP_200_OK)
+        refresh_token = str(refresh)
+        response = Response({"message": "User authenticated successfully", "access_token": access_token, "refresh_token": refresh_token}, status=status.HTTP_200_OK)
         response.set_cookie(
             key="jwt_access",
             value=access_token,
+            httponly=True,
+            secure=True,
+            samesite="Lax"
+        )
+        response.set_cookie(
+            key="jwt_refresh",
+            value=str(refresh),
             httponly=True,
             secure=True,
             samesite="Lax"
@@ -129,10 +135,18 @@ def oauth42(request):
             user = User.objects.get(username=user_data['login'])
             refresh = RefreshToken.for_user(user)
             access_token = str(refresh.access_token)
-            response = Response({"message": "User already exists", "user": user_data, "access_token": access_token}, status=status.HTTP_200_OK)
+            refresh_token = str(refresh)
+            response = Response({"message": "User already exists", "access_token": access_token, "refresh_token": refresh_token}, status=status.HTTP_200_OK)
             response.set_cookie(
                 key="jwt_access",
                 value=access_token,
+                httponly=True,
+                secure=True,
+                samesite="Lax"
+            )
+            response.set_cookie(
+                key="jwt_refresh",
+                value=str(refresh),
                 httponly=True,
                 secure=True,
                 samesite="Lax"
@@ -150,7 +164,8 @@ def oauth42(request):
                 user.save()
                 refresh = RefreshToken.for_user(user)
                 access_token = str(refresh.access_token)
-                response = Response({"message": "User created", "user": user_data, "access_token": access_token}, status=status.HTTP_200_OK)
+                refresh_token = str(refresh)
+                response = Response({"message": "User created", "access_token": access_token, "refresh_token": refresh_token}, status=status.HTTP_200_OK)
                 response.set_cookie(
                     key="jwt_access",
                     value=access_token,
@@ -158,16 +173,35 @@ def oauth42(request):
                     secure=True,
                     samesite="Lax"
                 )
+                response.set_cookie(
+                    key="jwt_refresh",
+                    value=str(refresh),
+                    httponly=True,
+                    secure=True,
+                    samesite="Lax"
+                )
                 return response
     return Response({"message": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['POST'])
+# @api_view(['POST'])
 # @permission_classes([IsAuthenticated])
-def return_user(request, str_user):
+def return_user(request):
+    query = request.GET.get('q', '')
+    if query:
+        users = User.objects.filter(username__icontains=query)[:10]
+        results = [{'username': user.username, 'email': user.email} for user in users]
+        return JsonResponse(results, safe=False)
+    return JsonResponse([], safe=False)
+
+@api_view(['POST'])
+def get_user(request, str_user):
     if request.method == 'POST':
         if User.objects.filter(username=str_user).exists():
             user = User.objects.get(username=str_user)
+            friends = user.friends.all()
+            friends_data = [{"username": friend.username, "email": friend.email, "nickname": friend.nickname} for friend in friends]
             user_data = model_to_dict(user, fields=['nickname', 'username', 'email'])
+            user_data['friends'] = friends_data
             if user.photo:
                 user_data['photo'] = user.photo.url
             return JsonResponse(user_data)
@@ -178,25 +212,63 @@ def return_user(request, str_user):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def session_user(request):
-    user = request.user  # Now this will work!
-    return Response({"email": user.email, "username": user.username, "nickname": user.nickname})
+    user = request.user
+    friends = user.friends.all()
+    friends_data = [{"username": friend.username, "email": friend.email, "nickname": friend.nickname} for friend in friends]
+    return Response({"email": user.email, "username": user.username, "nickname": user.nickname, "friends": friends_data, "online": user.online})
+
+@api_view(['POST'])
+# @permission_classes([IsAuthenticated])
+def logout(request):
+    try:
+        refresh_token = request.data.get("refresh_token")
+        if not refresh_token:
+            return Response({"message": "No refresh token provided"}, status=status.HTTP_400_BAD_REQUEST)
+        token = RefreshToken(refresh_token)
+        token.blacklist()
+        response = Response({"message": "Successfully logged out"}, status=status.HTTP_200_OK)
+        response.delete_cookie("jwt_access")
+        response.delete_cookie("jwt_refresh")
+        return response
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(["POST"])
+def add_user(request):
+    if request.method == 'POST':
+        profile_username = request.data.get('profileUsername')
+        try:
+            user = User.objects.get(username=profile_username)
+            request.user.add_friend(user)
+            return Response({'message': 'User added as a friend'}, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    return Response({'message': 'Error'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(["POST"])
+def remove_user(request):
+    if request.method == 'POST':
+        profile_username = request.data.get('profileUsername')
+        try:
+            user = User.objects.get(username=profile_username)
+            if user:
+                request.user.remove_friend(user)
+                return Response({'message': 'User removed as a friend', "user": user.username}, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    return Response({'message': 'Error'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-# # # Using the @login_required means that the view will only be executed if the request coming in is authenticated.
-# # # If the person is not authenticated, they will be redirected - usually to the login page
-# # @login_required
-# # def verify_2fa(request):
-# #     if request.method == 'POST':
-# #         code = request.POST.get('code')
-# #         try:
-# #             tfa = TwoFactorAuth.objects.get(user=request.user)
-# #             if tfa.verification_code == code and timezone.now() < tfa.expiration_time:
-# #                 tfa.is_verified = True
-# #                 tfa.save()
-# #                 return render(request, 'profile.html', {'user': request.user})
-# #             else:
-# #                 return HttpResponse('Invalid or expired code')
-# #         except TwoFactorAuth.DoesNotExist:
-# #             return HttpResponse('No verification process found.')
-    
-# #     return render(request, 'verify_2fa.html')
+@api_view(['POST'])
+def change_username(request):
+    name = request.data.get('user')
+    data = request.data.get('username')
+    if User.objects.filter(username=data).exists():
+        return Response({"message": "Username already taken"}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+            user = User.objects.get(username=name)
+            user.username = data
+            user.save()
+            return Response({'message': 'Changed Username'}, status=status.HTTP_200_OK)
+    except User.DoesNotExist:
+            return Response({'message': 'Error'}, status=status.HTTP_404_NOT_FOUND)

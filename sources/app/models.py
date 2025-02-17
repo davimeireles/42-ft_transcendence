@@ -14,6 +14,23 @@ class User(AbstractUser):
     photo = models.ImageField(upload_to='photos/', null=True, blank=True)
     two_fa_enable = models.BooleanField(default=False) # True for test.
     online = models.BooleanField(default=True)
+    friends = models.ManyToManyField(
+        'self',
+        related_name='friend',
+        symmetrical=False,
+        blank=True
+    )
+    def add_friend(self, user):
+        """Add friend another user."""
+        if user not in self.friends.all():
+            self.friends.add(user)
+            self.save()
+
+    def remove_friend(self, user):
+        """Remove friend another user."""
+        if user in self.friends.all():
+            self.friends.remove(user)
+            self.save()
 
 class Games(models.Model):
     name = models.CharField(max_length=32, null=False, unique=True)

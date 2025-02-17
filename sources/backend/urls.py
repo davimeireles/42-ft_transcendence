@@ -15,10 +15,17 @@ urlpatterns = [
     path('register/', app.views.user_signup, name='user_signup'),
     path('auth-42/', app.views.redirect_42, name='redirect_42'),
     path('oauth42/', app.views.oauth42),
-    path('return_user/<str:str_user>', app.views.return_user, name="return_user"),
+    path('return_user/', app.views.return_user, name="return_user"),
+    path('get_user/<str:str_user>', app.views.get_user, name="get_user"),
     path('session_user/', app.views.session_user, name="session_user"),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('add_user/', app.views.add_user, name='add_user'),
+    path('remove_user/', app.views.remove_user, name='remove_user'),
+    path('change_username/', app.views.change_username, name='change_username'),
+    path('logout/', app.views.logout, name='logout'),
+
+
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

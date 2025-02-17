@@ -9,16 +9,28 @@ const router = {
     localgame: "/local-game.html",
     aigame: "/ai-game.html",
     game3d: "/3d-game.html",
+    dash: "home.html",
     home: "/home.html",
     profile: "/profile.html",
+    profiles: "/profiles.html",
+    edit: "/edit-profile.html"
   },
 };
 
 // Page loader
 async function renderPage(page) {
   console.log(`Attempting to render page: ${page}`);
-  if (router.currentPage === page) return;
 
+  const accessToken = localStorage.getItem("access_token");
+
+  const protectedPages = ["profile", "profiles", "edit"];
+
+  if (!accessToken && protectedPages.includes(page)) {
+    console.warn("Unauthorized access attempt. Redirecting to login...");
+    window.location.href = "/login"; // Redirect to login page
+    return;
+  }
+  if (router.currentPage === page) return;
   try {
     // Load the new page
     const mainContent = document.getElementById("main-content");
@@ -31,11 +43,19 @@ async function renderPage(page) {
         RegisterFormListener();
       } else if (page === "login") {
         LoginFormListener();
-      } else if (page === "home") {
+      } else if (page === "intro") {
         createBouncingBallBackground();
       } else if (page === "localgame") {
         renderPongGame();
-      } else if (page == "game3d") {
+      } else if (page == "home"){
+        renderUser();
+      }else if (page == "profile"){
+        renderProfile();
+      }else if (page == "profiles"){
+        renderProfiles();
+      }else if (page == "edit"){
+        UsernameForm();
+      }else if (page == "game3d") {
         initialize3DPong();
       }
 
@@ -56,7 +76,7 @@ window.addEventListener("popstate", (e) => {
 
 // Load initial page
 window.addEventListener("load", () => {
-  const initialPage = window.location.pathname.slice(1) || "home";
+  const initialPage = window.location.pathname.slice(1) || "intro";
   renderPage(initialPage);
 });
 
