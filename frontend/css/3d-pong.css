@@ -1,0 +1,13 @@
+#game3d-board {
+    background-color: black;
+    border-top: 5px solid rgb(3, 255, 3);
+    border-bottom: 5px solid rgb(3, 255, 3);
+}
+
+.main-3d-board {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+}
