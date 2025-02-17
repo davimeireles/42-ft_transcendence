@@ -13,7 +13,9 @@ const router = {
     home: "/home.html",
     profile: "/profile.html",
     profiles: "/profiles.html",
-    edit: "/edit-profile.html"
+    edit: "/edit-profile.html",
+    chat: "/chat.html"
+
   },
 };
 
@@ -55,8 +57,8 @@ async function renderPage(page) {
         renderProfiles();
       }else if (page == "edit"){
         UsernameForm();
-      }else if (page == "game3d") {
-        initialize3DPong();
+      }else if (page === 'chat'){
+        chat()
       }
 
     history.pushState({ page: page }, "", `/${page}`);

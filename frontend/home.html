@@ -134,36 +134,35 @@
 
 <body>
 
-    <div class="container-custom m-4">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-2 sidebar me-3" style="border-radius: 10px;">
-                <div class="img m-1">
-                    <img src="media/default.jpg" alt="" style="border-radius: 50%;" width="60rem" height="60rem">
-                </div>
-                <div class="col mt-5">
-                    <h6 onclick="renderPage('profile')" style="cursor: pointer;">Profile</h6>
-                    <br>
-                    <h6 style="cursor: pointer;">Tournaments</h6>
-                    <br>
-                    <h6 style="cursor: pointer;" onclick="renderPage('edit')">Setting</h6>
-                    <br>
-                    <h6 style="cursor: pointer;" onclick="logout()">Logout</h6>
-                </div>
+<div class="container-custom m-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-2 sidebar me-3" style="border-radius: 10px;">
+            <div class="img m-1">
+                <img src="media/default.jpg" alt="" style="border-radius: 50%;" width="60rem" height="60rem">
             </div>
-
-            <!-- Main Content -->
-            <div class="col">
-                <h1 id="welcome_user"></h1>
-                <h4 id="mode"></h4>
-                <div class="game-mode">
-                    <div class="container mt-4">
-                        <div class="row">
-                            <a href="/localgame">
-                                <div class="col local p-3 text-center" style="border-radius: 10px;">
-                                    1V1 LOCAL
-                                </div>
-                            </a>
+            <div class="col mt-5">
+                <h6 onclick="renderPage('profile')" style="cursor: pointer;">Profile</h6>
+                <br>
+                <h6 style="cursor: pointer;">Tournaments</h6>
+                <br>
+                <h6 style="cursor: pointer;" onclick="renderPage('edit')">Setting</h6>
+                <br>
+                <h6 style="cursor: pointer;" onclick="logout()">Logout</h6>
+                <br>
+                <h6 style="cursor: pointer;" onclick="renderPage('chat')">Chat</h6>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="col" >
+            <h1 id="welcome_user"></h1>
+            <h4 id="mode"></h4>
+            <div class="game-mode">
+                <div class="container mt-4">
+                    <div class="row">
+                        <div class="col local p-3 text-center" style="border-radius: 10px;">
+                            1V1 LOCAL
                         </div>
                         <a href="/aigame">
                             <div class="row mt-3">
