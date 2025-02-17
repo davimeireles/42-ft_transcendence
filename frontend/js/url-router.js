@@ -8,6 +8,7 @@ const router = {
     pongpage: "/pong-page.html",
     localgame: "/local-game.html",
     aigame: "/ai-game.html",
+    game3d: "/3d-game.html",
     home: "/home.html",
     profile: "/profile.html",
   },
@@ -34,6 +35,8 @@ async function renderPage(page) {
         createBouncingBallBackground();
       } else if (page === "localgame") {
         renderPongGame();
+      } else if (page == "game3d") {
+        initialize3DPong();
       }
 
     history.pushState({ page: page }, "", `/${page}`);
