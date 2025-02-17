@@ -19,8 +19,17 @@ const router = {
 // Page loader
 async function renderPage(page) {
   console.log(`Attempting to render page: ${page}`);
-  if (router.currentPage === page) return;
 
+  const accessToken = localStorage.getItem("access_token");
+
+  const protectedPages = ["profile", "profiles", "edit"];
+
+  if (!accessToken && protectedPages.includes(page)) {
+    console.warn("Unauthorized access attempt. Redirecting to login...");
+    window.location.href = "/login"; // Redirect to login page
+    return;
+  }
+  if (router.currentPage === page) return;
   try {
     // Load the new page
     const mainContent = document.getElementById("main-content");

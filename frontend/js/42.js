@@ -30,7 +30,9 @@ window.onload = async function () {
                 const res = await response.json();
                 localStorage.removeItem("sessionUser"); 
                 console.log(res.message);
+                console.log(res.access_token)
                 localStorage.setItem('access_token', res.access_token);
+                localStorage.setItem('refresh_token', res.refresh_token);
                 try {
                     const token = localStorage.getItem("access_token")
                     if (!token)
@@ -39,7 +41,7 @@ window.onload = async function () {
                       return ;
                     }
                     else{
-                        const response = await fetch("http://localhost:8000/session_user/", {
+                        const response_user = await fetch("http://localhost:8000/session_user/", {
                             method: "GET",
                             headers: {
                                 "Authorization": `Bearer ${token}`,  // Send token in headers
@@ -48,7 +50,8 @@ window.onload = async function () {
                         if (!response.ok) {
                           throw new Error("Failed to fetch user");
                         }
-                        const user = await response.json();
+                        const user = await response_user.json();
+                        console.log('hello')
                           const sessionUser = {username: user.username, 
                             email: user.email, nickiname: user.nickname, 
                             friends: user.friends, online: user.online}
@@ -59,6 +62,7 @@ window.onload = async function () {
                       }
             }
             else {
+                const res = await response.json();
                 console.log('ERROR')
             }
         } catch (error) {

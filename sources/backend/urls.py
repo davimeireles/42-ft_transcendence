@@ -23,6 +23,8 @@ urlpatterns = [
     path('add_user/', app.views.add_user, name='add_user'),
     path('remove_user/', app.views.remove_user, name='remove_user'),
     path('change_username/', app.views.change_username, name='change_username'),
+    path('logout/', app.views.logout, name='logout'),
+
 
 ]
 if settings.DEBUG:

@@ -18,9 +18,7 @@ from django.http import HttpResponse, JsonResponse
 import urllib.parse
 from django.forms.models import model_to_dict
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.authentication import JWTAuthentication
-
-
+# from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 @api_view(['POST'])
@@ -33,10 +31,18 @@ def user_signin(request):
         login(request, user)
         refresh = RefreshToken.for_user(user)
         access_token = str(refresh.access_token)
-        response = Response({"message": "User authenticated successfully", "access_token": access_token}, status=status.HTTP_200_OK)
+        refresh_token = str(refresh)
+        response = Response({"message": "User authenticated successfully", "access_token": access_token, "refresh_token": refresh_token}, status=status.HTTP_200_OK)
         response.set_cookie(
             key="jwt_access",
             value=access_token,
+            httponly=True,
+            secure=True,
+            samesite="Lax"
+        )
+        response.set_cookie(
+            key="jwt_refresh",
+            value=str(refresh),
             httponly=True,
             secure=True,
             samesite="Lax"
@@ -129,10 +135,18 @@ def oauth42(request):
             user = User.objects.get(username=user_data['login'])
             refresh = RefreshToken.for_user(user)
             access_token = str(refresh.access_token)
-            response = Response({"message": "User already exists", "access_token": access_token}, status=status.HTTP_200_OK)
+            refresh_token = str(refresh)
+            response = Response({"message": "User already exists", "access_token": access_token, "refresh_token": refresh_token}, status=status.HTTP_200_OK)
             response.set_cookie(
                 key="jwt_access",
                 value=access_token,
+                httponly=True,
+                secure=True,
+                samesite="Lax"
+            )
+            response.set_cookie(
+                key="jwt_refresh",
+                value=str(refresh),
                 httponly=True,
                 secure=True,
                 samesite="Lax"
@@ -150,10 +164,18 @@ def oauth42(request):
                 user.save()
                 refresh = RefreshToken.for_user(user)
                 access_token = str(refresh.access_token)
-                response = Response({"message": "User created", "access_token": access_token}, status=status.HTTP_200_OK)
+                refresh_token = str(refresh)
+                response = Response({"message": "User created", "access_token": access_token, "refresh_token": refresh_token}, status=status.HTTP_200_OK)
                 response.set_cookie(
                     key="jwt_access",
                     value=access_token,
+                    httponly=True,
+                    secure=True,
+                    samesite="Lax"
+                )
+                response.set_cookie(
+                    key="jwt_refresh",
+                    value=str(refresh),
                     httponly=True,
                     secure=True,
                     samesite="Lax"
@@ -195,18 +217,21 @@ def session_user(request):
     friends_data = [{"username": friend.username, "email": friend.email, "nickname": friend.nickname} for friend in friends]
     return Response({"email": user.email, "username": user.username, "nickname": user.nickname, "friends": friends_data, "online": user.online})
 
-# @api_view(['POST'])
+@api_view(['POST'])
 # @permission_classes([IsAuthenticated])
-# def logout(request):
-#     try:
-#         refresh_token = request.data.get("refresh_token")
-#         if not refresh_token:
-#             return Response({"message": "No refresh token provided"}, status=status.HTTP_400_BAD_REQUEST)
-#         token = RefreshToken(refresh_token)
-#         token.blacklist()
-#         return Response({"message": "Successfully logged out"}, status=status.HTTP_200_OK)
-#     except Exception as e:
-#         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+def logout(request):
+    try:
+        refresh_token = request.data.get("refresh_token")
+        if not refresh_token:
+            return Response({"message": "No refresh token provided"}, status=status.HTTP_400_BAD_REQUEST)
+        token = RefreshToken(refresh_token)
+        token.blacklist()
+        response = Response({"message": "Successfully logged out"}, status=status.HTTP_200_OK)
+        response.delete_cookie("jwt_access")
+        response.delete_cookie("jwt_refresh")
+        return response
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(["POST"])
 def add_user(request):

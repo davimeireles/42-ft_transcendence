@@ -28,6 +28,7 @@ function LoginFormListener() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
+        credentials: "include",
       });
 
       if (response.ok) {
@@ -54,6 +55,7 @@ function LoginFormListener() {
                 throw new Error("Failed to fetch user");
               }
               const user = await response.json();
+              // console.log(user.access_token)
                 const sessionUser = {username: user.username, 
                   email: user.email, nickiname: user.nickname, 
                   friends: user.friends, online: user.online}
