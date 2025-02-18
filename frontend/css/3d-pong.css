@@ -2,6 +2,9 @@
     background-color: black;
     border-top: 5px solid rgb(3, 255, 3);
     border-bottom: 5px solid rgb(3, 255, 3);
+    width: 100vw; /* Full width of the viewport */
+    height: 100vh; /* Full height of the viewport */
+    display: block; /* Ensures the canvas takes up the entire container */
 }
 
 .main-3d-board {

@@ -58,7 +58,9 @@ async function renderPage(page) {
       }else if (page == "edit"){
         UsernameForm();
       }else if (page === 'chat'){
-        chat()
+        chat();
+      } else if (page == 'game3d') {
+        initialize3DPong();
       }
 
     history.pushState({ page: page }, "", `/${page}`);

@@ -1,149 +1,185 @@
 function initialize3DPong() {
     // Scene, Camera, and Renderer
     const pongScene = new THREE.Scene();
-    const pongCamera = new THREE.PerspectiveCamera(75, 600 / 300, 0.1, 1000);
+    const pongCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const pongRenderer = new THREE.WebGLRenderer({ canvas: document.getElementById('game3d-board') });
-    pongRenderer.setSize(600, 300);
+    pongRenderer.setSize(window.innerWidth, window.innerHeight); // Fullscreen rendering
 
-    // Basic lighting
-    const ambientLight3D = new THREE.AmbientLight(0x404040); // Soft white light
-    pongScene.add(ambientLight3D);
+    // Dynamically handle resizing
+    window.addEventListener('resize', () => {
+        pongRenderer.setSize(window.innerWidth, window.innerHeight);
+        pongCamera.aspect = window.innerWidth / window.innerHeight;
+        pongCamera.updateProjectionMatrix();
+    });
 
-    const directionalLight3D = new THREE.DirectionalLight(0xffffff, 0.5);
-    directionalLight3D.position.set(0, 1, 1).normalize();
-    pongScene.add(directionalLight3D);
+    // Adjust camera position for depth perspective
+    pongCamera.position.set(0, 15, 15);
+    pongCamera.lookAt(0, 0, 0);
 
-    pongCamera.position.z = 15;
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0x404040);
+    pongScene.add(ambientLight);
 
-    // Paddle dimensions
-    const paddle3DWidth = 1;
-    const paddle3DHeight = 4;
-    const paddle3DDepth = 1;
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(0, 10, 10);
+    pongScene.add(directionalLight);
 
-    // Ball dimensions
-    const ball3DRadius = 0.5;
+    // Playing field
+    const fieldGeometry = new THREE.PlaneGeometry(12, 20);
+    const fieldMaterial = new THREE.MeshPhongMaterial({ color: 0x0055ff }); // Blue field
+    const field = new THREE.Mesh(fieldGeometry, fieldMaterial);
+    field.rotation.x = -Math.PI / 2;
+    field.position.set(0, 0, 0);
+    pongScene.add(field);
 
-    // Paddle 1 (Left)
-    const paddle13DGeometry = new THREE.BoxGeometry(paddle3DWidth, paddle3DHeight, paddle3DDepth);
-    const paddle13DMaterial = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
-    const paddle13D = new THREE.Mesh(paddle13DGeometry, paddle13DMaterial);
-    paddle13D.position.x = -10;
-    pongScene.add(paddle13D);
+    // Walls
+    const wallHeight = 2;
+    const wallThickness = 0.5;
+    const wallMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff }); // White walls
 
-    // Paddle 2 (Right)
-    const paddle23DGeometry = new THREE.BoxGeometry(paddle3DWidth, paddle3DHeight, paddle3DDepth);
-    const paddle23DMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000 });
-    const paddle23D = new THREE.Mesh(paddle23DGeometry, paddle23DMaterial);
-    paddle23D.position.x = 10;
-    pongScene.add(paddle23D);
+    const leftWall = new THREE.Mesh(new THREE.BoxGeometry(wallThickness, wallHeight, 20), wallMaterial);
+    leftWall.position.set(-6, wallHeight / 2, 0); // Left wall
+    pongScene.add(leftWall);
+
+    const rightWall = new THREE.Mesh(new THREE.BoxGeometry(wallThickness, wallHeight, 20), wallMaterial);
+    rightWall.position.set(6, wallHeight / 2, 0); // Right wall
+    pongScene.add(rightWall);
+
+    // Paddles
+    const paddleWidth = 3;
+    const paddleHeight = 0.5;
+    const paddleDepth = 0.5;
+
+    const paddleMaterial1 = new THREE.MeshPhongMaterial({ color: 0x0000ff }); // Blue paddle
+    const paddle1 = new THREE.Mesh(new THREE.BoxGeometry(paddleWidth, paddleHeight, paddleDepth), paddleMaterial1);
+    paddle1.position.set(0, paddleHeight / 2, -8.5); // Top paddle
+    pongScene.add(paddle1);
+
+    const paddleMaterial2 = new THREE.MeshPhongMaterial({ color: 0xff0000 }); // Red paddle
+    const paddle2 = new THREE.Mesh(new THREE.BoxGeometry(paddleWidth, paddleHeight, paddleDepth), paddleMaterial2);
+    paddle2.position.set(0, paddleHeight / 2, 8.5); // Bottom paddle
+    pongScene.add(paddle2);
 
     // Ball
-    const ball3DGeometry = new THREE.SphereGeometry(ball3DRadius, 32, 32);
-    const ball3DMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff });
-    const ball3D = new THREE.Mesh(ball3DGeometry, ball3DMaterial);
-    pongScene.add(ball3D);
-
-    // Background texture
-    const textureLoader = new THREE.TextureLoader();
-    textureLoader.load('../images/hoquei-field.jpg', function (texture) {
-        pongScene.background = texture;
-        console.log('Texture loaded successfully');
-    }, undefined, function (error) {
-        console.error('Error loading texture:', error);
-    });
-
-    // Keyboard input
-    const keys3D = {};
-
-    document.addEventListener('keydown', (event) => {
-        keys3D[event.key] = true;
-    });
-
-    document.addEventListener('keyup', (event) => {
-        keys3D[event.key] = false;
-    });
-
-    // Paddle movement speed
-    const paddle3DSpeed = 0.2;
-
-    function updatePaddleMovement3D() {
-        if (keys3D['w']) {
-            paddle13D.position.y += paddle3DSpeed;
-        }
-        if (keys3D['s']) {
-            paddle13D.position.y -= paddle3DSpeed;
-        }
-        if (keys3D['ArrowUp']) {
-            paddle23D.position.y += paddle3DSpeed;
-        }
-        if (keys3D['ArrowDown']) {
-            paddle23D.position.y -= paddle3DSpeed;
-        }
-
-        // Keep paddles within bounds
-        const bound3D = 9 - paddle3DHeight / 2;
-        paddle13D.position.y = Math.max(Math.min(paddle13D.position.y, bound3D), -bound3D);
-        paddle23D.position.y = Math.max(Math.min(paddle23D.position.y, bound3D), -bound3D);
-    }
+    const ballRadius = 0.5;
+    const ballMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff }); // White ball
+    const ball = new THREE.Mesh(new THREE.SphereGeometry(ballRadius, 32, 32), ballMaterial);
+    ball.position.set(0, ballRadius, 0);
+    pongScene.add(ball);
 
     // Ball movement
-    let ball3DSpeedX = 0.1;
-    let ball3DSpeedY = 0.05;
+    const initialBallSpeedX = 0.08;
+    const initialBallSpeedZ = 0.1;
+    let ballSpeedX = initialBallSpeedX;
+    let ballSpeedZ = initialBallSpeedZ;
 
-    function updateBallMovement3D() {
-        ball3D.position.x += ball3DSpeedX;
-        ball3D.position.y += ball3DSpeedY;
+    // Scores
+    let player1Score = 0; // Blue paddle
+    let player2Score = 0; // Red paddle
 
-        // Bounce off top and bottom walls
-        if (ball3D.position.y > 9 - ball3DRadius || ball3D.position.y < -9 + ball3DRadius) {
-            ball3DSpeedY = -ball3DSpeedY;
+    // Display scores
+    const scoreDisplay = document.createElement("div");
+    scoreDisplay.style.position = "absolute";
+    scoreDisplay.style.top = "10px";
+    scoreDisplay.style.left = "50%";
+    scoreDisplay.style.transform = "translateX(-50%)";
+    scoreDisplay.style.color = "white";
+    scoreDisplay.style.fontSize = "24px";
+    scoreDisplay.style.fontFamily = "Arial, sans-serif";
+    document.body.appendChild(scoreDisplay);
+
+    function updateScoreDisplay() {
+        scoreDisplay.textContent = `Blue: ${player1Score} | Red: ${player2Score}`;
+    }
+    updateScoreDisplay();
+
+    // Paddle movement
+    const paddleSpeed = 0.3;
+    const keys = {}; // Track key presses
+
+    document.addEventListener("keydown", (event) => {
+        keys[event.key] = true;
+    });
+
+    document.addEventListener("keyup", (event) => {
+        keys[event.key] = false;
+    });
+
+    function updatePaddles() {
+        const paddleLimitX = 4; // Limit paddles to stay within the walls
+
+        // Paddle 1 (Blue, Top)
+        if (keys["a"] && paddle1.position.x > -paddleLimitX) {
+            paddle1.position.x -= paddleSpeed;
+        }
+        if (keys["d"] && paddle1.position.x < paddleLimitX) {
+            paddle1.position.x += paddleSpeed;
         }
 
-        // Bounce off paddles
-        if (ball3D.position.x < paddle13D.position.x + paddle3DWidth / 2 &&
-            ball3D.position.x > paddle13D.position.x - paddle3DWidth / 2 &&
-            ball3D.position.y > paddle13D.position.y - paddle3DHeight / 2 &&
-            ball3D.position.y < paddle13D.position.y + paddle3DHeight / 2) {
-            ball3DSpeedX = Math.abs(ball3DSpeedX); // Ensure the ball moves to the right
+        // Paddle 2 (Red, Bottom)
+        if (keys["ArrowLeft"] && paddle2.position.x > -paddleLimitX) {
+            paddle2.position.x -= paddleSpeed;
         }
-        if (ball3D.position.x > paddle23D.position.x - paddle3DWidth / 2 &&
-            ball3D.position.x < paddle23D.position.x + paddle3DWidth / 2 &&
-            ball3D.position.y > paddle23D.position.y - paddle3DHeight / 2 &&
-            ball3D.position.y < paddle23D.position.y + paddle3DHeight / 2) {
-            ball3DSpeedX = -Math.abs(ball3DSpeedX); // Ensure the ball moves to the left
-        }
-
-        // Reset ball if it goes out of bounds
-        if (ball3D.position.x > 11 || ball3D.position.x < -11) {
-            if (ball3D.position.x > 11) {
-                player1Score++;
-            } else {
-                player2Score++;
-            }
-            updateScoreDisplay();
-            ball3D.position.set(0, 0, 0);
-            ball3DSpeedX = -ball3DSpeedX;
+        if (keys["ArrowRight"] && paddle2.position.x < paddleLimitX) {
+            paddle2.position.x += paddleSpeed;
         }
     }
 
-    // Scores
-    let player1Score = 0;
-    let player2Score = 0;
+    function updateBall() {
+        ball.position.x += ballSpeedX;
+        ball.position.z += ballSpeedZ;
 
-    function updateScoreDisplay() {
-        document.getElementById('player1-score').innerText = player1Score;
-        document.getElementById('player2-score').innerText = player2Score;
+        // Ball collision with walls
+        if (ball.position.x > 5.5 - ballRadius || ball.position.x < -5.5 + ballRadius) {
+            ballSpeedX = -ballSpeedX;
+        }
+
+        // Ball collision with blue paddle (top)
+        if (
+            ball.position.z < paddle1.position.z + paddleDepth * 1.5 && // Increase the hitbox depth
+            ball.position.z > paddle1.position.z - paddleDepth / 2 && // Include a slight back margin
+            ball.position.x > paddle1.position.x - paddleWidth * 0.5 && // Increase the hitbox width
+            ball.position.x < paddle1.position.x + paddleWidth * 0.5
+        ) {
+            ballSpeedZ = Math.abs(ballSpeedZ); // Bounce downward
+        }
+
+        // Ball collision with red paddle (bottom)
+        if (
+            ball.position.z > paddle2.position.z - paddleDepth * 1.5 && // Increase the hitbox depth
+            ball.position.z < paddle2.position.z + paddleDepth / 2 && // Include a slight back margin
+            ball.position.x > paddle2.position.x - paddleWidth * 0.5 && // Increase the hitbox width
+            ball.position.x < paddle2.position.x + paddleWidth * 0.5
+        ) {
+            ballSpeedZ = -Math.abs(ballSpeedZ); // Bounce upward
+        }
+
+        // Check if the ball goes out of bounds (goal)
+        if (ball.position.z > 10) {
+            player1Score++; // Blue player scores
+            resetBall();
+        } else if (ball.position.z < -10) {
+            player2Score++; // Red player scores
+            resetBall();
+        }
+    }
+
+    function resetBall() {
+        ball.position.set(0, ballRadius, 0); // Reset ball position
+        ballSpeedX = initialBallSpeedX; // Reset ball speed to initial values
+        ballSpeedZ = initialBallSpeedZ;
+        updateScoreDisplay();
     }
 
     // Animation loop
-    function animate3D() {
-        requestAnimationFrame(animate3D);
+    function animate() {
+        requestAnimationFrame(animate);
 
-        updatePaddleMovement3D();
-        updateBallMovement3D();
+        updatePaddles();
+        updateBall();
 
         pongRenderer.render(pongScene, pongCamera);
     }
 
-    animate3D();
+    animate();
 }
