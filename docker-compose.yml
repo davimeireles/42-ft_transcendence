@@ -44,7 +44,41 @@ services:
       - "8000:8000"
     networks:
       - app_network
-      
+
+  grafana:
+    image: docker.io/grafana/grafana-oss:11.5.1
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    restart: unless-stopped
+
+  prometheus:
+    image: docker.io/prom/prometheus:v3.1.0
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    command: "--config.file=/etc/prometheus/prometheus.yaml"
+    volumes:
+      - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
+      - prometheus-data:/prometheus
+    restart: unless-stopped
+
+  node-exporter:
+    image: prom/node-exporter
+    container_name: node_exporter
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - /:/rootfs:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+    command:
+      - "--path.procfs=/host/proc"
+      - "--path.sysfs=/host/sys"
+      - "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc|run/user)($$|/)"
+
 networks:
   app_network:
     name: app_network
@@ -52,3 +86,8 @@ networks:
 
 volumes:
   db-postgres:
+    driver: local
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
