@@ -51,6 +51,7 @@ async function renderPage(page) {
         renderPongGame();
       } else if (page == "home"){
         renderUser();
+        setTimeout(renderUser, 1000)
       }else if (page == "profile"){
         renderProfile();
       }else if (page == "profiles"){

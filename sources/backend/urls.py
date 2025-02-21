@@ -24,8 +24,9 @@ urlpatterns = [
     path('remove_user/', app.views.remove_user, name='remove_user'),
     path('change_username/', app.views.change_username, name='change_username'),
     path('logout/', app.views.logout, name='logout'),
-
-
+    path('upload_photo/', app.views.upload_photo, name='upload_photo'),
+    path('change_password/', app.views.change_password, name='change_password'),
+    path('change_nick/', app.views.change_nick, name='change_nick'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -59,7 +59,21 @@ function renderProfiles(){
     const btn_friend = document.getElementById('btn-friend')
     const searchedUser = localStorage.getItem('searchedUser');
     const session_user = JSON.parse(localStorage.getItem('sessionUser'))
+    const imageTag = document.getElementById("profileImage")
     const user = JSON.parse(searchedUser);
+    const online = document.getElementById("online")
+    if (online && user.online){
+        online.innerHTML = 'Online'
+    }
+    else{
+        online.innerHTML = 'Offline'
+    }
+    if (imageTag && user.photo){
+        console.log('hello')
+        imageTag.src = `http://localhost:8000/media/${user.username}.jpg`;
+    }else{
+        imageTag.src = 'media/default.jpg'
+    }
     if (user){
         const user_text = document.getElementById('text-user');
         if (user_text) {

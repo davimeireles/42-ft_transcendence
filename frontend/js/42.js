@@ -51,11 +51,11 @@ window.onload = async function () {
                           throw new Error("Failed to fetch user");
                         }
                         const user = await response_user.json();
-                        console.log('hello')
-                          const sessionUser = {username: user.username, 
+                        const sessionUser = {username: user.username, 
                             email: user.email, nickiname: user.nickname, 
-                            friends: user.friends, online: user.online}
-                          localStorage.setItem('sessionUser', JSON.stringify(sessionUser));
+                            friends: user.friends, online: user.online, photo: user.photo}
+                        localStorage.setItem('sessionUser', JSON.stringify(sessionUser));
+                        renderPage('home')
                         }
                       } catch (error) {
                         console.log("Error:", error);

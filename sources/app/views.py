@@ -18,8 +18,9 @@ from django.http import HttpResponse, JsonResponse
 import urllib.parse
 from django.forms.models import model_to_dict
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 # from rest_framework_simplejwt.authentication import JWTAuthentication
-
 
 @api_view(['POST'])
 def user_signin(request):
@@ -133,6 +134,7 @@ def oauth42(request):
         # Check if the user already exists in the database
         if User.objects.filter(username=user_data['login']).exists():
             user = User.objects.get(username=user_data['login'])
+            user.photo = True
             refresh = RefreshToken.for_user(user)
             access_token = str(refresh.access_token)
             refresh_token = str(refresh)
@@ -157,17 +159,18 @@ def oauth42(request):
                 username=user_data['login'],
                 nickname=user_data['login'],
                 email=user_data['email'],
-                photo=f'{user_data["login"]}.jpg'
+                photo=True,
             )
             if created:
                 user.set_unusable_password()
                 user.save()
-                folder_path = settings.MEDIA_ROOT
-                if not os.path.exists(folder_path):
-                    os.makedirs(folder_path)
-                image_path = os.path.join(folder_path, f'{user_data["login"]}.jpg')
-                with open(image_path, 'wb') as file:
-                    file.write(requests.get(user_data['image']['versions']['small']).content)
+                if not os.path.exists(settings.MEDIA_ROOT):
+                    os.makedirs(settings.MEDIA_ROOT)
+
+                new_filename = f"{user_data['login']}.jpg"
+                file_path = os.path.join(settings.MEDIA_ROOT, new_filename)
+                with open(file_path, 'wb') as file:
+                    file.write(requests.get(user_data['image']['versions']['large']).content)
                 refresh = RefreshToken.for_user(user)
                 access_token = str(refresh.access_token)
                 refresh_token = str(refresh)
@@ -205,11 +208,9 @@ def get_user(request, str_user):
         if User.objects.filter(username=str_user).exists():
             user = User.objects.get(username=str_user)
             friends = user.friends.all()
-            friends_data = [{"username": friend.username, "email": friend.email, "nickname": friend.nickname} for friend in friends]
-            user_data = model_to_dict(user, fields=['nickname', 'username', 'email'])
+            friends_data = [{"username": friend.username, "email": friend.email, "nickname": friend.nickname, 'photo': friend.photo} for friend in friends]
+            user_data = model_to_dict(user, fields=['nickname', 'username', 'email', 'photo', 'online'])
             user_data['friends'] = friends_data
-            if user.photo:
-                user_data['photo'] = user.photo.url
             return JsonResponse(user_data)
         else:
             return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
@@ -221,7 +222,7 @@ def session_user(request):
     user = request.user
     friends = user.friends.all()
     friends_data = [{"username": friend.username, "email": friend.email, "nickname": friend.nickname} for friend in friends]
-    return Response({"email": user.email, "username": user.username, "nickname": user.nickname, "friends": friends_data, "online": user.online})
+    return Response({"email": user.email, "username": user.username, "nickname": user.nickname, "friends": friends_data, "online": user.online, "photo": user.photo})
 
 @api_view(['POST'])
 # @permission_classes([IsAuthenticated])
@@ -278,3 +279,61 @@ def change_username(request):
             return Response({'message': 'Changed Username'}, status=status.HTTP_200_OK)
     except User.DoesNotExist:
             return Response({'message': 'Error'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['POST'])
+def change_nick(request):
+    name = request.data.get('user')
+    data = request.data.get('nick')
+    if User.objects.filter(nickname=data).exists():
+        return Response({"message": "Username already taken"}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+            user = User.objects.get(username=name)
+            user.nickname = data
+            user.save()
+            return Response({'message': 'Changed Username'}, status=status.HTTP_200_OK)
+    except User.DoesNotExist:
+            return Response({'message': 'Error'}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['POST'])
+def upload_photo(request):
+    uploaded_file = request.FILES.get('file')
+
+    if not uploaded_file:
+        return Response({"error": "No file uploaded"}, status=status.HTTP_400_BAD_REQUEST)
+
+    username = request.user.username  # Assuming Django authentication is used
+    request.user.photo = True
+    request.user.save()
+    # Ensure the media directory exists
+    if not os.path.exists(settings.MEDIA_ROOT):
+        os.makedirs(settings.MEDIA_ROOT)
+
+    new_filename = f"{username}.jpg"
+    file_path = os.path.join(settings.MEDIA_ROOT, new_filename)
+
+    with open(file_path, "wb") as f:
+        for chunk in uploaded_file.chunks():
+            f.write(chunk)
+
+    if not os.path.exists(file_path):
+        return Response({"error": "File was not saved"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    file_url = f"{settings.MEDIA_URL}{new_filename}"  # Relative media URL
+
+    return JsonResponse({"message": "File uploaded successfully", "file_url": file_url})
+
+
+@api_view(['POST'])
+def change_password(request):
+    psw = request.data.get('password')
+    
+    if not psw:  # Ensure password is provided
+        return Response({'message': 'Password is required'}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        user = User.objects.get(username=request.user.username)
+        user.set_password(psw)
+        user.save()
+        return Response({'message': 'Password changed successfully'}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'message': 'Error changing password', 'error': str(e)}, status=status.HTTP_401_UNAUTHORIZED)

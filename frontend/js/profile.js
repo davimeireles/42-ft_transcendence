@@ -1,5 +1,20 @@
 const renderProfile =  function(){
     const session_user = JSON.parse(localStorage.getItem('sessionUser'))
+    const imageTag = document.getElementById("profileImage")
+    const online = document.getElementById("online")
+    if (online && session_user.online){
+        online.innerHTML = 'Online'
+    }
+    else{
+        online.innerHTML = 'Offline'
+    }
+    console.log(session_user.photo)
+    if (imageTag && session_user.photo){
+        console.log('hello')
+        imageTag.src = `http://localhost:8000/media/${session_user.username}.jpg`;
+    }else{
+        imageTag.src = 'media/default.jpg'
+    }
     const friends = session_user.friends
     if (friends && friends.length > 0) {
         friends.forEach(friend => {

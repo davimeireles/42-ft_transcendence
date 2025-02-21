@@ -37,6 +37,8 @@ function LoginFormListener() {
         const result = await response.json();
         console.log(result.access_token)
         localStorage.setItem('access_token', result.access_token);
+        localStorage.setItem('refresh_token', result.refresh_token);
+
         try {
           const token = localStorage.getItem("access_token")
           if (!token)
@@ -56,9 +58,10 @@ function LoginFormListener() {
               }
               const user = await response.json();
               // console.log(user.access_token)
+              console.log(user.photo)
                 const sessionUser = {username: user.username, 
                   email: user.email, nickiname: user.nickname, 
-                  friends: user.friends, online: user.online}
+                  friends: user.friends, online: user.online, photo: user.photo}
                 localStorage.setItem('sessionUser', JSON.stringify(sessionUser));
               }
             } catch (error) {
