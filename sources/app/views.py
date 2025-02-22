@@ -30,6 +30,8 @@ def user_signin(request):
     user = authenticate(request, username=username, password=password)
     if user is not None:
         login(request, user)
+        user.online = True
+        user.save()
         refresh = RefreshToken.for_user(user)
         access_token = str(refresh.access_token)
         refresh_token = str(refresh)
@@ -135,6 +137,8 @@ def oauth42(request):
         if User.objects.filter(username=user_data['login']).exists():
             user = User.objects.get(username=user_data['login'])
             user.photo = True
+            user.online=True
+            user.save()
             refresh = RefreshToken.for_user(user)
             access_token = str(refresh.access_token)
             refresh_token = str(refresh)
@@ -160,6 +164,7 @@ def oauth42(request):
                 nickname=user_data['login'],
                 email=user_data['email'],
                 photo=True,
+                online=True
             )
             if created:
                 user.set_unusable_password()
@@ -231,6 +236,8 @@ def logout(request):
         refresh_token = request.data.get("refresh_token")
         if not refresh_token:
             return Response({"message": "No refresh token provided"}, status=status.HTTP_400_BAD_REQUEST)
+        request.user.online=False
+        request.user.save()
         token = RefreshToken(refresh_token)
         token.blacklist()
         response = Response({"message": "Successfully logged out"}, status=status.HTTP_200_OK)

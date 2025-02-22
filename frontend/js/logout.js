@@ -6,17 +6,20 @@ const logout = async function (){
             method: "POST",
             credentials: "include", // Include cookies
             headers: {
-                "Content-Type": "application/json",
+                'Content-Type': 'application/json',
+                "Authorization": `Bearer ${token}`,
             },
             body: JSON.stringify({refresh_token}),
         });
         
         if (response.ok) {
             try {
-                localStorage.removeItem("sessionUser");
-                localStorage.removeItem("access_token");
-                localStorage.removeItem("refresh_token");
-                localStorage.removeItem("searchedUser");
+                const keys = ["sessionUser", "access_token", "refresh_token", "searchedUser"];
+                keys.forEach(key => {
+                    if (localStorage.getItem(key)) {
+                        localStorage.removeItem(key);
+                    }
+                });
               } catch (e) {
                 console.error("Error removing item from localStorage:", e);
               }
