@@ -15,7 +15,8 @@ const router = {
     profiles: "/profiles.html",
     edit: "/edit-profile.html",
     chat: "/chat.html",
-    two_fa_verification: "/2fa-verification.html",
+    enable_two_fa: "/enable-2fa.html",
+    verify2FA: "/verify-2fa.html",
   },
 };
 
@@ -75,6 +76,12 @@ async function renderPage(page) {
         break;
       case "game3d":
         initialize3DPong();
+        break;
+      case "enable_two_fa":
+        enable2FA();
+        break;
+      case "verify2FA":
+        verifyOTP();
         break;
       default:
         console.warn(`No specific function defined for page: ${page}`);

@@ -6,7 +6,7 @@ async function enable2FA() {
     }
     try {
         console.log('Token:', token);
-        const response = await fetch('http://localhost:8000/setup-2fa/', {
+        const response = await fetch('http://localhost:8000/setup_2fa/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -20,8 +20,9 @@ async function enable2FA() {
             throw new Error('Failed to enable 2FA');
         }
         const data = await response.json();
-        document.getElementById('qr-code').src = data.qr_code;
+        document.getElementById('qr-code').src = data.qrcode;
         document.getElementById('qr-code-container').style.display = 'block';
+        localStorage.setItem('secret', data.secret);
     } catch (error) {
         console.error('Error:', error);
         document.getElementById('2fa-error-message').textContent = 'Failed to enable 2FA. Please try again.';
