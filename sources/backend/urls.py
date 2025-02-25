@@ -28,7 +28,7 @@ urlpatterns = [
     path('change_password/', app.views.change_password, name='change_password'),
     path('change_nick/', app.views.change_nick, name='change_nick'),
     path('check_token/', app.views.check_token, name='check_token'),
-
+    path('new_session/', app.views.new_session, name='new_session'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

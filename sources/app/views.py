@@ -366,3 +366,28 @@ def check_token(request):
         return Response({"valid": True}, status=200)
     except TokenError:
         return Response({"valid": False}, status=401)
+    
+@api_view(['POST'])
+def new_session(request):
+    user = request.user
+    if not user:
+        return Response({"message": "User not valid"}, status=status.HTTP_400_BAD_REQUEST)
+    refresh = RefreshToken.for_user(user)
+    access_token = str(refresh.access_token)
+    refresh_token = str(refresh)
+    response = Response({"message": "User created", "access_token": access_token, "refresh_token": refresh_token}, status=status.HTTP_200_OK)
+    response.set_cookie(
+        key="jwt_access",
+        value=access_token,
+        httponly=True,
+        secure=True,
+        samesite="Lax"
+    )
+    response.set_cookie(
+        key="jwt_refresh",
+        value=str(refresh),
+        httponly=True,
+        secure=True,
+        samesite="Lax"
+    )
+    return response
