@@ -47,7 +47,7 @@ window.onload = async function () {
                                 "Authorization": `Bearer ${token}`,  // Send token in headers
                             }
                         });
-                        if (!response.ok) {
+                        if (!response_user.ok) {
                           throw new Error("Failed to fetch user");
                         }
                         const user = await response_user.json();

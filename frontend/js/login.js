@@ -33,10 +33,10 @@ function LoginFormListener() {
         credentials: "include",
       });
 
-      if (response.ok) {
+      if (loginResponse.ok) {
         console.log("User Login Succesfully");
         localStorage.removeItem("sessionUser");
-        const result = await response.json();
+        const result = await loginResponse.json();
         console.log(result.access_token)
         localStorage.setItem('access_token', result.access_token);
         localStorage.setItem('refresh_token', result.refresh_token);
