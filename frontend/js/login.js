@@ -37,40 +37,51 @@ function LoginFormListener() {
         console.log("User Login Succesfully");
         localStorage.removeItem("sessionUser");
         const result = await loginResponse.json();
-        console.log(result.access_token)
-        localStorage.setItem('access_token', result.access_token);
-        localStorage.setItem('refresh_token', result.refresh_token);
+        console.log(result.access_token);
+        localStorage.setItem("access_token", result.access_token);
+        localStorage.setItem("refresh_token", result.refresh_token);
 
         try {
-          const token = localStorage.getItem("access_token")
-          if (!token)
-          {
-            console.log("Token not found !")
-            return ;
-          }
-          else{
-              const response = await fetch("http://localhost:8000/session_user/", {
-                  method: "GET",
-                  headers: {
-                      "Authorization": `Bearer ${token}`,
-                  }
-              });
-              if (!response.ok) {
-                throw new Error("Failed to fetch user");
+          const token = localStorage.getItem("access_token");
+          if (!token) {
+            console.log("Token not found !");
+            return;
+          } else {
+            const response = await fetch(
+              "http://localhost:8000/session_user/",
+              {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
               }
-              const user = await response.json();
-              // console.log(user.access_token)
-              console.log(user.photo)
-                const sessionUser = {username: user.username, 
-                  email: user.email, nickiname: user.nickname, 
-                  friends: user.friends, online: user.online, photo: user.photo}
-                localStorage.setItem('sessionUser', JSON.stringify(sessionUser));
-              }
-            } catch (error) {
-              console.log("Error:", error);
+            );
+            if (!response.ok) {
+              throw new Error("Failed to fetch user");
             }
+            const user = await response.json();
+            // console.log(user.access_token)
+            console.log(user.photo);
 
-        renderPage("home");
+            const sessionUser = {
+              username: user.username,
+              email: user.email,
+              nickiname: user.nickname,
+              friends: user.friends,
+              online: user.online,
+              photo: user.photo,
+              two_fa_enable: user.two_fa_enable,
+            };
+            localStorage.setItem("sessionUser", JSON.stringify(sessionUser));
+            if (sessionUser.two_fa_enable) {
+              renderPage("verify2FA");
+            } else {
+              renderPage("home");
+            }
+          }
+        } catch (error) {
+          console.log("Error:", error);
+        }
       } else {
         const result = await loginResponse.json();
         errorMessage.textContent = result.message;
@@ -82,32 +93,6 @@ function LoginFormListener() {
       errorMessage.style.display = "block";
     }
   });
-}
-
-async function handleSuccessfulLogin(token) {
-  // Fetch the access token and user details
-  const tokenResponse = await fetch("http://localhost:8000/session_user/", {
-    method: "GET",
-    headers: {
-      "Authorization": `Bearer ${token}`,
-    },
-    credentials: "include",
-  });
-
-  if (tokenResponse.ok) {
-    const user = await tokenResponse.json();
-    const sessionUser = {
-      username: user.username,
-      email: user.email,
-      nickname: user.nickname,
-      friends: user.friends,
-      online: user.online,
-    };
-    localStorage.setItem("sessionUser", JSON.stringify(sessionUser));
-    renderPage("home");
-  } else {
-    throw new Error("Failed to fetch user details");
-  }
 }
 
 function togglePasswordVisibility() {

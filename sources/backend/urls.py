@@ -28,6 +28,8 @@ urlpatterns = [
     path('change_password/', app.views.change_password, name='change_password'),
     path('change_nick/', app.views.change_nick, name='change_nick'),
     path('check_token/', app.views.check_token, name='check_token'),
+    path('setup_2fa/', app.views.setup_2fa, name='setup_2fa'),
+    path('verify_2fa/', app.views.verify_2fa, name='verify_2fa'),
 
 ]
 if settings.DEBUG:

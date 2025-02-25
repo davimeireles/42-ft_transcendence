@@ -14,7 +14,7 @@ class User(AbstractUser):
     last_login = models.DateTimeField(blank=True, null=True, verbose_name='last login')
     photo = models.BooleanField(default=False)
     two_fa_enable = models.BooleanField(default=False) # True for test.
-    two_fa_secret = models.CharField(max_length=16, null=True, blank=True)
+    two_fa_secret = models.CharField(max_length=16, null=True, blank=True, default=False)
     online = models.BooleanField(default=False)
     friends = models.ManyToManyField(
         'self',
