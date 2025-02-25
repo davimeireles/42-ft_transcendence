@@ -39,27 +39,15 @@
         /* .game-mode:hover{
             background-color: #252525;
         } */
-        .friend-list {
+        .friend-online {
             text-align: center;
             background-color: #161616;
             padding: 15px;
-            height: 45%;
+            /* height: 45%; */
             border-radius: 10px;
         }
 
-        .friend-list:hover {
-            background-color: #252525;
-        }
-
-        .chat-box {
-            text-align: center;
-            background-color: #161616;
-            padding: 15px;
-            height: 44%;
-            border-radius: 10px;
-        }
-
-        .chat-box:hover {
+        .friend-online:hover {
             background-color: #252525;
         }
 
@@ -111,6 +99,7 @@
             color: #000000;
             background-color: rgb(255, 255, 255, 0.5);
             opacity: 0.8;
+            
 
         }
 
@@ -120,9 +109,9 @@
             background-color: rgb(255, 255, 255, 0.5);
             color: #000000;
             opacity: 0.8;
-
+            
         }
-
+        
         .remote:hover {
             cursor: pointer;
             background-color: rgb(255, 255, 255, 0.5);
@@ -139,7 +128,7 @@
         <!-- Sidebar -->
         <div class="col-md-2 sidebar me-3" style="border-radius: 10px;">
             <div class="img m-1">
-                <img src="media/default.jpg" alt="" style="border-radius: 50%;" width="60rem" height="60rem">
+                <img src="" alt="" style="border-radius: 50%;" width="60rem" height="60rem" id="profileImage">
             </div>
             <div class="col mt-5">
                 <h6 onclick="renderPage('profile')" style="cursor: pointer;">Profile</h6>
@@ -149,8 +138,6 @@
                 <h6 style="cursor: pointer;" onclick="renderPage('edit')">Setting</h6>
                 <br>
                 <h6 style="cursor: pointer;" onclick="logout()">Logout</h6>
-                <br>
-                <h6 style="cursor: pointer;" onclick="renderPage('chat')">Chat</h6>
             </div>
         </div>
         
@@ -158,50 +145,28 @@
         <div class="col" >
             <h1 id="welcome_user"></h1>
             <h4 id="mode"></h4>
-            <div class="game-mode">
-                <div class="container mt-4">
-                    <div class="row">
-                        <a href="/localgame">
-                            <div class="col local p-3 text-center" style="border-radius: 10px;">
-                                1V1 LOCAL
-                            </div>
-                        </a>
-                        <a href="/aigame">
-                            <div class="row mt-3">
-                                <div class="col ai p-3 text-center" style="border-radius: 10px;">
-                                    1V1 AI
-                                </div>
-                        </a>
-                    </div>
-                    <div class="row mt-3">
-                        <a href="/game3d">
-                            <div class="col remote p-3 text-center" style="border-radius: 10px;">
-                                1V1 3D
-                            </div>
-                        </a>
-                    </div>
+            <div class="game-mode d-flex flex-column align-items-center justify-content-center mt-4">
+                <div class="local p-3 text-center w-75" style="border-radius: 10px;" onclick="renderPage('localgame')">
                 </div>
-            </div>
+                <div class="ai p-3 text-center w-75 mt-3" style="border-radius: 10px;" onclick="renderPage('aigame')">
+                </div>
+                <div class="remote p-3 text-center w-75 mt-3" style="border-radius: 10px;" onclick="renderPage('remotegame')">
+                </div>
+            </div>            
         </div>
 
         <!-- Right Sidebar -->
         <div class="col-md-3">
             <div class="input-group mb-3">
-                <input id="user-search" class="form-control" placeholder="Search users" oninput="searchProfile()"
-                    autocomplete="off">
+                <input id="user-search" class="form-control" placeholder="Search users" oninput="searchProfile()" autocomplete="off">
             </div>
             <div id="results" style="cursor: pointer;"></div>
 
-            <div class="friend-list mb-3 mt-5">
-                <h5>Friend List</h5>
-                <ul id="friends-list">
-
-                </ul>
+            <div class="friend-online mb-3 mt-5">
+                <h5>Online Friends</h5>
+                <ul id="friends-online"></ul>
             </div>
 
-            <div class="chat-box">
-                <h5>Chat</h5>
-            </div>
         </div>
     </div>
     </div>

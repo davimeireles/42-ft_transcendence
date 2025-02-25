@@ -21,8 +21,11 @@ from rest_framework.permissions import IsAuthenticated
 import urllib.parse
 from django.forms.models import model_to_dict
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework_simplejwt.exceptions import TokenError
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 # from rest_framework_simplejwt.authentication import JWTAuthentication
-
 
 @api_view(['POST'])
 def user_signin(request):
@@ -32,6 +35,8 @@ def user_signin(request):
     user = authenticate(request, username=username, password=password)
     if user is not None:
         login(request, user)
+        user.online = True
+        user.save()
         refresh = RefreshToken.for_user(user)
         access_token = str(refresh.access_token)
         refresh_token = str(refresh)
@@ -136,6 +141,9 @@ def oauth42(request):
         # Check if the user already exists in the database
         if User.objects.filter(username=user_data['login']).exists():
             user = User.objects.get(username=user_data['login'])
+            user.photo = True
+            user.online=True
+            user.save()
             refresh = RefreshToken.for_user(user)
             access_token = str(refresh.access_token)
             refresh_token = str(refresh)
@@ -160,17 +168,19 @@ def oauth42(request):
                 username=user_data['login'],
                 nickname=user_data['login'],
                 email=user_data['email'],
-                photo=f'{user_data["login"]}.jpg'
+                photo=True,
+                online=True
             )
             if created:
                 user.set_unusable_password()
                 user.save()
-                folder_path = settings.MEDIA_ROOT
-                if not os.path.exists(folder_path):
-                    os.makedirs(folder_path)
-                image_path = os.path.join(folder_path, f'{user_data["login"]}.jpg')
-                with open(image_path, 'wb') as file:
-                    file.write(requests.get(user_data['image']['versions']['small']).content)
+                if not os.path.exists(settings.MEDIA_ROOT):
+                    os.makedirs(settings.MEDIA_ROOT)
+
+                new_filename = f"{user_data['login']}.jpg"
+                file_path = os.path.join(settings.MEDIA_ROOT, new_filename)
+                with open(file_path, 'wb') as file:
+                    file.write(requests.get(user_data['image']['versions']['large']).content)
                 refresh = RefreshToken.for_user(user)
                 access_token = str(refresh.access_token)
                 refresh_token = str(refresh)
@@ -208,11 +218,9 @@ def get_user(request, str_user):
         if User.objects.filter(username=str_user).exists():
             user = User.objects.get(username=str_user)
             friends = user.friends.all()
-            friends_data = [{"username": friend.username, "email": friend.email, "nickname": friend.nickname} for friend in friends]
-            user_data = model_to_dict(user, fields=['nickname', 'username', 'email'])
+            friends_data = [{"username": friend.username, "email": friend.email, "nickname": friend.nickname, 'photo': friend.photo} for friend in friends]
+            user_data = model_to_dict(user, fields=['nickname', 'username', 'email', 'photo', 'online'])
             user_data['friends'] = friends_data
-            if user.photo:
-                user_data['photo'] = user.photo.url
             return JsonResponse(user_data)
         else:
             return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
@@ -224,7 +232,7 @@ def session_user(request):
     user = request.user
     friends = user.friends.all()
     friends_data = [{"username": friend.username, "email": friend.email, "nickname": friend.nickname} for friend in friends]
-    return Response({"email": user.email, "username": user.username, "nickname": user.nickname, "friends": friends_data, "online": user.online})
+    return Response({"email": user.email, "username": user.username, "nickname": user.nickname, "friends": friends_data, "online": user.online, "photo": user.photo})
 
 @api_view(['POST'])
 # @permission_classes([IsAuthenticated])
@@ -233,6 +241,8 @@ def logout(request):
         refresh_token = request.data.get("refresh_token")
         if not refresh_token:
             return Response({"message": "No refresh token provided"}, status=status.HTTP_400_BAD_REQUEST)
+        request.user.online=False
+        request.user.save()
         token = RefreshToken(refresh_token)
         token.blacklist()
         response = Response({"message": "Successfully logged out"}, status=status.HTTP_200_OK)
@@ -275,65 +285,84 @@ def change_username(request):
     if User.objects.filter(username=data).exists():
         return Response({"message": "Username already taken"}, status=status.HTTP_400_BAD_REQUEST)
     try:
+        user = User.objects.get(username=name)
+        user.username = data
+        user.save()
+        old_filename = f"{name}.jpg"
+        old_file_path = os.path.join(settings.MEDIA_ROOT, old_filename)
+        new_filename = f"{data}.jpg"
+        new_file_path = os.path.join(settings.MEDIA_ROOT, new_filename)
+        if os.path.exists(old_file_path):
+            try:
+                os.rename(old_file_path, new_file_path)
+            except Exception as e:
+                return Response({'message': f'Error renaming file: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({'message': 'Changed Username'}, status=status.HTTP_200_OK)
+    except User.DoesNotExist:
+        return Response({'message': 'Error: User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['POST'])
+def change_nick(request):
+    name = request.data.get('user')
+    data = request.data.get('nick')
+    if User.objects.filter(nickname=data).exists():
+        return Response({"message": "Username already taken"}, status=status.HTTP_400_BAD_REQUEST)
+    try:
             user = User.objects.get(username=name)
-            user.username = data
+            user.nickname = data
             user.save()
             return Response({'message': 'Changed Username'}, status=status.HTTP_200_OK)
     except User.DoesNotExist:
             return Response({'message': 'Error'}, status=status.HTTP_404_NOT_FOUND)
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def check_2fa_status(request):
-    if request.user.is_authenticated:
-        return JsonResponse({'two_fa_enable': request.user.two_fa_enable})
-    else:
-        return JsonResponse({'error': 'User not authenticated'}, status=401)
 
-        
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def setup_2fa(request):
-    user = request.user
-    if not user.two_fa_secret:
-        user.two_fa_secret = pyotp.random_base32()
-        user.save()
-    
-    otp_uri = pyotp.totp.TOTP(user.two_fa_secret).provisioning_uri(
-        name=user.username,
-        issuer_name='Django 2FA'   
-    )
-    
-    qr = qrcode.make(otp_uri)
-    buffer = io.BytesIO()
-    qr.save(buffer, format='PNG')
+def upload_photo(request):
+    uploaded_file = request.FILES.get('file')
 
-    buffer.seek(0)
-    qr_code = base64.base64encode(buffer.getvalue()).decode("utf-8")
-    
-    qr_code_data_uri = f"data:image/png;base64,{qr_code}"
-    return JsonResponse({'qr_code': qr_code_data_uri, 'otp_secret': user.two_fa_secret})
-    
+    if not uploaded_file:
+        return Response({"error": "No file uploaded"}, status=status.HTTP_400_BAD_REQUEST)
+
+    username = request.user.username 
+    request.user.photo = True
+    request.user.save()
+    if not os.path.exists(settings.MEDIA_ROOT):
+        os.makedirs(settings.MEDIA_ROOT)
+
+    new_filename = f"{username}.jpg"
+    file_path = os.path.join(settings.MEDIA_ROOT, new_filename)
+
+    with open(file_path, "wb") as f:
+        for chunk in uploaded_file.chunks():
+            f.write(chunk)
+
+    if not os.path.exists(file_path):
+        return Response({"error": "File was not saved"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    file_url = f"{settings.MEDIA_URL}{new_filename}"
+
+    return JsonResponse({"message": "File uploaded successfully", "file_url": file_url})
+
+
 @api_view(['POST'])
-def verify_2fa(request):
-    if request.method == 'POST':
-        user = request.user
-        otp = request.POST.get('otp')
-        
-        totp = pyotp.TOTP(user.otp_secret)
-        if totp.verify(otp):
-            user.two_fa_enable = True
-            user.save()
-            return JsonResponse({'status': 'success'})
-        else:
-            return JsonResponse({'status': 'failed'}, status=400)
+def change_password(request):
+    psw = request.data.get('password')
     
-@api_view(['POST'])
-def remove_2fa(request):
-    if request.method == 'POST':
-        user = request.user
-        user.two_fa_enable = False
+    if not psw:
+        return Response({'message': 'Password is required'}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        user = User.objects.get(username=request.user.username)
+        user.set_password(psw)
         user.save()
-        return JsonResponse({'status': 'success'})
-    else:
-        return JsonResponse({'error': '2FA already disabled'}, status=400)
+        return Response({'message': 'Password changed successfully'}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'message': 'Error changing password', 'error': str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+    
+@api_view(['POST'])
+def check_token(request):
+    try:
+        access_token = AccessToken(request.data.get('token'))
+        return Response({"valid": True}, status=200)
+    except TokenError:
+        return Response({"valid": False}, status=401)

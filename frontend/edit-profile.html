@@ -10,6 +10,28 @@
             </div>
             <button type="submit" class="btn btn-custom w-100">Edit Profile</button>
         </form>
+        <form id="nickForm">
+            <div class="mb-3">
+                <label for="nick" class="form-label">Change Nickname</label>
+                <input type="text" class="form-control" id="changeNick" minlength="3" maxlength="128" required
+                    title="Nickname must be between 3 and 128 characters.">
+            </div>
+            <button type="submit" class="btn btn-custom w-100">Edit Profile</button>
+        </form>
+        <form id="passwordForm">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="Password" minlength="8" maxlength="128" required
+            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}"
+            title="Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.">
+            <label for="confirmPassword" class="form-label">Confirm Password</label>
+            <input type="password" class="form-control" id="RepeatPassword" minlength="8" maxlength="128"
+            required title="Please enter the same password as above.">
+            <button type="submit" class="btn btn-custom w-100">Submit</button>
+        </form>
+        <form id="photoForm">
+            <input type="file" id="myFile" name="filename">
+            <button type="submit" class="btn btn-custom w-100">Submit</button>
+        </form>
     </div>
     
 </div>

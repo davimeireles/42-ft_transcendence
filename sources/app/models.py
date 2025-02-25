@@ -12,10 +12,10 @@ class User(AbstractUser):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     last_login = models.DateTimeField(blank=True, null=True, verbose_name='last login')
-    photo = models.ImageField(upload_to='photos/', null=True, blank=True)
+    photo = models.BooleanField(default=False)
     two_fa_enable = models.BooleanField(default=False) # True for test.
     two_fa_secret = models.CharField(max_length=16, null=True, blank=True)
-    online = models.BooleanField(default=True)
+    online = models.BooleanField(default=False)
     friends = models.ManyToManyField(
         'self',
         related_name='friend',

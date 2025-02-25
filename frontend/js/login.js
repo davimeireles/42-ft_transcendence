@@ -33,34 +33,44 @@ function LoginFormListener() {
         credentials: "include",
       });
 
-      if (loginResponse.ok) {
-        console.log("User logged in successfully");
+      if (response.ok) {
+        console.log("User Login Succesfully");
+        localStorage.removeItem("sessionUser");
+        const result = await response.json();
+        console.log(result.access_token)
+        localStorage.setItem('access_token', result.access_token);
+        localStorage.setItem('refresh_token', result.refresh_token);
 
-        // Step 2: Check if 2FA is enabled
-        const loginData = await loginResponse.json();
-        const token = loginData.access_token;
-
-        const check2FAResponse = await fetch("http://localhost:8000/check-2fa-status/", {
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-          },
-          credentials: "include",
-        });
-
-        if (check2FAResponse.ok) {
-          const check2FAData = await check2FAResponse.json();
-
-          if (check2FAData.two_fa_enable) {
-            // Step 3: Redirect to 2FA verification page
-            renderPage('two_fa_verification');
-          } else {
-            // Step 4: Proceed to home page if 2FA is not enabled
-            handleSuccessfulLogin(token);
+        try {
+          const token = localStorage.getItem("access_token")
+          if (!token)
+          {
+            console.log("Token not found !")
+            return ;
           }
-        } else {
-          throw new Error("Failed to check 2FA status");
-        }
+          else{
+              const response = await fetch("http://localhost:8000/session_user/", {
+                  method: "GET",
+                  headers: {
+                      "Authorization": `Bearer ${token}`,
+                  }
+              });
+              if (!response.ok) {
+                throw new Error("Failed to fetch user");
+              }
+              const user = await response.json();
+              // console.log(user.access_token)
+              console.log(user.photo)
+                const sessionUser = {username: user.username, 
+                  email: user.email, nickiname: user.nickname, 
+                  friends: user.friends, online: user.online, photo: user.photo}
+                localStorage.setItem('sessionUser', JSON.stringify(sessionUser));
+              }
+            } catch (error) {
+              console.log("Error:", error);
+            }
+
+        renderPage("home");
       } else {
         const result = await loginResponse.json();
         errorMessage.textContent = result.message;

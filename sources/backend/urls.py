@@ -24,11 +24,11 @@ urlpatterns = [
     path('remove_user/', app.views.remove_user, name='remove_user'),
     path('change_username/', app.views.change_username, name='change_username'),
     path('logout/', app.views.logout, name='logout'),
-    path('check-2fa-status/', app.views.check_2fa_status, name='check_2fa_status'),
-    path('setup-2fa/', app.views.setup_2fa, name='setup_2fa'),
-    path('verify-2fa/', app.views.verify_2fa, name='verify_2fa'),
-    path('remove-2fa/', app.views.remove_2fa, name='remove_2fa'),
-]
+    path('upload_photo/', app.views.upload_photo, name='upload_photo'),
+    path('change_password/', app.views.change_password, name='change_password'),
+    path('change_nick/', app.views.change_nick, name='change_nick'),
+    path('check_token/', app.views.check_token, name='check_token'),
 
+]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

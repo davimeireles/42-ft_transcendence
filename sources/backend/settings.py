@@ -20,8 +20,9 @@ from datetime import timedelta
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+# BASE_DIR = Path(__file__).resolve().parent.parent
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 AUTH_USER_MODEL = 'app.User'
 
 # Quick-start development settings - unsuitable for production
@@ -38,7 +39,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'daphne',
+    # 'daphne',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -55,7 +56,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt.token_blacklist",
     'app',
     'allauth',
-    'channels',
+    # 'channels',
 ]
 
 MIDDLEWARE = [
@@ -88,16 +89,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'backend.wsgi.application'
-ASGI_APPLICATION = 'backend.asgi.application'
+# ASGI_APPLICATION = 'backend.asgi.application'
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],  # Adjust for your Redis server
-        },
-    },
-}
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [("127.0.0.1", 6379)],  # Adjust for your Redis server
+#         },
+#     },
+# }
 
 
 # Database
@@ -157,7 +158,7 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'photos')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'frontend/media')
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
@@ -193,3 +194,4 @@ ALLOWED_HOSTS.append('127.0.0.1')
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
+
