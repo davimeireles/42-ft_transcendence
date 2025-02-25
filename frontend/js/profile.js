@@ -114,7 +114,7 @@ async function add_remove_friend(){
             const user = await response.json();
               const sessionUser = {username: user.username, 
                 email: user.email, nickiname: user.nickname, 
-                friends: user.friends, online: user.online}
+                friends: user.friends, online: user.online, photo: user.photo}
               localStorage.setItem('sessionUser', JSON.stringify(sessionUser));
             }
           } catch (error) {

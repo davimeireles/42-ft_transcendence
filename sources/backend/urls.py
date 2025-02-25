@@ -27,6 +27,8 @@ urlpatterns = [
     path('upload_photo/', app.views.upload_photo, name='upload_photo'),
     path('change_password/', app.views.change_password, name='change_password'),
     path('change_nick/', app.views.change_nick, name='change_nick'),
+    path('check_token/', app.views.check_token, name='check_token'),
+
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

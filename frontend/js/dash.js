@@ -1,6 +1,8 @@
 const renderUser = async () => {
     const imageTag = document.getElementById("profileImage")
     const session_user = JSON.parse(localStorage.getItem('sessionUser'))
+    console.log(session_user.username)
+    console.log(session_user.photo)
     if (imageTag && session_user.photo){
         imageTag.src = `http://localhost:8000/media/${session_user.username}.jpg`;
     }else{
@@ -14,7 +16,7 @@ const renderUser = async () => {
         mode.innerHTML= `Select game mode`;
     const friends = session_user.friends
     console.log(document.getElementById('friends-online'))
-    if (friends && friends.length > 0) {
+    if (friends && friends.length > 0 && friends.online) {
         friends.forEach(friend => {
             const friends_list = document.getElementById('friends-online');
             const friendItem = document.createElement("li");

@@ -18,6 +18,8 @@ from django.http import HttpResponse, JsonResponse
 import urllib.parse
 from django.forms.models import model_to_dict
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework_simplejwt.exceptions import TokenError
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 # from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -280,12 +282,22 @@ def change_username(request):
     if User.objects.filter(username=data).exists():
         return Response({"message": "Username already taken"}, status=status.HTTP_400_BAD_REQUEST)
     try:
-            user = User.objects.get(username=name)
-            user.username = data
-            user.save()
-            return Response({'message': 'Changed Username'}, status=status.HTTP_200_OK)
+        user = User.objects.get(username=name)
+        user.username = data
+        user.save()
+        old_filename = f"{name}.jpg"
+        old_file_path = os.path.join(settings.MEDIA_ROOT, old_filename)
+        new_filename = f"{data}.jpg"
+        new_file_path = os.path.join(settings.MEDIA_ROOT, new_filename)
+        if os.path.exists(old_file_path):
+            try:
+                os.rename(old_file_path, new_file_path)
+            except Exception as e:
+                return Response({'message': f'Error renaming file: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({'message': 'Changed Username'}, status=status.HTTP_200_OK)
     except User.DoesNotExist:
-            return Response({'message': 'Error'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'message': 'Error: User not found'}, status=status.HTTP_404_NOT_FOUND)
+
 
 @api_view(['POST'])
 def change_nick(request):
@@ -309,10 +321,9 @@ def upload_photo(request):
     if not uploaded_file:
         return Response({"error": "No file uploaded"}, status=status.HTTP_400_BAD_REQUEST)
 
-    username = request.user.username  # Assuming Django authentication is used
+    username = request.user.username 
     request.user.photo = True
     request.user.save()
-    # Ensure the media directory exists
     if not os.path.exists(settings.MEDIA_ROOT):
         os.makedirs(settings.MEDIA_ROOT)
 
@@ -326,7 +337,7 @@ def upload_photo(request):
     if not os.path.exists(file_path):
         return Response({"error": "File was not saved"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    file_url = f"{settings.MEDIA_URL}{new_filename}"  # Relative media URL
+    file_url = f"{settings.MEDIA_URL}{new_filename}"
 
     return JsonResponse({"message": "File uploaded successfully", "file_url": file_url})
 
@@ -335,7 +346,7 @@ def upload_photo(request):
 def change_password(request):
     psw = request.data.get('password')
     
-    if not psw:  # Ensure password is provided
+    if not psw:
         return Response({'message': 'Password is required'}, status=status.HTTP_400_BAD_REQUEST)
     try:
         user = User.objects.get(username=request.user.username)
@@ -344,3 +355,11 @@ def change_password(request):
         return Response({'message': 'Password changed successfully'}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'message': 'Error changing password', 'error': str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+    
+@api_view(['POST'])
+def check_token(request):
+    try:
+        access_token = AccessToken(request.data.get('token'))
+        return Response({"valid": True}, status=200)
+    except TokenError:
+        return Response({"valid": False}, status=401)

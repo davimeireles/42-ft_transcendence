@@ -50,7 +50,7 @@ function LoginFormListener() {
               const response = await fetch("http://localhost:8000/session_user/", {
                   method: "GET",
                   headers: {
-                      "Authorization": `Bearer ${token}`,  // Send token in headers
+                      "Authorization": `Bearer ${token}`,
                   }
               });
               if (!response.ok) {
