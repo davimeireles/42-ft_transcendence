@@ -1,3 +1,4 @@
+import pyotp
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -13,6 +14,7 @@ class User(AbstractUser):
     last_login = models.DateTimeField(blank=True, null=True, verbose_name='last login')
     photo = models.ImageField(upload_to='photos/', null=True, blank=True)
     two_fa_enable = models.BooleanField(default=False) # True for test.
+    two_fa_secret = models.CharField(max_length=16, null=True, blank=True)
     online = models.BooleanField(default=True)
     friends = models.ManyToManyField(
         'self',
@@ -20,6 +22,15 @@ class User(AbstractUser):
         symmetrical=False,
         blank=True
     )
+    otp_secret = models.CharField(max_length=32, default=pyotp.random_base32)
+    
+    def get_otp_uri(self):
+        """Generate the OTP URI for the user."""
+        return pyotp.totp.TOTP(self.otp_secret).provisioning_uri(
+            name=self.email,
+            issuer_name='app'
+        )
+    
     def add_friend(self, user):
         """Add friend another user."""
         if user not in self.friends.all():
@@ -52,8 +63,3 @@ class MatchParticipant(models.Model):
     userID = User.id
     score = models.IntegerField(null=True)
     
-class TwoFactorAuth(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    verification_code = models.CharField(max_length=6)
-    expiration_time = models.DateTimeField()
-    is_verified = models.BooleanField(default=False)

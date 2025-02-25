@@ -14,8 +14,8 @@ const router = {
     profile: "/profile.html",
     profiles: "/profiles.html",
     edit: "/edit-profile.html",
-    chat: "/chat.html"
-
+    chat: "/chat.html",
+    two_fa_verification: "/2fa-verification.html",
   },
 };
 
@@ -32,7 +32,9 @@ async function renderPage(page) {
     window.location.href = "/login"; // Redirect to login page
     return;
   }
+
   if (router.currentPage === page) return;
+
   try {
     // Load the new page
     const mainContent = document.getElementById("main-content");
@@ -41,28 +43,44 @@ async function renderPage(page) {
     mainContent.innerHTML = html;
 
     console.log(page);
-    if (page === "register") {
-        RegisterFormListener();
-      } else if (page === "login") {
-        LoginFormListener();
-      } else if (page === "intro") {
-        createBouncingBallBackground();
-      } else if (page === "localgame") {
-        renderPongGame();
-      } else if (page == "home"){
-        renderUser();
-      }else if (page == "profile"){
-        renderProfile();
-      }else if (page == "profiles"){
-        renderProfiles();
-      }else if (page == "edit"){
-        UsernameForm();
-      }else if (page === 'chat'){
-        chat();
-      } else if (page == 'game3d') {
-        initialize3DPong();
-      }
 
+    // Call the appropriate function based on the page
+    switch (page) {
+      case "register":
+        RegisterFormListener();
+        break;
+      case "login":
+        LoginFormListener();
+        break;
+      case "intro":
+        createBouncingBallBackground();
+        break;
+      case "localgame":
+        renderPongGame();
+        break;
+      case "home":
+        renderUser();
+        break;
+      case "profile":
+        renderProfile();
+        break;
+      case "profiles":
+        renderProfiles();
+        break;
+      case "edit":
+        UsernameForm();
+        break;
+      case "chat":
+        chat();
+        break;
+      case "game3d":
+        initialize3DPong();
+        break;
+      default:
+        console.warn(`No specific function defined for page: ${page}`);
+    }
+
+    // Update history and current page
     history.pushState({ page: page }, "", `/${page}`);
     router.currentPage = page;
   } catch (error) {
@@ -83,4 +101,3 @@ window.addEventListener("load", () => {
   const initialPage = window.location.pathname.slice(1) || "intro";
   renderPage(initialPage);
 });
-

@@ -1,8 +1,12 @@
+import os
+import io
+import pyotp
+import qrcode
+import base64
 import requests
-import os, sys
 from app.models import User
-from pathlib import Path
 from django.conf import settings
+from django.http import JsonResponse
 from django.contrib.auth import login
 from django.contrib.auth import authenticate
 from rest_framework import status
@@ -11,7 +15,6 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
 # from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse
 # from django.utils import timezone
 # from app.forms import CustomUserForm, LoginForm
 # from app.utils.send_email import send_verification_email
@@ -278,3 +281,59 @@ def change_username(request):
             return Response({'message': 'Changed Username'}, status=status.HTTP_200_OK)
     except User.DoesNotExist:
             return Response({'message': 'Error'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def check_2fa_status(request):
+    if request.user.is_authenticated:
+        return JsonResponse({'two_fa_enable': request.user.two_fa_enable})
+    else:
+        return JsonResponse({'error': 'User not authenticated'}, status=401)
+
+        
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def setup_2fa(request):
+    user = request.user
+    if not user.two_fa_secret:
+        user.two_fa_secret = pyotp.random_base32()
+        user.save()
+    
+    otp_uri = pyotp.totp.TOTP(user.two_fa_secret).provisioning_uri(
+        name=user.username,
+        issuer_name='Django 2FA'   
+    )
+    
+    qr = qrcode.make(otp_uri)
+    buffer = io.BytesIO()
+    qr.save(buffer, format='PNG')
+
+    buffer.seek(0)
+    qr_code = base64.base64encode(buffer.getvalue()).decode("utf-8")
+    
+    qr_code_data_uri = f"data:image/png;base64,{qr_code}"
+    return JsonResponse({'qr_code': qr_code_data_uri, 'otp_secret': user.two_fa_secret})
+    
+@api_view(['POST'])
+def verify_2fa(request):
+    if request.method == 'POST':
+        user = request.user
+        otp = request.POST.get('otp')
+        
+        totp = pyotp.TOTP(user.otp_secret)
+        if totp.verify(otp):
+            user.two_fa_enable = True
+            user.save()
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'failed'}, status=400)
+    
+@api_view(['POST'])
+def remove_2fa(request):
+    if request.method == 'POST':
+        user = request.user
+        user.two_fa_enable = False
+        user.save()
+        return JsonResponse({'status': 'success'})
+    else:
+        return JsonResponse({'error': '2FA already disabled'}, status=400)
