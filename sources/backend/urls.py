@@ -24,19 +24,11 @@ urlpatterns = [
     path('remove_user/', app.views.remove_user, name='remove_user'),
     path('change_username/', app.views.change_username, name='change_username'),
     path('logout/', app.views.logout, name='logout'),
-
-
+    path('check-2fa-status/', app.views.check_2fa_status, name='check_2fa_status'),
+    path('setup-2fa/', app.views.setup_2fa, name='setup_2fa'),
+    path('verify-2fa/', app.views.verify_2fa, name='verify_2fa'),
+    path('remove-2fa/', app.views.remove_2fa, name='remove_2fa'),
 ]
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-# urlpatterns = [
-#     path('admin/', admin.site.urls),
-#     path('', views.render_home_page),
-#     path('register/', views.register_user, name='register_user'),
-#     path('login/', views.login_user, name='login_user'),
-#     path('api/', include('api.urls')),
-#     path('chat/', livechat.views.chat, name='chat'),
-#     path('logout/', views.logout_user, name='logout_user'),
-#     path('verify-2fa/', views.verify_2fa, name='verify_2fa'),
-# ] 

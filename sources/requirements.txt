@@ -12,5 +12,7 @@ Pillow>=11.1
 daphne>=4.1.2
 channels>=4.2.0
 redis>=5.2.1
-sendgrid>=6.11
 djangorestframework-simplejwt==5.4
+django-otp>=1.5.4
+pyotp>=2.9.0
+qrcode>=8.0

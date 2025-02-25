@@ -1,4 +1,5 @@
 console.log("Loaded login.js");
+
 function LoginFormListener() {
   const form = document.getElementById("loginForm");
 
@@ -24,50 +25,44 @@ function LoginFormListener() {
     const data = { username: username, password: password };
 
     try {
-      const response = await fetch("http://localhost:8000/login/", {
+      // Step 1: Perform login
+      const loginResponse = await fetch("http://localhost:8000/login/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
         credentials: "include",
       });
 
-      if (response.ok) {
-        console.log("User Login Succesfully");
-        localStorage.removeItem("sessionUser");
-        const result = await response.json();
-        console.log(result.access_token)
-        localStorage.setItem('access_token', result.access_token);
-        try {
-          const token = localStorage.getItem("access_token")
-          if (!token)
-          {
-            console.log("Token not found !")
-            return ;
-          }
-          else{
-              const response = await fetch("http://localhost:8000/session_user/", {
-                  method: "GET",
-                  headers: {
-                      "Authorization": `Bearer ${token}`,  // Send token in headers
-                  }
-              });
-              if (!response.ok) {
-                throw new Error("Failed to fetch user");
-              }
-              const user = await response.json();
-              // console.log(user.access_token)
-                const sessionUser = {username: user.username, 
-                  email: user.email, nickiname: user.nickname, 
-                  friends: user.friends, online: user.online}
-                localStorage.setItem('sessionUser', JSON.stringify(sessionUser));
-              }
-            } catch (error) {
-              console.log("Error:", error);
-            }
+      if (loginResponse.ok) {
+        console.log("User logged in successfully");
 
-        renderPage("home");
+        // Step 2: Check if 2FA is enabled
+        const loginData = await loginResponse.json();
+        const token = loginData.access_token;
+
+        const check2FAResponse = await fetch("http://localhost:8000/check-2fa-status/", {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+          credentials: "include",
+        });
+
+        if (check2FAResponse.ok) {
+          const check2FAData = await check2FAResponse.json();
+
+          if (check2FAData.two_fa_enable) {
+            // Step 3: Redirect to 2FA verification page
+            renderPage('two_fa_verification');
+          } else {
+            // Step 4: Proceed to home page if 2FA is not enabled
+            handleSuccessfulLogin(token);
+          }
+        } else {
+          throw new Error("Failed to check 2FA status");
+        }
       } else {
-        const result = await response.json();
+        const result = await loginResponse.json();
         errorMessage.textContent = result.message;
         errorMessage.style.display = "block";
       }
@@ -77,6 +72,32 @@ function LoginFormListener() {
       errorMessage.style.display = "block";
     }
   });
+}
+
+async function handleSuccessfulLogin(token) {
+  // Fetch the access token and user details
+  const tokenResponse = await fetch("http://localhost:8000/session_user/", {
+    method: "GET",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+    },
+    credentials: "include",
+  });
+
+  if (tokenResponse.ok) {
+    const user = await tokenResponse.json();
+    const sessionUser = {
+      username: user.username,
+      email: user.email,
+      nickname: user.nickname,
+      friends: user.friends,
+      online: user.online,
+    };
+    localStorage.setItem("sessionUser", JSON.stringify(sessionUser));
+    renderPage("home");
+  } else {
+    throw new Error("Failed to fetch user details");
+  }
 }
 
 function togglePasswordVisibility() {
