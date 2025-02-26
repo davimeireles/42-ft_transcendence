@@ -5,7 +5,6 @@
 }
 
 .card {
-    background-color: #0d0d0d !important;
     border: 2px solid #00ff00;
     box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
 }
@@ -25,7 +24,6 @@
 }
 
 .form-control {
-    background-color: #1a1a1a;
     border: 1px solid #00ff00;
     color: white;
     font-family: 'Press Start 2P', cursive;
@@ -34,13 +32,11 @@
 }
 
 .form-control:focus {
-    border-color: black;
     box-shadow: 0 0 5px black, 0 0 10px black;
     outline: none;
 }
 
 .btn-custom {
-    background-color: #0d0d0d;
     border: 2px solid #00ff00;
     color: #00ff00;
     font-family: 'Press Start 2P', cursive;
@@ -51,7 +47,6 @@
 
 .btn-custom:hover {
     background-color: #00ff00;
-    color: #0d0d0d;
     border-color: black;
     transform: scale(1.05);
 }
