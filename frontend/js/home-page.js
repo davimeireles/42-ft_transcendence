@@ -5,6 +5,8 @@ function createBouncingBallBackground() {
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     
+    scene.background = new THREE.Color(0x151314);
+
     const pongBackground = document.getElementById('pong-background');
 
     if (pongBackground)
@@ -17,8 +19,8 @@ function createBouncingBallBackground() {
         scene.add(light);
     
         // Create a ball
-        const ballGeometry = new THREE.SphereGeometry(0.5, 32, 32);
-        const ballMaterial = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
+        const ballGeometry = new THREE.SphereGeometry(0.5, 32, 32, 0, 6.283185307179586, 0, 3.141592653589793);
+        const ballMaterial = new THREE.MeshPhongMaterial({ color: 0xff0000 });
         const ball = new THREE.Mesh(ballGeometry, ballMaterial);
         scene.add(ball);
     

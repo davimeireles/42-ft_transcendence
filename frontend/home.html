@@ -1,128 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Game Mode Selection</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #000000;
-            color: #fff;
-        }
-
-        .container-custom {
-            /* max-width: 1000px; */
-            margin: auto;
-        }
-
-        .sidebar {
-            background-color: #161616;
-            padding: 18px;
-            /* border-right: 2px solid #ddd; */
-            text-align: center;
-        }
-
-        .sidebar:hover {
-            background-color: #252525;
-        }
-
-        .game-mode {
-            background-color: #161616;
-            /* paddin: 18px; */
-            border-radius: 10px;
-            text-align: center;
-            height: 86vh;
-        }
-
-        /* .game-mode:hover{
-            background-color: #252525;
-        } */
-        .friend-online {
-            text-align: center;
-            background-color: #161616;
-            padding: 15px;
-            /* height: 45%; */
-            border-radius: 10px;
-        }
-
-        .friend-online:hover {
-            background-color: #252525;
-        }
-
-        .local {
-            cursor: pointer;
-            background-color: #252525;
-            height: 26vh;
-            padding: 10px;
-            margin: 0.3rem;
-            background-image: url('media/0730933b-0177-4460-b723-05b371fd31f7.jpg');
-            background-size: cover;
-            /* Ensures the image covers the entire div */
-            background-position: center;
-            /* Centers the image */
-            background-repeat: no-repeat;
-            /* Prevents tiling */
-        }
-
-        .remote {
-            cursor: pointer;
-            background-color: #252525;
-            height: 26vh;
-            padding: 10px;
-            margin: 0.3rem;
-            background-image: url('media/remotee.png');
-            background-size: cover;
-            /* Ensures the image covers the entire div */
-            background-position: center;
-            /* Centers the image */
-            background-repeat: no-repeat;/
-        }
-
-        .ai {
-            cursor: pointer;
-            background-image: url('media/00486486-e0ac-4da8-80eb-3b4bf0dfb4b5.jpg');
-            background-size: cover;
-            /* Ensures the image covers the entire div */
-            background-position: center;
-            /* Centers the image */
-            background-repeat: no-repeat;
-            background-color: #252525;
-            height: 26vh;
-            padding: 10px;
-            margin: 0.3rem;
-        }
-
-        .local:hover {
-            cursor: pointer;
-            color: #000000;
-            background-color: rgb(255, 255, 255, 0.5);
-            opacity: 0.8;
-            
-
-        }
-
-        .ai:hover {
-            cursor: pointer;
-            /* background-image: url('media/image.png'); */
-            background-color: rgb(255, 255, 255, 0.5);
-            color: #000000;
-            opacity: 0.8;
-            
-        }
-        
-        .remote:hover {
-            cursor: pointer;
-            background-color: rgb(255, 255, 255, 0.5);
-            color: #000000;
-            opacity: 0.8;
-        }
-    </style>
-</head>
-
-<body>
-
 <div class="container-custom m-4">
     <div class="row">
         <!-- Sidebar -->
@@ -140,9 +15,9 @@
                 <h6 style="cursor: pointer;" onclick="logout()">Logout</h6>
             </div>
         </div>
-        
+
         <!-- Main Content -->
-        <div class="col" >
+        <div class="col">
             <h1 id="welcome_user"></h1>
             <h4 id="mode"></h4>
             <div class="game-mode d-flex flex-column align-items-center justify-content-center mt-4">
@@ -150,15 +25,17 @@
                 </div>
                 <div class="ai p-3 text-center w-75 mt-3" style="border-radius: 10px;" onclick="renderPage('aigame')">
                 </div>
-                <div class="remote p-3 text-center w-75 mt-3" style="border-radius: 10px;" onclick="renderPage('remotegame')">
+                <div class="remote p-3 text-center w-75 mt-3" style="border-radius: 10px;"
+                    onclick="renderPage('remotegame')">
                 </div>
-            </div>            
+            </div>
         </div>
 
         <!-- Right Sidebar -->
         <div class="col-md-3">
             <div class="input-group mb-3">
-                <input id="user-search" class="form-control" placeholder="Search users" oninput="searchProfile()" autocomplete="off">
+                <input id="user-search" class="form-control" placeholder="Search users" oninput="searchProfile()"
+                    autocomplete="off">
             </div>
             <div id="results" style="cursor: pointer;"></div>
 
@@ -169,8 +46,4 @@
 
         </div>
     </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-
-</html>
+</div>
