@@ -1,21 +1,19 @@
-<link rel="stylesheet" href="css/local-game.css">
-<nav class="navbar navbar-expand-sm navbar-dark">
+<nav class="navbar navbar-expand-sm" style="background: #660A8A;">
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav me-auto">
             <li class="nav-item">
-                <a class="nav-link" href="#">Games</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Tournaments</a>
+                <a class="nav-link"
+                style="background-color: #660A8A; font-family: 'square'; font-size: 2rem; color: #F9EAFF;"
+                href="/home">Home</a>
             </li>
         </ul>
         <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-                <img src="media/default.jpg" alt="" style="border-radius: 50%;" width="60rem" height="60rem">
+                <img src="media/default.jpg" alt="" style="border-radius: 50%; margin-right: 10px;" width="60rem" height="60rem">
             </li>
         </ul>
     </div>
 </nav>
-<div class="main-board">
-    <canvas id="board"></canvas>
+<div class="main-board" style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #151314;">
+    <canvas id="board" style="width: 70%; height: 50%; border-top: 5px solid #b700ff; border-bottom: 5px solid #b700ff;"></canvas>
 </div>

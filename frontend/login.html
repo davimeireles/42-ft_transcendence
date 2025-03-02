@@ -1,9 +1,8 @@
-<link rel="stylesheet" href="css/login.css">
-
 <form id="loginForm" class="login-form">
     <div class="container-login d-flex justify-content-center align-items-center vh-100">
         <div class="card-login p-4" style="width: 400px;">
             <h2 class="text-center mb-4">Login</h2>
+
 
             <label for="username" class="form-label-username">Username</label>
             <input type="text" class="form-control" id="username" required>
@@ -15,12 +14,12 @@
                     <i class="fa fa-eye" id="togglePasswordIcon"></i>
                 </span>
             </div>
-
+            <div id="login-error-message" class="error-message"></div>
             <button type="submit" class="login-btn" name="action" value="loginuser">Login</button>
             <button id="link42" class="login-btn" onclick="redi42()">Login with 42</button>
             <p class="sing-up-text text-center mt-3">
-                Don't have an account? <a href="/register"
-                    class="text-primary text-decoration-none fw-bold">Register</a>
+                Don't have an account?
+                <a href="/register" class="register-here-text">Register here</a>
             </p>
         </div>
     </div>

@@ -44,26 +44,57 @@ let ball = {
 };
 
 let lastTime = 0;
+let gameOver = false; // Add a game over flag
 
 // Initialize the game
 function renderPongGame() {
   board = document.getElementById("board");
 
-  if (board)
-  {
-      board.height = boardHeight;
-      board.width = boardWidth;
-      context = board.getContext("2d"); // Used for drawing on the board
-    
-      requestAnimationFrame(update);
-      document.addEventListener("keyup", stopPlayer);
-      document.addEventListener("keydown", movePlayer);
+  if (board) {
+    board.height = boardHeight;
+    board.width = boardWidth;
+    context = board.getContext("2d");
+
+    // Ensure the game container exists and is a direct parent
+    let gameContainer = document.getElementById("game-container");
+    if (!gameContainer) {
+      gameContainer = document.createElement("div");
+      gameContainer.id = "game-container";
+      board.parentNode.insertBefore(gameContainer, board);
+      gameContainer.appendChild(board);
+      gameContainer.style.position = 'relative'; // Required for positioning
+    }
+
+    // Create a win message element
+    let winMessage = document.getElementById("win-message");
+    if (!winMessage) {
+      winMessage = document.createElement("div");
+      winMessage.id = "win-message";
+      winMessage.style.display = "none"; // Initially hidden
+      winMessage.style.position = "absolute";
+      winMessage.style.top = "50%";
+      winMessage.style.left = "50%";
+      winMessage.style.transform = "translate(-50%, -50%)";
+      winMessage.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+      winMessage.style.color = "white";
+      winMessage.style.padding = "20px";
+      winMessage.style.fontSize = "24px";
+      winMessage.style.textAlign = "center";
+      gameContainer.appendChild(winMessage);
+    }
+
+    // Start the initial game loop
+    resetGameStart();
+    document.addEventListener("keyup", stopPlayer);
+    document.addEventListener("keydown", movePlayer);
   }
 }
 
 // Main game loop
 function update(time) {
-  requestAnimationFrame(update);
+  if (!gameOver) {
+    requestAnimationFrame(update); // Continue the animation loop
+  }
 
   const deltaTime = time - lastTime;
   lastTime = time;
@@ -75,45 +106,53 @@ function update(time) {
   context.fillRect(player1.x, player1.y, player1.width, player1.height);
   context.fillRect(player2.x, player2.y, player2.width, player2.height);
 
-  // Move players
-  player1.y += player1SpeedY * (deltaTime / 16);
-  player2.y += player2SpeedY * (deltaTime / 16);
+  if (!gameOver) {
+    // Move players
+    player1.y += player1SpeedY * (deltaTime / 16);
+    player2.y += player2SpeedY * (deltaTime / 16);
 
-  // Ensure players stay within bounds
-  player1.y = Math.max(0, Math.min(player1.y, boardHeight - player1.height));
-  player2.y = Math.max(0, Math.min(player2.y, boardHeight - player2.height));
+    // Ensure players stay within bounds
+    player1.y = Math.max(0, Math.min(player1.y, boardHeight - player1.height));
+    player2.y = Math.max(0, Math.min(player2.y, boardHeight - player2.height));
 
-  // Draw ball
-  context.fillStyle = "white";
-  ball.x += ball.speedX * (deltaTime / 16);
-  ball.y += ball.speedY * (deltaTime / 16);
-  context.fillRect(ball.x, ball.y, ball.width, ball.height);
+    // Draw ball
+    context.fillStyle = "white";
+    ball.x += ball.speedX * (deltaTime / 16);
+    ball.y += ball.speedY * (deltaTime / 16);
+    context.fillRect(ball.x, ball.y, ball.width, ball.height);
 
-  // Ball collision with top and bottom walls
-  if (ball.y <= 0 || ball.y + ball.height >= boardHeight) {
-    ball.speedY *= -1;
-  }
+    // Ball collision with top and bottom walls
+    if (ball.y <= 0 || ball.y + ball.height >= boardHeight) {
+      ball.speedY *= -1;
+    }
 
-  // Ball collision with players
-  if (detectCollision(ball, player1)) {
-    handleCollision(ball, player1);
-  } else if (detectCollision(ball, player2)) {
-    handleCollision(ball, player2);
-  }
+    // Ball collision with players
+    if (detectCollision(ball, player1)) {
+      handleCollision(ball, player1);
+    } else if (detectCollision(ball, player2)) {
+      handleCollision(ball, player2);
+    }
 
-  // Ball out of bounds (score)
-  if (ball.x < 0) {
-    player2Score++;
-    resetGame(1);
-  } else if (ball.x + ballWidth > boardWidth) {
-    player1Score++;
-    resetGame(-1);
+    // Ball out of bounds (score)
+    if (ball.x < 0) {
+      player2Score++;
+      resetBall(1);
+    } else if (ball.x + ballWidth > boardWidth) {
+      player1Score++;
+      resetBall(-1);
+    }
   }
 
   // Draw scores
   context.font = "42px sans-serif";
   context.fillText(player1Score, boardWidth / 5, 45);
   context.fillText(player2Score, (boardWidth * 4) / 5 - 45, 45);
+
+  // Check for win condition
+  if (player1Score >= 5 || player2Score >= 5) {
+    gameOver = true;
+    displayWinMessage();
+  }
 }
 
 // Handle player movement
@@ -166,7 +205,7 @@ function handleCollision(ball, player) {
 }
 
 // Reset game after a score
-function resetGame(direction) {
+function resetBall(direction) {
   ball = {
     x: boardWidth / 2,
     y: boardHeight / 2,
@@ -175,4 +214,57 @@ function resetGame(direction) {
     speedX: direction * ballBaseSpeed,
     speedY: ballBaseSpeed,
   };
+}
+
+// Display win message
+function displayWinMessage() {
+  const winMessage = document.getElementById("win-message");
+  winMessage.innerHTML = ""; // Clear existing content
+
+  let winnerText = "";
+  if (player1Score >= 5) {
+    winnerText = `Player 1 Wins!`;
+  } else {
+    winnerText = `Player 2 Wins!`;
+  }
+
+  const winnerAnnouncement = document.createElement("div");
+  winnerAnnouncement.textContent = winnerText;
+  winMessage.appendChild(winnerAnnouncement);
+
+  // Create "Play Again" button
+  const playAgainButton = document.createElement("button");
+  playAgainButton.textContent = "Play Again";
+  playAgainButton.addEventListener("click", resetGameStart);
+  winMessage.appendChild(playAgainButton);
+
+  // Create "Exit to Home" button
+  const exitHomeButton = document.createElement("button");
+  exitHomeButton.textContent = "Exit to Home";
+  exitHomeButton.addEventListener("click", exitToHome);
+  winMessage.appendChild(exitHomeButton);
+
+  winMessage.style.display = "block";
+}
+
+function exitToHome() {
+  window.location.href = "/home"; // Redirect to the home page
+}
+
+// Reset the game
+function resetGameStart() {
+  gameOver = false;
+  player1Score = 0;
+  player2Score = 0;
+  player1SpeedY = 0;
+  player2SpeedY = 0;
+
+  const winMessage = document.getElementById("win-message");
+  winMessage.style.display = "none";
+
+  resetBall(1); // Reset ball to the center
+  lastTime = 0; // Reset lastTime to avoid large deltaTime on restart
+
+  // Restart the animation loop
+  requestAnimationFrame(update);
 }

@@ -1,14 +1,25 @@
 function initialize3DPong() {
+    // Get the dimensions of the home-games div
+    const homeGamesDiv = document.getElementById('home-games');
+    const width = homeGamesDiv.clientWidth;
+    const height = homeGamesDiv.clientHeight;
+
     // Scene, Camera, and Renderer
     const pongScene = new THREE.Scene();
-    const pongCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const pongRenderer = new THREE.WebGLRenderer({ canvas: document.getElementById('game3d-board') });
-    pongRenderer.setSize(window.innerWidth, window.innerHeight); // Fullscreen rendering
+    const pongCamera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+    const pongRenderer = new THREE.WebGLRenderer({ antialias: true });
+    pongRenderer.setClearColor(0x151314);
+    pongRenderer.setSize(width, height);
+    homeGamesDiv.appendChild(pongRenderer.domElement);
+    pongRenderer.domElement.style.marginTop = '-100px';
 
     // Dynamically handle resizing
     window.addEventListener('resize', () => {
-        pongRenderer.setSize(window.innerWidth, window.innerHeight);
-        pongCamera.aspect = window.innerWidth / window.innerHeight;
+        const newWidth = homeGamesDiv.clientWidth;
+        const newHeight = homeGamesDiv.clientHeight;
+
+        pongRenderer.setSize(newWidth, newHeight);
+        pongCamera.aspect = newWidth / newHeight;
         pongCamera.updateProjectionMatrix();
     });
 

@@ -1,49 +1,47 @@
-<div class="container-custom m-4">
-    <div class="row">
-        <!-- Sidebar -->
-        <div class="col-md-2 sidebar me-3" style="border-radius: 10px;">
-            <div class="img m-1">
-                <img src="" alt="" style="border-radius: 50%;" width="60rem" height="60rem" id="profileImage">
+<div class="home-parent">
+    <div class="home-left-bar">
+        <div class="profile-img">
+            <img src="" alt="" id="profileImage" class="profile-image">
+        </div>
+        <h6 href="/profile" style="cursor: pointer;">Profile</h6>
+        <br>
+        <h6 style="cursor: pointer;">Games</h6>
+        <br>
+        <h6 style="cursor: pointer;" href="/edit">Setting</h6>
+        <br>
+        <h6 style="cursor: pointer;" onclick="logout()">Logout</h6>
+    </div>
+    <div class="home-main-div">
+        <h1 id="welcome_user"></h1>
+        <div class="home-games" id="home-games">
+            <div>
+                <button type="submit" onclick="loadGame('local')" class="btn btn-primary">
+                    <h2>Local</h2>
+                </button>
             </div>
-            <div class="col mt-5">
-                <h6 onclick="renderPage('profile')" style="cursor: pointer;">Profile</h6>
-                <br>
-                <h6 style="cursor: pointer;">Tournaments</h6>
-                <br>
-                <h6 style="cursor: pointer;" onclick="renderPage('edit')">Setting</h6>
-                <br>
-                <h6 style="cursor: pointer;" onclick="logout()">Logout</h6>
+            <div>
+                <button type="submit" onclick="loadGame('ai')" class="btn btn-primary">
+                    <h2>AI</h2>
+                </button>
+            </div>
+            <div>
+                <button type="submit" onclick="loadGame('3d')" class="btn btn-primary">
+                    <h2>3D</h2>
+                </button>
             </div>
         </div>
-
-        <!-- Main Content -->
-        <div class="col">
-            <h1 id="welcome_user"></h1>
-            <h4 id="mode"></h4>
-            <div class="game-mode d-flex flex-column align-items-center justify-content-center mt-4">
-                <div class="local p-3 text-center w-75" style="border-radius: 10px;" onclick="renderPage('localgame')">
-                </div>
-                <div class="ai p-3 text-center w-75 mt-3" style="border-radius: 10px;" onclick="renderPage('aigame')">
-                </div>
-                <div class="remote p-3 text-center w-75 mt-3" style="border-radius: 10px;"
-                    onclick="renderPage('remotegame')">
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Sidebar -->
-        <div class="col-md-3">
+    </div>
+    <div class="home-right-bar">
+        <div class="home-search-bar">
             <div class="input-group mb-3">
                 <input id="user-search" class="form-control" placeholder="Search users" oninput="searchProfile()"
                     autocomplete="off">
             </div>
             <div id="results" style="cursor: pointer;"></div>
-
-            <div class="friend-online mb-3 mt-5">
-                <h5>Online Friends</h5>
-                <ul id="friends-online"></ul>
-            </div>
-
+        </div>
+        <div class="home-friends-bar">
+            <h5>Online Friends</h5>
+            <ul id="friends-online"></ul>
         </div>
     </div>
 </div>

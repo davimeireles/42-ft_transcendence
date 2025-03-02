@@ -8,12 +8,7 @@ function LoginFormListener() {
     return;
   }
 
-  const passwordField = document.getElementById("password");
-  const errorMessage = document.createElement("div");
-
-  errorMessage.style.color = "red";
-  errorMessage.style.display = "none";
-  passwordField.parentNode.appendChild(errorMessage);
+  const errorMessage = document.getElementById("login-error-message");
 
   form.addEventListener("submit", async function (event) {
     event.preventDefault();
@@ -84,11 +79,13 @@ function LoginFormListener() {
         }
       } else {
         const result = await loginResponse.json();
+        errorMessage.style.color = "#fc1723";
         errorMessage.textContent = result.message;
         errorMessage.style.display = "block";
       }
     } catch (error) {
       console.log("Error:", error);
+      errorMessage.style.color = "#fc1723";
       errorMessage.textContent = "An error occurred. Please try again.";
       errorMessage.style.display = "block";
     }

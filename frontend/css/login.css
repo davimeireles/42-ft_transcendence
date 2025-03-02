@@ -2,9 +2,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: #151314;
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }
 
 .card-login h2 {
+    padding-bottom: 20px;
     color: #f9eaff;
     text-shadow: 2px 2px black;
     font-family: 'alien';
@@ -23,8 +28,10 @@
 
 .login-form {
     width: 100%;
-    background: #151314;
-    padding: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: black;
     text-align: center;
 }
 
@@ -58,7 +65,22 @@
     margin-top: 10px; /* Add margin to space the buttons */
 }
 
+.login-btn:hover {
+    border-color: #39ff14;
+}
+
 .sing-up-text{
-    color: #f9eaff;
     font-family: 'square';
+    color: #f9eaff;
+}
+
+.register-here-text {
+    text-decoration-line: none;
+    font-family: 'square';
+}
+
+.register-here-text:hover{
+    font-weight: bold;
+    text-decoration: none;
+    color: #39ff14;
 }
