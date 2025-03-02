@@ -45,6 +45,7 @@ let AIball = {
 
 let AIlastTime = 0;
 let AIanimationFrameId; // To store the animation frame ID
+let AIGameOver = false;
 
 // Difficulty settings
 const DIFFICULTY = {
@@ -88,6 +89,34 @@ function renderAIgame() {
     AIboard.width = AIboardWidth;
     AIcontext = AIboard.getContext("2d");
 
+    // Ensure the game container exists and is a direct parent
+    let gameContainer = document.getElementById("game-container");
+    if (!gameContainer) {
+      gameContainer = document.createElement("div");
+      gameContainer.id = "game-container";
+      AIboard.parentNode.insertBefore(gameContainer, AIboard);
+      gameContainer.appendChild(AIboard);
+      gameContainer.style.position = 'relative'; // Required for positioning
+    }
+
+    // Create a win message element
+    let winMessage = document.getElementById("win-message");
+    if (!winMessage) {
+      winMessage = document.createElement("div");
+      winMessage.id = "win-message";
+      winMessage.style.display = "none"; // Initially hidden
+      winMessage.style.position = "absolute";
+      winMessage.style.top = "50%";
+      winMessage.style.left = "50%";
+      winMessage.style.transform = "translate(-50%, -50%)";
+      winMessage.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+      winMessage.style.color = "white";
+      winMessage.style.padding = "20px";
+      winMessage.style.fontSize = "24px";
+      winMessage.style.textAlign = "center";
+      gameContainer.appendChild(winMessage);
+    }
+
     // Cancel previous animation frame if it exists
     if (AIanimationFrameId) {
       cancelAnimationFrame(AIanimationFrameId);
@@ -108,6 +137,7 @@ function AIresetGameState() {
   // Reset scores
   AIplayer1Score = 0;
   AIplayer2Score = 0;
+  AIGameOver = false;
 
   // Reset ball position and speed
   AIball.x = AIboardWidth / 2 - AIballWidth / 2;
@@ -118,7 +148,9 @@ function AIresetGameState() {
 
 // Main game loop
 function updateAI(time) {
-  AIanimationFrameId = requestAnimationFrame(updateAI);
+  if (!AIGameOver) {
+    AIanimationFrameId = requestAnimationFrame(updateAI);
+  }
 
   if (!time) {
     time = 0;
@@ -144,58 +176,66 @@ function updateAI(time) {
     AIplayer2.height
   );
 
-  // Move player 1
-  AIplayer1.y += AIplayerSpeedY * (deltaTime / 16);
+  if (!AIGameOver) {
+    // Move player 1
+    AIplayer1.y += AIplayerSpeedY * (deltaTime / 16);
 
-  // Move player 2 (AI) based on difficulty
-  moveAI();
+    // Move player 2 (AI) based on difficulty
+    moveAI();
 
-  // Ensure players stay within bounds
-  AIplayer1.y = Math.max(
-    0,
-    Math.min(AIplayer1.y, AIboardHeight - AIplayer1.height)
-  );
-  AIplayer2.y = Math.max(
-    0,
-    Math.min(AIplayer2.y, AIboardHeight - AIplayer2.height)
-  );
+    // Ensure players stay within bounds
+    AIplayer1.y = Math.max(
+      0,
+      Math.min(AIplayer1.y, AIboardHeight - AIplayer1.height)
+    );
+    AIplayer2.y = Math.max(
+      0,
+      Math.min(AIplayer2.y, AIboardHeight - AIplayer2.height)
+    );
 
-  // If the game is resetting, do not move the ball or check for collisions
-  if (isResetting) {
-    return;
+    // If the game is resetting, do not move the ball or check for collisions
+    if (isResetting) {
+      return;
+    }
+
+    // Move ball
+    AIball.x += AIball.speedX * (deltaTime / 16);
+    AIball.y += AIball.speedY * (deltaTime / 16);
+
+    // Ball collision with top and bottom walls
+    if (AIball.y <= 0) {
+      AIball.y = 0;
+      AIball.speedY *= -1;
+    } else if (AIball.y + AIball.height >= AIboardHeight) {
+      AIball.y = AIboardHeight - AIball.height;
+      AIball.speedY *= -1;
+    }
+
+    // Draw ball
+    AIcontext.fillStyle = "white";
+    AIcontext.fillRect(AIball.x, AIball.y, AIball.width, AIball.height);
+
+    // AIball collision with players
+    if (AIDetectCollision(AIball, AIplayer1)) {
+      AIhandleCollision(AIball, AIplayer1);
+    } else if (AIDetectCollision(AIball, AIplayer2)) {
+      AIhandleCollision(AIball, AIplayer2);
+    }
+
+    // AIball out of bounds (score)
+    if (AIball.x < 0) {
+      AIplayer2Score++;
+      AIresetGame(1);
+    } else if (AIball.x + AIballWidth > AIboardWidth) {
+      AIplayer1Score++;
+      AIresetGame(-1);
+    }
   }
 
-  // Move ball
-  AIball.x += AIball.speedX * (deltaTime / 16);
-  AIball.y += AIball.speedY * (deltaTime / 16);
-
-  // Ball collision with top and bottom walls
-  if (AIball.y <= 0) {
-    AIball.y = 0;
-    AIball.speedY *= -1;
-  } else if (AIball.y + AIball.height >= AIboardHeight) {
-    AIball.y = AIboardHeight - AIball.height;
-    AIball.speedY *= -1;
-  }
-
-  // Draw ball
-  AIcontext.fillStyle = "white";
-  AIcontext.fillRect(AIball.x, AIball.y, AIball.width, AIball.height);
-
-  // AIball collision with players
-  if (AIDetectCollision(AIball, AIplayer1)) {
-    AIhandleCollision(AIball, AIplayer1);
-  } else if (AIDetectCollision(AIball, AIplayer2)) {
-    AIhandleCollision(AIball, AIplayer2);
-  }
-
-  // AIball out of bounds (score)
-  if (AIball.x < 0) {
-    AIplayer2Score++;
-    AIresetGame(1);
-  } else if (AIball.x + AIballWidth > AIboardWidth) {
-    AIplayer1Score++;
-    AIresetGame(-1);
+  // Check for win condition
+  if (AIplayer1Score >= 3 || AIplayer2Score >= 3) {
+    AIGameOver = true;
+    AIDisplayWinMessage();
   }
 
   // Draw scores
@@ -311,4 +351,53 @@ function AIresetGame(direction) {
   AIball.y = AIboardHeight / 2 - AIballHeight / 2;
   AIball.speedX = direction * AIballBaseSpeed;
   AIball.speedY = AIballBaseSpeed * (Math.random() > 0.5 ? 1 : -1); // Randomize initial direction
+}
+
+function AIDisplayWinMessage() {
+  const winMessage = document.getElementById("win-message");
+  winMessage.innerHTML = ""; // Clear existing content
+
+  let winnerText = "";
+  if (AIplayer1Score >= 3) {
+    winnerText = `Player 1 Wins!`;
+  } else {
+    winnerText = `AI Wins!`;
+  }
+
+  const winnerAnnouncement = document.createElement("div");
+  winnerAnnouncement.textContent = winnerText;
+  winMessage.appendChild(winnerAnnouncement);
+
+  // Create "Play Again" button
+  const playAgainButton = document.createElement("button");
+  playAgainButton.textContent = "Play Again";
+  playAgainButton.addEventListener("click", AIresetGameStart);
+  winMessage.appendChild(playAgainButton);
+
+  // Create "Exit to Home" button
+  const exitHomeButton = document.createElement("button");
+  exitHomeButton.textContent = "Exit to Home";
+  exitHomeButton.addEventListener("click", exitToHome);
+  winMessage.appendChild(exitHomeButton);
+
+  winMessage.style.display = "block";
+}
+
+function exitToHome() {
+  window.location.href = "/home"; // Redirect to the home page
+}
+
+// Reset the game
+function AIresetGameStart() {
+  AIGameOver = false;
+  AIplayer1Score = 0;
+  AIplayer2Score = 0;
+
+  const winMessage = document.getElementById("win-message");
+  winMessage.style.display = "none";
+
+  AIresetGame(1); // Reset ball to the center
+
+  // Start the game loop again
+  updateAI();
 }
