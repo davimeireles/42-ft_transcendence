@@ -56,9 +56,6 @@ async function renderPage(page) {
       case "intro":
         createBouncingBallBackground();
         break;
-      case "localgame":
-        renderPongGame();
-        break;
       case "home":
         renderUser();
         break;
@@ -108,3 +105,45 @@ window.addEventListener("load", () => {
   const initialPage = window.location.pathname.slice(1) || "intro";
   renderPage(initialPage);
 });
+
+function loadGame(gameType) {
+  const homeGames = document.getElementById("home-games");
+  homeGames.innerHTML = ""; // Clear the current content
+
+  if (gameType === "local") {
+    homeGames.innerHTML = `
+            <canvas id="board" style="width: 100%; height: 50%; border-top: 5px solid #b700ff; border-bottom: 5px solid #b700ff;"></canvas>
+            <script>
+                renderPongGame();
+            </script>
+        `;
+    renderPongGame();
+  } else if (gameType === "ai") {
+    homeGames.innerHTML = `
+        <div id="difficulty-overlay">
+    <div class="difficulty-buttons">
+        <h2 style="color: white;">Choose Difficulty</h2>
+        <button onclick="startGame('easy')">Easy</button>
+        <button onclick="startGame('medium')">Medium</button>
+        <button onclick="startGame('hard')">Hard</button>
+    </div>
+</div>
+    <canvas id="ai-board" style="width: 100%; height: 50%; border-top: 5px solid #b700ff; border-bottom: 5px solid #b700ff;"></canvas>
+        `;
+  } else if (gameType === "3d") {
+    homeGames.innerHTML = `
+    <canvas id="game3d-board"></canvas>
+    <script>
+        initialize3DPong();
+    </script>
+        `;
+    initialize3DPong();
+  }
+}
+
+function loadSelectedGame() {
+    const selectElement = document.getElementById("game-select");
+    const selectedGame = selectElement.value;
+  
+    loadGame(selectedGame);
+}
