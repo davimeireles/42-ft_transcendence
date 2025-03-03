@@ -140,3 +140,10 @@ function loadGame(gameType) {
     initialize3DPong();
   }
 }
+
+function loadSelectedGame() {
+    const selectElement = document.getElementById("game-select");
+    const selectedGame = selectElement.value;
+  
+    loadGame(selectedGame);
+}

@@ -25,9 +25,6 @@ let player2 = {
   height: playerHeight,
 };
 
-let player1Score = 0;
-let player2Score = 0;
-
 // Ball config
 let ballWidth = 10;
 let ballHeight = 10;
@@ -44,11 +41,13 @@ let ball = {
 };
 
 let lastTime = 0;
-let gameOver = false; // Add a game over flag
 
 // Initialize the game
 function renderPongGame() {
   board = document.getElementById("board");
+  gameOver = false;
+  player1Score = 0;
+  player2Score = 0;
 
   if (board) {
     board.height = boardHeight;
@@ -62,7 +61,7 @@ function renderPongGame() {
       gameContainer.id = "game-container";
       board.parentNode.insertBefore(gameContainer, board);
       gameContainer.appendChild(board);
-      gameContainer.style.position = 'relative'; // Required for positioning
+      gameContainer.style.position = "relative"; // Required for positioning
     }
 
     // Create a win message element
@@ -149,7 +148,7 @@ function update(time) {
   context.fillText(player2Score, (boardWidth * 4) / 5 - 45, 45);
 
   // Check for win condition
-  if (player1Score >= 5 || player2Score >= 5) {
+  if (player1Score >= 3 || player2Score >= 3) {
     gameOver = true;
     displayWinMessage();
   }
@@ -222,7 +221,7 @@ function displayWinMessage() {
   winMessage.innerHTML = ""; // Clear existing content
 
   let winnerText = "";
-  if (player1Score >= 5) {
+  if (player1Score >= 3) {
     winnerText = `Player 1 Wins!`;
   } else {
     winnerText = `Player 2 Wins!`;
