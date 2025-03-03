@@ -1,0 +1,38 @@
+groups:
+  - name: system_alerts
+    rules:
+      - alert: HighCPUUsage
+        expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[1m])) * 100) > 80
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU on {{ $labels.instance }}"
+          description: "CPU usage is {{ $value }}%"
+
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 80
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High Memory on {{ $labels.instance }}"
+          description: "Memory usage is {{ $value }}%"
+
+      - alert: NetworkSaturation
+        expr: sum by (instance) (rate(node_network_receive_bytes_total[1m])) > 100000000
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High Network Traffic on {{ $labels.instance }}"
+          description: "Network receiving {{ $value | humanize }}B/s"
+
+      - alert: NetworkSpike
+        expr: sum by (instance) (rate(node_network_receive_packets_total[1m])) > 10000
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Network Spike on {{ $labels.instance }}"
+          description: "Receiving {{ $value }} packets/s - Possible DDoS"

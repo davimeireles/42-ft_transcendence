@@ -4,6 +4,7 @@ import pyotp
 import qrcode
 import base64
 import requests
+import json
 from app.models import User
 from django.conf import settings
 from django.http import JsonResponse
@@ -232,7 +233,15 @@ def session_user(request):
     user = request.user
     friends = user.friends.all()
     friends_data = [{"username": friend.username, "email": friend.email, "nickname": friend.nickname} for friend in friends]
-    return Response({"email": user.email, "username": user.username, "nickname": user.nickname, "friends": friends_data, "online": user.online, "photo": user.photo})
+    return Response({
+        "email": user.email,
+        "username": user.username,
+        "nickname": user.nickname,
+        "friends": friends_data,
+        "online": user.online,
+        "photo": user.photo,
+        "two_fa_enable": user.two_fa_enable
+    }, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 # @permission_classes([IsAuthenticated])
@@ -368,6 +377,7 @@ def check_token(request):
         return Response({"valid": False}, status=401)
     
 @api_view(['POST'])
+<<<<<<< HEAD
 def new_session(request):
     user = request.user
     if not user:
@@ -391,3 +401,52 @@ def new_session(request):
         samesite="Lax"
     )
     return response
+=======
+def setup_2fa(request):
+    user = request.user
+
+    if not user.two_fa_secret:
+        user.two_fa_secret = pyotp.random_base32()
+        user.save()
+    
+    otp_uri = pyotp.totp.TOTP(user.two_fa_secret).provisioning_uri(
+        name=user.username,
+        issuer_name='app'
+    )
+    
+    qr = qrcode.make(otp_uri)
+    buffer = io.BytesIO()
+    qr.save(buffer, format='PNG')
+    
+    buffer.seek(0)
+    qr_code = base64.b64encode(buffer.getvalue()).decode("utf-8")
+    
+    qr_code_data_uri = f"data:image/png;base64,{qr_code}"
+    
+    user.two_fa_enable = True
+    user.save()
+    
+    return JsonResponse({"qrcode": qr_code_data_uri, "secret": user.two_fa_secret})
+
+@api_view(['POST'])
+def verify_2fa(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'message': 'User not authenticated'}, status=401)
+    try:
+        user = request.user
+        if user.two_fa_enable:
+            data = json.loads(request.body)
+            otp_code = data.get('otp')
+            if not otp_code:
+                return JsonResponse({'message': 'OTP code is required'}, status=400)
+            
+            totp = pyotp.TOTP(user.two_fa_secret)
+            if totp.verify(otp_code):
+                return JsonResponse({'message': '2FA verification successful'}, status=200)
+            else:
+                return JsonResponse({'message': 'Invalid OTP code'}, status=400)
+    except User.DoesNotExist:
+        return JsonResponse({'message': 'User not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'message': 'Error', 'error': str(e)}, status=500)
+>>>>>>> 0c3d13ac01eda6ebcebb3e3c67bd3e6bc5679f01

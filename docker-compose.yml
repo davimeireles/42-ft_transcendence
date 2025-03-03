@@ -14,10 +14,8 @@ services:
   postgres:
     image: postgres:13
     container_name: postgres
-    environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    env_file:
+      - .env
     volumes:
       - db-postgres:/var/lib/postgresql/data
     networks:
@@ -36,8 +34,6 @@ services:
       - UID=${UID}
       - SECRET=${SECRET}
       - URI=${URI}
-      - SENDGRID_API_KEY=${SENDGRID_API_KEY}
-      - DEFAULT_EMAIL_SENDER=${DEFAULT_EMAIL_SENDER}
     depends_on:
       - postgres
     ports:
@@ -48,10 +44,17 @@ services:
   grafana:
     image: docker.io/grafana/grafana-oss:11.5.1
     container_name: grafana
+    depends_on:
+      - prometheus
+    env_file:
+      - .env
     ports:
       - "3000:3000"
     volumes:
       - grafana-data:/var/lib/grafana
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - ./grafana/datasources:/etc/grafana/provisioning:ro
+
     restart: unless-stopped
 
   prometheus:
@@ -62,6 +65,7 @@ services:
     command: "--config.file=/etc/prometheus/prometheus.yaml"
     volumes:
       - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
+      - ./prometheus/alert_rules.yml:/etc/prometheus/alert_rules.yml:ro
       - prometheus-data:/prometheus
     restart: unless-stopped
 

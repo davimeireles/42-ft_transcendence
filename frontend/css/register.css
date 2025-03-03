@@ -1,63 +1,90 @@
-/* Retro Thematic Styles for Register Form */
-.container {
-    position: relative;
-    z-index: 1;
+.container-register {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #151314;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
 }
 
-.card {
-    background-color: #0d0d0d !important;
-    border: 2px solid #00ff00;
-    box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
+.card-register {
+    margin-top: 25px;
 }
 
-.card h2 {
-    color: #00ff00;     
+.card-register h2 {
+    color: #f9eaff;
     text-shadow: 2px 2px black;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 1.5rem;
+    font-family: 'alien';
+    font-size: 3.5rem;
+    animation: glow 1.5s infinite alternate;
 }
 
-.form-label {
-    color: #00ff00;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 0.8rem;
-    text-shadow: 1px 1px black;
+@keyframes glow {
+    from {
+        text-shadow: 0 0 5px #b700ff, 0 0 10px #b700ff, 0 0 20px #b700ff, 0 0 40px #b700ff;
+    }
+    to {
+        text-shadow: 0 0 10px #b700ff, 0 0 20px #b700ff, 0 0 40px #b700ff, 0 0 80px #b700ff;
+    }
 }
 
-.form-control {
-    background-color: #1a1a1a;
-    border: 1px solid #00ff00;
-    color: white;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 0.8rem;
-    padding: 0.5rem;
+.container-register h2 {
+    color: #f9eaff;
+    text-shadow: 2px 2px black;
+    font-family: 'alien';
+    font-size: 3.5rem;
+    animation: glow 1.5s infinite alternate;
 }
 
-.form-control:focus {
-    border-color: black;
-    box-shadow: 0 0 5px black, 0 0 10px black;
-    outline: none;
+.registration-form {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: black;
+    text-align: center;
 }
 
-.btn-custom {
-    background-color: #0d0d0d;
-    border: 2px solid #00ff00;
-    color: #00ff00;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 0.8rem;
-    text-shadow: 1px 1px black;
+.form-label-reg {
+    margin: 3px;
+    margin-top: 15px;
+    width: 100%;
+    align-content: center;
+    font-family: 'square';
+    color: #f9eaff;
+}
+
+.register-btn {
+    font-family: 'square';
+    font-size: 1rem;
+    width: 100%;
+    padding: 7px;
+    border-radius: 20px;
+    border: 3px solid #b700ff;
+    background-color: #151314;
+    color: #e3dce6;
     transition: all 0.3s ease;
+    margin-top: 50px; /* Add margin to space the buttons */
 }
 
-.btn-custom:hover {
-    background-color: #00ff00;
-    color: #0d0d0d;
-    border-color: black;
-    transform: scale(1.05);
+.register-btn:hover {
+    border-color: #39ff14;
 }
 
-.text-primary {
-    color: #00ff00 !important;
-    text-shadow: 1px 1px black;
+.sign-in-text {
+    font-family: 'square';
+    color: #f9eaff;
+}
+
+.login-here-text {
+    text-decoration-line: none;
+    font-family: 'square';
+}
+
+.login-here-text:hover{
+    font-weight: bold;
     text-decoration: none;
+    color: #39ff14;
 }

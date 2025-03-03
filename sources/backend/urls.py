@@ -28,7 +28,13 @@ urlpatterns = [
     path('change_password/', app.views.change_password, name='change_password'),
     path('change_nick/', app.views.change_nick, name='change_nick'),
     path('check_token/', app.views.check_token, name='check_token'),
+<<<<<<< HEAD
     path('new_session/', app.views.new_session, name='new_session'),
+=======
+    path('setup_2fa/', app.views.setup_2fa, name='setup_2fa'),
+    path('verify_2fa/', app.views.verify_2fa, name='verify_2fa'),
+
+>>>>>>> 0c3d13ac01eda6ebcebb3e3c67bd3e6bc5679f01
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

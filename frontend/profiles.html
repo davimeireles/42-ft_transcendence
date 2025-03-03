@@ -1,83 +1,5 @@
-<style>
-    body {
-         background-color: #000000;
-         color: #fff;
-     }
-     .container-custom {
-         /* max-width: 1000px; */
-         margin: auto;
-     }
-     .sidebar {
-         background-color: #161616;
-         padding: 18px;
-         /* border-right: 2px solid #ddd; */
-         text-align: center;
-         height: 95vh;
-         border-radius: 10px;
-     }
-     .game-mode {
-         background-color: #161616;
-         /* paddin: 18px; */
-         border-radius: 10px;
-         text-align: center;
-         height:86vh;
-     }
-     .friends-listi {
-            text-align: center;
-            background-color: #161616;
-            padding: 15px;
-            height: 47%;
-            border-radius: 10px;
-        }
-    .friends-listi:hover{
-        background-color: #252525;
-    }
-    .settings-box{
-        text-align: center;
-            background-color: #161616;
-            padding: 15px;
-            height: 45%;
-            border-radius: 10px;
-    }
-    .settings-box:hover{
-        background-color: #252525;
-    }
-    .sidebar-achi{
-        cursor: pointer;
-        background-color: #252525;
-        height: 38vh;
-        padding: 10px;
-        margin: 0.3rem;
-    }
-    .sidebar-tour{
-        cursor: pointer;
-        background-color: #252525;
-        height: 38vh;
-        padding: 10px;
-        margin: 0.3rem;
-    }
-    .sidebar-game{
-        cursor: pointer;
-        background-color: #252525;
-        height: 38vh;
-        padding: 10px;
-        margin: 0.3rem;
-    }
-    .row-over{
-        cursor: pointer;
-        background-color: #252525;
-        height: 38vh;
-        padding: 10px;
-        margin: 0.3rem;
-    }
-    .search{
-        cursor: pointer;
-    }
-
-
- </style>
 <div class="container-custom m-4">
-    <button onclick="renderPage('home')" id="btn-home">Home</button>
+    <button href="/home" id="btn-home">Home</button>
     <div class="row">
         <!-- Sidebar -->
         <!-- Main Content -->
@@ -108,10 +30,11 @@
         <!-- Right Sidebar -->
         <div class="col-md-3">
             <div class="input-group mb-3">
-                <input id="user-search" class="form-control" placeholder="Search users" oninput="searchProfile()" autocomplete="off">
+                <input id="user-search" class="form-control" placeholder="Search users" oninput="searchProfile()"
+                    autocomplete="off">
             </div>
             <div id="results" style="cursor: pointer;"></div>
-            
+
             <div class="settings-box mb-3">
                 <h5>Settings</h5>
             </div>
