@@ -43,7 +43,7 @@ let ball = {
 let lastTime = 0;
 
 // Initialize the game
-function renderPongGame() {
+async function renderPongGame() {
   board = document.getElementById("board");
   gameOver = false;
   player1Score = 0;
@@ -90,7 +90,7 @@ function renderPongGame() {
 }
 
 // Main game loop
-function update(time) {
+async function update(time) {
   if (!gameOver) {
     requestAnimationFrame(update); // Continue the animation loop
   }

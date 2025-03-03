@@ -5,7 +5,7 @@ import qrcode
 import base64
 import requests
 import json
-from app.models import User
+from app.models import User, Match
 from django.conf import settings
 from django.http import JsonResponse
 from django.contrib.auth import login
@@ -377,7 +377,6 @@ def check_token(request):
         return Response({"valid": False}, status=401)
     
 @api_view(['POST'])
-<<<<<<< HEAD
 def new_session(request):
     user = request.user
     if not user:
@@ -401,7 +400,7 @@ def new_session(request):
         samesite="Lax"
     )
     return response
-=======
+
 def setup_2fa(request):
     user = request.user
 
@@ -449,4 +448,3 @@ def verify_2fa(request):
         return JsonResponse({'message': 'User not found'}, status=404)
     except Exception as e:
         return JsonResponse({'message': 'Error', 'error': str(e)}, status=500)
->>>>>>> 0c3d13ac01eda6ebcebb3e3c67bd3e6bc5679f01

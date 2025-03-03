@@ -57,7 +57,7 @@ const DIFFICULTY = {
 let currentDifficulty = DIFFICULTY.MEDIUM; // Default difficulty
 
 // Initialize the game
-function startGame(difficulty) {
+async function startGame(difficulty) {
   currentDifficulty = difficulty;
   console.log(`Difficulty set to: ${difficulty}`);
 
@@ -147,7 +147,7 @@ function AIresetGameState() {
 }
 
 // Main game loop
-function updateAI(time) {
+async function updateAI(time) {
   if (!AIGameOver) {
     AIanimationFrameId = requestAnimationFrame(updateAI);
   }
