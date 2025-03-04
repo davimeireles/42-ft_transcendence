@@ -1,32 +1,34 @@
 import os
 import io
+import json
 import pyotp
 import qrcode
 import base64
 import requests
-import json
-from app.models import User, Match
+import urllib.parse
 from django.conf import settings
+from django.db import transaction
 from django.http import JsonResponse
 from django.contrib.auth import login
 from django.contrib.auth import authenticate
+from django.forms.models import model_to_dict
+from django.shortcuts import get_object_or_404
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
-# from django.shortcuts import render, redirect
-# from django.utils import timezone
-# from app.forms import CustomUserForm, LoginForm
-# from app.utils.send_email import send_verification_email
-import urllib.parse
-from django.forms.models import model_to_dict
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.exceptions import TokenError
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
-# from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
+from app.models import User, Match, MatchParticipant, GameType
+
+import logging
+
+# Configure logging
+logger = logging.getLogger(__name__)
+
+
 
 @api_view(['POST'])
 def user_signin(request):
@@ -448,3 +450,54 @@ def verify_2fa(request):
         return JsonResponse({'message': 'User not found'}, status=404)
     except Exception as e:
         return JsonResponse({'message': 'Error', 'error': str(e)}, status=500)
+
+@api_view(['POST'])
+def get_match_details(request):
+    game_type_id = request.data.get('game_type_id')
+    match_winner = request.data.get('game_winner')
+    player1_score = request.data.get('p1_score')
+    player2_score = request.data.get('p2_score')
+    p1_username = request.data.get('p1_username')
+    p2_username = request.data.get('p2_username')
+
+    if not all([game_type_id, match_winner, player1_score, player2_score, p1_username, p2_username]):
+        logger.error("Missing required fields")
+        return Response({'error': 'Missing required fields.'}, status=400)
+
+    try:
+        with transaction.atomic():
+            game_type = get_object_or_404(GameType, id=game_type_id)
+            logger.info("Game type found: %s", game_type)
+
+            if match_winner == p1_username:
+                winner = User.objects.get(username=p1_username)
+            elif match_winner == p2_username:
+                winner = User.objects.get(username=p2_username)
+            else:
+                logger.error("Invalid winner identifier")
+                return Response({'error': 'Invalid winner identifier.'}, status=400)
+
+            logger.info("Match winner: %s", winner)
+
+            match = Match.objects.create(gameTypeID=game_type.id, matchWinner=winner.id)
+            logger.info("Match created: %s", match)
+
+            player1 = User.objects.get(username=p1_username)
+            player2 = User.objects.get(username=p2_username)
+            logger.info("Players found: %s, %s", player1, player2)
+
+            MatchParticipant.objects.create(matchID=match.id, userID=player1.id, score=player1_score)
+            MatchParticipant.objects.create(matchID=match.id, userID=player2.id, score=player2_score)
+            logger.info("Match participants created")
+
+            return Response({'message': 'Match details saved successfully.'}, status=201)
+
+    except GameType.DoesNotExist:
+        logger.error("GameType not found")
+        return Response({'error': 'GameType not found.'}, status=404)
+    except User.DoesNotExist:
+        logger.error("One or more users not found")
+        return Response({'error': 'One or more users not found.'}, status=404)
+    except Exception as e:
+        logger.error("Error: %s", str(e))
+        return Response({'error': str(e)}, status=500)
