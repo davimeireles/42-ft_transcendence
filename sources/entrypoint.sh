@@ -14,6 +14,11 @@ if User.objects.count() == 0:
     User.objects.create_user(username='EasyAI', password='42Porto!', nickname='EasyAI', email='easyai@42porto.com') 
     User.objects.create_user(username='MediumAI', password='42Porto!', nickname='MediumAI', email='mediumai@42porto.com') 
     User.objects.create_user(username='HardAI', password='42Porto!', nickname='HardAI', email='hardai@42porto.com')
+    User.objects.create_user(username='NishimaM', password='dev', nickname='Nishi', email='xlxhxd@hotmail.com')
+    User.objects.create_user(username='quisk', password='dev', nickname='quisk1', email='quisk@hotmail.com')
+    User.objects.create_user(username='xisto', password='dev', nickname='ThalesXS', email='ThalesXS@hotmail.com')
+    User.objects.create_user(username='Brau', password='dev', nickname='viciado_no_gym', email='brau@criticalSoftware.com')
+
 else:
     print('Users already exist.')
 
