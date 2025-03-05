@@ -56,6 +56,8 @@ const DIFFICULTY = {
 
 let currentDifficulty = DIFFICULTY.MEDIUM; // Default difficulty
 
+let AIname;
+
 // Initialize the game
 async function startGame(difficulty) {
   currentDifficulty = difficulty;
@@ -233,11 +235,44 @@ async function updateAI(time) {
   }
 
   // Check for win condition
-  if (AIplayer1Score >= 3 || AIplayer2Score >= 3) {
+  if ((AIplayer1Score >= 3 || AIplayer2Score >= 3) && !AIGameOver) {
     AIGameOver = true;
+
+    const session_user = JSON.parse(localStorage.getItem('sessionUser'))
+
+    let winner;
+
+    if (AIplayer1Score >= 3)
+        winner = session_user.username
+    else
+        winner = AIname
+
+
+    const data = {
+        game_type_id: 2,
+        match_winner: winner,
+        p1_score: AIplayer1Score,
+        p2_score: AIplayer2Score,
+        p1_username: session_user.username,
+        p2_username: AIname,
+    };
+
+    try {
+        const response = await fetch("http://localhost:8000/get_match_details/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json",
+                        "Authorization": `Bearer ${localStorage.getItem('access_token')}`},
+            body: JSON.stringify(data),
+            credentials: "include",
+        });
+        if (response.ok) {
+            console.log("Match details sent successfully");
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
     AIDisplayWinMessage();
   }
-
   // Draw scores
   AIcontext.font = "42px sans-serif";
   AIcontext.fillText(AIplayer1Score, AIboardWidth / 5, 45);
@@ -262,12 +297,15 @@ function moveAI() {
   switch (currentDifficulty) {
     case DIFFICULTY.EASY:
       moveAIEasy();
+      AIname = 'EasyAI'
       break;
     case DIFFICULTY.MEDIUM:
       moveAIMedium();
+      AIname = 'MediumAI'
       break;
     case DIFFICULTY.HARD:
       moveAIHard();
+      AIname = 'HardAI'
       break;
     default:
       moveAIMedium(); // Default to medium

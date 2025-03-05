@@ -139,7 +139,7 @@ function initialize3DPong() {
   homeGamesDiv.appendChild(scoreDisplay); //Append scoreDisplay to homeGamesDiv
 
   function updateScoreDisplay() {
-    scoreDisplay.textContent = `Blue: ${player1Score} | Red: ${player2Score}`;
+    scoreDisplay.textContent = `Red: ${player1Score} | Blue: ${player2Score}`;
   }
   updateScoreDisplay();
 
@@ -211,18 +211,52 @@ function initialize3DPong() {
 
     // Check if the ball goes out of bounds (goal)
     if (ball.position.z > 10) {
-      player1Score++; // Blue player scores
+      player2Score++; // Blue player scores
       resetBall();
     } else if (ball.position.z < -10) {
-      player2Score++; // Red player scores
+      player1Score++; // Red player scores
       resetBall();
     }
 
     // Check for win condition
-    if (player1Score >= scoreToWin || player2Score >= scoreToWin) {
-      gameOver = true;
-      displayWinMessage();
-    }
+    if ((player1Score >= scoreToWin || player2Score >= scoreToWin) && !gameOver) {
+        gameOver = true;
+    
+        const session_user = JSON.parse(localStorage.getItem('sessionUser'))
+    
+        let winner;
+    
+        if (player1Score >= 3)
+            winner = session_user.username
+        else
+            winner = 'Player2'
+    
+    
+        const data = {
+            game_type_id: 3,
+            match_winner: winner,
+            p1_score: player1Score,
+            p2_score: player2Score,
+            p1_username: session_user.username,
+            p2_username: 'Player2',
+        };
+    
+        try {
+            const response = await fetch("http://localhost:8000/get_match_details/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json",
+                            "Authorization": `Bearer ${localStorage.getItem('access_token')}`},
+                body: JSON.stringify(data),
+                credentials: "include",
+            });
+            if (response.ok) {
+                console.log("Match details sent successfully");
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+        displayWinMessage();
+      }
   }
 
   function resetBall() {

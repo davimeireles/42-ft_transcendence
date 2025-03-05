@@ -148,7 +148,7 @@ async function update(time) {
   context.fillText(player2Score, (boardWidth * 4) / 5 - 45, 45);
 
   // Check for win condition
-  if (player1Score >= 3 || player2Score >= 3) {
+  if ((player1Score >= 3 || player2Score >= 3) && !gameOver) {
     gameOver = true;
     
     const session_user = JSON.parse(localStorage.getItem('sessionUser'))
@@ -163,7 +163,7 @@ async function update(time) {
 
     const data = {
         game_type_id: 1,
-        game_winner: winner,
+        match_winner: winner,
         p1_score: player1Score,
         p2_score: player2Score,
         p1_username: session_user.username,
@@ -179,8 +179,7 @@ async function update(time) {
             credentials: "include",
         });
         if (response.ok) {
-            const data = await response.json();
-            console.log(data);
+            console.log("Match details sent successfully");
         }
     } catch (error) {
         console.error('Error:', error);
