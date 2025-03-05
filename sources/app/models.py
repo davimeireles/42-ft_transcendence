@@ -55,12 +55,12 @@ class Tournament(models.Model):
     winner = models.ForeignKey(User, on_delete=models.CASCADE)
     
 class Match(models.Model):
-    gameTypeID = GameType.id
-    matchWinner = User.id
+    gameTypeID = models.ForeignKey(GameType, on_delete=models.CASCADE)
+    matchWinner = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
 class MatchParticipant(models.Model):
-    matchID = Match.id
-    userID = User.id
+    matchID = models.ForeignKey(Match, on_delete=models.CASCADE)
+    userID = models.ForeignKey(User, on_delete=models.CASCADE)
     score = models.IntegerField(null=True)
     

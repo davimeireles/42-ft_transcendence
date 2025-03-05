@@ -454,15 +454,11 @@ def verify_2fa(request):
 @api_view(['POST'])
 def get_match_details(request):
     game_type_id = request.data.get('game_type_id')
-    match_winner = request.data.get('game_winner')
+    match_winner = request.data.get('match_winner')
     player1_score = request.data.get('p1_score')
     player2_score = request.data.get('p2_score')
     p1_username = request.data.get('p1_username')
     p2_username = request.data.get('p2_username')
-
-    if not all([game_type_id, match_winner, player1_score, player2_score, p1_username, p2_username]):
-        logger.error("Missing required fields")
-        return Response({'error': 'Missing required fields.'}, status=400)
 
     try:
         with transaction.atomic():
@@ -479,15 +475,15 @@ def get_match_details(request):
 
             logger.info("Match winner: %s", winner)
 
-            match = Match.objects.create(gameTypeID=game_type.id, matchWinner=winner.id)
+            match = Match.objects.create(gameTypeID=game_type, matchWinner=winner)
             logger.info("Match created: %s", match)
 
             player1 = User.objects.get(username=p1_username)
             player2 = User.objects.get(username=p2_username)
             logger.info("Players found: %s, %s", player1, player2)
 
-            MatchParticipant.objects.create(matchID=match.id, userID=player1.id, score=player1_score)
-            MatchParticipant.objects.create(matchID=match.id, userID=player2.id, score=player2_score)
+            MatchParticipant.objects.create(matchID=match, userID=player1, score=player1_score)
+            MatchParticipant.objects.create(matchID=match, userID=player2, score=player2_score)
             logger.info("Match participants created")
 
             return Response({'message': 'Match details saved successfully.'}, status=201)
