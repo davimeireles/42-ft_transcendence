@@ -9,13 +9,13 @@ const router = {
     localgame: "/local-game.html",
     aigame: "/ai-game.html",
     game3d: "/3d-game.html",
-    dash: "home.html",
+    // dash: "/home.html",
     home: "/home.html",
     profile: "/profile.html",
     profiles: "/profiles.html",
     edit: "/edit-profile.html",
     chat: "/chat.html",
-    enable_two_fa: "/enable-2fa.html",
+    enable2FA: "/enable-2fa.html",
     verify2FA: "/verify-2fa.html",
   },
 };
@@ -30,7 +30,7 @@ async function renderPage(page) {
 
   if (!accessToken && protectedPages.includes(page)) {
     console.warn("Unauthorized access attempt. Redirecting to login...");
-    window.location.href = "/login"; // Redirect to login page
+    window.location.href = "/login";
     return;
   }
 
@@ -74,7 +74,7 @@ async function renderPage(page) {
       case "game3d":
         initialize3DPong();
         break;
-      case "enable_two_fa":
+      case "enable2FA":
         enable2FA();
         break;
       case "verify2FA":
