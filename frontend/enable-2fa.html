@@ -1,16 +1,21 @@
 <!-- Container for the QR code -->
-<div id="qr-code-container">
-    <p>Scan the QR code with your 2FA app:</p>
-    <img id="qr-code" src="" alt="QR Code">
-</div>
-
-<!-- Error message container -->
-<div id="2fa-error-message">
-    <p id="2fa-error-message"></p>
-</div>
-
-<div>
-    <button type="submit" href="/profile">
-        Profile
-    </button>
-</div>
+<div class="container-fluid" style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+     <div id="qr-code-container" style="font-family: 'square'; font-size: xx-large; color: #e3dce6; text-align: center;">
+         <p>Scan the QR code with your 2FA app:</p>
+         <img id="qr-code" src="" alt="QR Code">
+         <br>
+         <br>
+         <label for="otpEnable">Enter OTP</label>
+         <!-- <form id="otpEnableForm"> -->
+            <input type="text" id="otpEnable" required>
+            <button onclick="check_first_time_otp()" style="margin-top: 15px;">Verify</button>
+        <!-- </form> -->
+     </div>
+    <div id="otp-error-message" style="color: red; display: none;"></div>
+     <!-- Error message container -->
+     <div id="2fa-error-message-enable">
+         <p id="2fa-error-message-enable"></p>
+     </div>
+     
+ </div>
+ 

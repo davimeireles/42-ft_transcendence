@@ -1,5 +1,7 @@
 <div class="container-custom m-4">
-    <button href="/home" id="btn-home">Home</button>
+    <a href="/home">
+        <button id="btn-home">Home</button>
+    </a>
     <div class="row">
         <!-- Sidebar -->
         <!-- Main Content -->
@@ -9,7 +11,9 @@
                 <h4 id="text-user" class="user"></h4>
                 <h6 id="online"></h6>
             </div>
-            <button href="/edit" id="btn-friend">Edit Profile</button>
+            <a href="/edit">
+                <button id="btn-friend">Edit Profile</button>
+            </a>
             <div class="container-custom m-4">
                 <div class="row">
                     <div class="col sidebar-achi" style="border-radius: 10px;">
@@ -40,8 +44,8 @@
                 </ul>
             </div>
             <div>
-                <button type="submit" href="/enable_two_fa">Enable 2FA</button>
-            </div>
+                <a href="/enable2FA" class="btn btn-primary">Enable 2FA</a>
+            </div> 
         </div>
     </div>
 </div>

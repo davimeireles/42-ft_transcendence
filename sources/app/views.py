@@ -403,6 +403,7 @@ def new_session(request):
     )
     return response
 
+@api_view(['POST'])
 def setup_2fa(request):
     user = request.user
 
@@ -424,10 +425,24 @@ def setup_2fa(request):
     
     qr_code_data_uri = f"data:image/png;base64,{qr_code}"
     
-    user.two_fa_enable = True
-    user.save()
-    
     return JsonResponse({"qrcode": qr_code_data_uri, "secret": user.two_fa_secret})
+
+@api_view(['POST'])
+def verify_2fa_first_time(request):
+    data = json.loads(request.body)
+    otp_code = data.get('otp')
+    if not otp_code:
+        return JsonResponse({'message': 'OTP code is required'}, status=400)
+    
+    user = request.user
+    totp = pyotp.TOTP(user.two_fa_secret)
+    if totp.verify(otp_code):
+        user.two_fa_enable = True
+        user.save()
+        return JsonResponse({'message': '2FA verification successful'}, status=200)
+    else:
+        return JsonResponse({'message': 'Invalid OTP code'}, status=400)
+
 
 @api_view(['POST'])
 def verify_2fa(request):
@@ -443,6 +458,8 @@ def verify_2fa(request):
             
             totp = pyotp.TOTP(user.two_fa_secret)
             if totp.verify(otp_code):
+                user.two_fa_enable = True
+                user.save()
                 return JsonResponse({'message': '2FA verification successful'}, status=200)
             else:
                 return JsonResponse({'message': 'Invalid OTP code'}, status=400)
@@ -450,6 +467,7 @@ def verify_2fa(request):
         return JsonResponse({'message': 'User not found'}, status=404)
     except Exception as e:
         return JsonResponse({'message': 'Error', 'error': str(e)}, status=500)
+    return JsonResponse({'message': 'Error'}, status=500)
 
 @api_view(['POST'])
 def get_match_details(request):

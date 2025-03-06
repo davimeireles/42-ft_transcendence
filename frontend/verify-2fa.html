@@ -1,9 +1,9 @@
-<div class="container">
-    <h2>Verify OTP</h2>
+<div class="container" style="display: flex; justify-content: center; align-items: center; height: 100vh; color: #e3dce6;">
+    <h2 style="font-family: 'square';">Verify OTP</h2>
+    <label style="font-family: 'square'; margin-bottom: 20px;" for="otp">Enter OTP</label>
     <form id="otpForm">
-      <label for="otp">Enter OTP:</label>
       <input type="text" id="otp" name="otp" required>
-      <button type="submit">Verify</button>
+      <button type="submit" class="btn btn-dark">Verify</button>
     </form>
     <div id="otp-error-message" style="color: red; display: none;"></div>
-  </div>
+</div>

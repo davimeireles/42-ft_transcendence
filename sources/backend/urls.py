@@ -31,6 +31,7 @@ urlpatterns = [
     path('new_session/', app.views.new_session, name='new_session'),
     path('setup_2fa/', app.views.setup_2fa, name='setup_2fa'),
     path('verify_2fa/', app.views.verify_2fa, name='verify_2fa'),
+    path('verify_2fa_first_time/', app.views.verify_2fa_first_time, name='verify_2fa_first_time'),
     path('api/', include('app.api.urls')),
     path('get_match_details/', app.views.get_match_details, name='get_match_details'),
 ]

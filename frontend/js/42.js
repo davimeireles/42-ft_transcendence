@@ -65,7 +65,7 @@ window.onload = async function () {
             if (sessionUser.two_fa_enable) {
               renderPage("verify2FA");
             } else {
-              renderPage("home");
+                renderPage("home");
             }
           }
         } catch (error) {
