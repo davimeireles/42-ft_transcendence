@@ -1,4 +1,5 @@
 // Router state
+
 const router = {
   currentPage: null,
   pages: {
@@ -6,10 +7,6 @@ const router = {
     login: "/login.html",
     register: "/register.html",
     pongpage: "/pong-page.html",
-    localgame: "/local-game.html",
-    aigame: "/ai-game.html",
-    game3d: "/3d-game.html",
-    // dash: "/home.html",
     home: "/home.html",
     profile: "/profile.html",
     profiles: "/profiles.html",
@@ -20,7 +17,6 @@ const router = {
   },
 };
 
-// Page loader
 async function renderPage(page) {
   console.log(`Attempting to render page: ${page}`);
 
@@ -53,9 +49,6 @@ async function renderPage(page) {
       case "login":
         LoginFormListener();
         break;
-      case "intro":
-        createBouncingBallBackground();
-        break;
       case "home":
         renderUser();
         break;
@@ -67,12 +60,6 @@ async function renderPage(page) {
         break;
       case "edit":
         UsernameForm();
-        break;
-      case "chat":
-        chat();
-        break;
-      case "game3d":
-        initialize3DPong();
         break;
       case "enable2FA":
         enable2FA();
@@ -108,7 +95,7 @@ window.addEventListener("load", () => {
 
 function loadGame(gameType) {
   const homeGames = document.getElementById("home-games");
-  homeGames.innerHTML = ""; // Clear the current content
+  homeGames.innerHTML = ""; 
 
   if (gameType === "local") {
     homeGames.innerHTML = `
@@ -142,8 +129,8 @@ function loadGame(gameType) {
 }
 
 function loadSelectedGame() {
-    const selectElement = document.getElementById("game-select");
-    const selectedGame = selectElement.value;
-  
-    loadGame(selectedGame);
+  const selectElement = document.getElementById("game-select");
+  const selectedGame = selectElement.value;
+
+  loadGame(selectedGame);
 }

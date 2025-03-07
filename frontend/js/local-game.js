@@ -44,6 +44,8 @@ let lastTime = 0;
 
 // Initialize the game
 async function renderPongGame() {
+  gameButton = document.getElementById("gamesDropdown");
+  gameButton.style.display = "none";
   board = document.getElementById("board");
   gameOver = false;
   player1Score = 0;
@@ -150,39 +152,38 @@ async function update(time) {
   // Check for win condition
   if ((player1Score >= 3 || player2Score >= 3) && !gameOver) {
     gameOver = true;
-    
-    const session_user = JSON.parse(localStorage.getItem('sessionUser'))
+
+    const session_user = JSON.parse(localStorage.getItem("sessionUser"));
 
     let winner;
 
-    if (player1Score >= 3)
-        winner = session_user.username
-    else
-        winner = 'Player2'
-
+    if (player1Score >= 3) winner = session_user.username;
+    else winner = "Player2";
 
     const data = {
-        game_type_id: 1,
-        match_winner: winner,
-        p1_score: player1Score,
-        p2_score: player2Score,
-        p1_username: session_user.username,
-        p2_username: 'Player2',
+      game_type_id: 1,
+      match_winner: winner,
+      p1_score: player1Score,
+      p2_score: player2Score,
+      p1_username: session_user.username,
+      p2_username: "Player2",
     };
 
     try {
-        const response = await fetch("http://localhost:8000/get_match_details/", {
-            method: "POST",
-            headers: { "Content-Type": "application/json",
-                        "Authorization": `Bearer ${localStorage.getItem('access_token')}`},
-            body: JSON.stringify(data),
-            credentials: "include",
-        });
-        if (response.ok) {
-            console.log("Match details sent successfully");
-        }
+      const response = await fetch("http://localhost:8000/get_match_details/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+        body: JSON.stringify(data),
+        credentials: "include",
+      });
+      if (response.ok) {
+        console.log("Match details sent successfully");
+      }
     } catch (error) {
-        console.error('Error:', error);
+      console.error("Error:", error);
     }
     displayWinMessage();
   }
@@ -233,15 +234,21 @@ function handleCollision(ball, player) {
   }
 
   // Increase speed after collision (capped at maxBallSpeed)
-  ball.speedX = Math.min(Math.max(ball.speedX * 1.1, -maxBallSpeed), maxBallSpeed);
-  ball.speedY = Math.min(Math.max(ball.speedY * 1.1, -maxBallSpeed), maxBallSpeed);
+  ball.speedX = Math.min(
+    Math.max(ball.speedX * 1.1, -maxBallSpeed),
+    maxBallSpeed
+  );
+  ball.speedY = Math.min(
+    Math.max(ball.speedY * 1.1, -maxBallSpeed),
+    maxBallSpeed
+  );
 }
 
 // Reset game after a score
 function resetBall(direction) {
   ball = {
-    x: boardWidth / 2,
-    y: boardHeight / 2,
+    x: boardWidth / 2 + 1, // Add a small offset
+    y: boardHeight / 2 + 1, // Add a small offset
     width: ballWidth,
     height: ballHeight,
     speedX: direction * ballBaseSpeed,

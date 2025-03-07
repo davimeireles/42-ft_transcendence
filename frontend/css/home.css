@@ -127,6 +127,7 @@
   /* Required for absolute positioning of win message */
   width: 600px;
   height: 300px;
+  margin: 0;
 }
 
 /* Styles for the win message */
