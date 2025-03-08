@@ -1,12 +1,16 @@
 // Board configs
 let board;
-let boardWidth = 600;
+let boardWidth = 1024;
 let boardHeight = 300;
 let context;
 
+// Default paddle colors
+const defaultPlayer1Color = "rgb(3, 255, 3)"; // Green
+const defaultPlayer2Color = "rgb(3, 255, 3)"; // Green
+
 // Players configs
 let playerWidth = 10;
-let playerHeight = 50;
+let playerHeight = 45;
 let player1SpeedY = 0;
 let player2SpeedY = 0;
 const playerMaxSpeed = 3;
@@ -25,11 +29,15 @@ let player2 = {
   height: playerHeight,
 };
 
+// Define player colors
+let player1Color = defaultPlayer1Color; // Initialize Player 1 color
+let player2Color = defaultPlayer2Color; // Initialize Player 2 color
+
 // Ball config
 let ballWidth = 10;
 let ballHeight = 10;
-const ballBaseSpeed = 2;
-const maxBallSpeed = 10; // Maximum speed of the ball
+const ballBaseSpeed = 5; // Increased for more emphasis
+const maxBallSpeed = 15; // Maximum speed of the ball
 
 let ball = {
   x: boardWidth / 2,
@@ -41,6 +49,9 @@ let ball = {
 };
 
 let lastTime = 0;
+let customizationModal;
+let gameContainer;
+let winMessage;
 
 // Initialize the game
 async function renderPongGame() {
@@ -57,7 +68,7 @@ async function renderPongGame() {
     context = board.getContext("2d");
 
     // Ensure the game container exists and is a direct parent
-    let gameContainer = document.getElementById("game-container");
+    gameContainer = document.getElementById("game-container");
     if (!gameContainer) {
       gameContainer = document.createElement("div");
       gameContainer.id = "game-container";
@@ -67,7 +78,7 @@ async function renderPongGame() {
     }
 
     // Create a win message element
-    let winMessage = document.getElementById("win-message");
+    winMessage = document.getElementById("win-message");
     if (!winMessage) {
       winMessage = document.createElement("div");
       winMessage.id = "win-message";
@@ -84,11 +95,87 @@ async function renderPongGame() {
       gameContainer.appendChild(winMessage);
     }
 
+    // Create customization modal (color picker)
+    customizationModal = document.createElement("div");
+    customizationModal.id = "customization-modal";
+    customizationModal.style.display = "flex"; // Initially hidden
+    customizationModal.style.position = "absolute";
+    customizationModal.style.top = "50%";
+    customizationModal.style.left = "50%";
+    customizationModal.style.transform = "translate(-50%, -50%)";
+    customizationModal.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+    customizationModal.style.color = "white";
+    customizationModal.style.padding = "20px";
+    customizationModal.style.fontSize = "16px";
+    customizationModal.style.textAlign = "center";
+    customizationModal.style.flexDirection = "column";
+    gameContainer.appendChild(customizationModal);
+
+    // Player 1 customization
+    const p1Customization = createPlayerCustomization("Player 1", setPlayer1Color);
+    customizationModal.appendChild(p1Customization);
+
+    // Player 2 customization
+    const p2Customization = createPlayerCustomization("Player 2", setPlayer2Color);
+    customizationModal.appendChild(p2Customization);
+
     // Start the initial game loop
-    resetGameStart();
+    showCustomizationModal();
+  }
+}
+
+// Function to create player customization sections
+function createPlayerCustomization(playerName, setColorFunction) {
+  const container = document.createElement("div");
+  container.style.marginBottom = "10px"; // Add some spacing
+
+  const title = document.createElement("h3");
+  title.textContent = playerName + " - Choose Your Paddle Color:";
+  container.appendChild(title);
+
+  const colors = ["green", "red", "blue"]; // Green, Red, Blue
+  colors.forEach(color => {
+    const colorButton = document.createElement("button");
+    colorButton.textContent = color;
+    colorButton.style.backgroundColor = color;
+    colorButton.style.color = "white";
+    colorButton.style.padding = "5px 10px";
+    colorButton.style.border = "none";
+    colorButton.style.margin = "5px";
+    colorButton.style.cursor = "pointer";
+    colorButton.addEventListener("click", () => setColorFunction(color));
+    container.appendChild(colorButton);
+  });
+
+  return container;
+}
+
+// Set player 1 color
+function setPlayer1Color(color) {
+  player1Color = color;
+  console.log("Player 1 color set to " + color);
+}
+
+// Set player 2 color
+function setPlayer2Color(color) {
+  player2Color = color;
+  console.log("Player 2 color set to " + color);
+}
+
+// Show customization modal
+function showCustomizationModal() {
+  // Create a "Start Game" button
+  const startGameButton = document.createElement("button");
+  startGameButton.textContent = "Start Game";
+  startGameButton.addEventListener("click", () => {
+    customizationModal.style.display = "none"; // Hide modal
     document.addEventListener("keyup", stopPlayer);
     document.addEventListener("keydown", movePlayer);
-  }
+    resetGameStart();
+  });
+  customizationModal.appendChild(startGameButton);
+
+  customizationModal.style.display = "flex";
 }
 
 // Main game loop
@@ -103,8 +190,9 @@ async function update(time) {
   context.clearRect(0, 0, board.width, board.height);
 
   // Draw players
-  context.fillStyle = "rgb(3, 255, 3)";
+  context.fillStyle = player1Color; // Use Player 1 color
   context.fillRect(player1.x, player1.y, player1.width, player1.height);
+  context.fillStyle = player2Color; // Use Player 2 color
   context.fillRect(player2.x, player2.y, player2.width, player2.height);
 
   if (!gameOver) {
@@ -221,39 +309,51 @@ function detectCollision(a, b) {
 
 // Handle ball collision with players
 function handleCollision(ball, player) {
-  if (player === player1 && ball.x <= player1.x + player1.width) {
-    // Collision with player1 (left paddle)
-    ball.x = player1.x + player1.width; // Correct the ball's position
-    ball.speedX *= -1; // Reverse X direction
-    ball.speedY = (ball.y - (player1.y + player1.height / 2)) / 10; // Adjust Y direction based on where it hits the paddle
-  } else if (player === player2 && ball.x + ball.width >= player2.x) {
-    // Collision with player2 (right paddle)
-    ball.x = player2.x - ball.width; // Correct the ball's position
-    ball.speedX *= -1; // Reverse X direction
-    ball.speedY = (ball.y - (player2.y + player2.height / 2)) / 10; // Adjust Y direction based on where it hits the paddle
+    const minSpeedY = 2; // Minimum absolute value for speedY
+    const minVelocityAfterHit = ballBaseSpeed * 1.2; // Minimum overall speed
+  
+    if (player === player1 && ball.x <= player1.x + player1.width) {
+      ball.x = player1.x + player1.width;
+      ball.speedX = Math.abs(ball.speedX) * 1.1; // Ensure always moving right
+      ball.speedY = (ball.y - (player1.y + player1.height / 2)) / 10;
+  
+      if (Math.abs(ball.speedY) < minSpeedY) {
+        ball.speedY = (ball.speedY >= 0) ? minSpeedY : -minSpeedY;
+      }
+  
+    } else if (player === player2 && ball.x + ball.width >= player2.x) {
+      ball.x = player2.x - ball.width;
+      ball.speedX = -Math.abs(ball.speedX) * 1.1; // Ensure always moving left
+      ball.speedY = (ball.y - (player2.y + player2.height / 2)) / 10;
+  
+      if (Math.abs(ball.speedY) < minSpeedY) {
+        ball.speedY = (ball.speedY >= 0) ? minSpeedY : -minSpeedY;
+      }
+    }
+  
+    // Adjust to ensure minimum velocity after the hit
+    const currentVelocity = Math.sqrt(ball.speedX * ball.speedX + ball.speedY * ball.speedY);
+    if (currentVelocity < minVelocityAfterHit) {
+      const scaleFactor = minVelocityAfterHit / currentVelocity;
+      ball.speedX *= scaleFactor;
+      ball.speedY *= scaleFactor;
+    }
+  
+    // Cap the speed
+    ball.speedX = Math.max(Math.min(ball.speedX, maxBallSpeed), -maxBallSpeed);
+    ball.speedY = Math.max(Math.min(ball.speedY, maxBallSpeed), -maxBallSpeed);
   }
-
-  // Increase speed after collision (capped at maxBallSpeed)
-  ball.speedX = Math.min(
-    Math.max(ball.speedX * 1.1, -maxBallSpeed),
-    maxBallSpeed
-  );
-  ball.speedY = Math.min(
-    Math.max(ball.speedY * 1.1, -maxBallSpeed),
-    maxBallSpeed
-  );
-}
 
 // Reset game after a score
 function resetBall(direction) {
-  ball = {
-    x: boardWidth / 2 + 1, // Add a small offset
-    y: boardHeight / 2 + 1, // Add a small offset
-    width: ballWidth,
-    height: ballHeight,
-    speedX: direction * ballBaseSpeed,
-    speedY: ballBaseSpeed,
-  };
+    ball = {
+        x: boardWidth / 2, // Corrected
+        y: boardHeight / 2, // Corrected
+        width: ballWidth,
+        height: ballHeight,
+        speedX: direction * ballBaseSpeed, // Start moving in the given direction
+        speedY: ballBaseSpeed
+    };
 }
 
 // Display win message
@@ -293,18 +393,21 @@ function exitToHome() {
 
 // Reset the game
 function resetGameStart() {
-  gameOver = false;
-  player1Score = 0;
-  player2Score = 0;
-  player1SpeedY = 0;
-  player2SpeedY = 0;
-
-  const winMessage = document.getElementById("win-message");
-  winMessage.style.display = "none";
-
-  resetBall(1); // Reset ball to the center
-  lastTime = 0; // Reset lastTime to avoid large deltaTime on restart
-
-  // Restart the animation loop
-  requestAnimationFrame(update);
-}
+    gameOver = false;
+    player1Score = 0;
+    player2Score = 0;
+    player1SpeedY = 0;
+    player2SpeedY = 0;
+  
+    const winMessage = document.getElementById("win-message");
+    winMessage.style.display = "none";
+  
+    resetBall(0); // Reset ball to the center - do not assign points
+    lastTime = 0; // Reset lastTime to avoid large deltaTime on restart
+      setTimeout(() => {
+          resetBall(1); // After a brief delay, set ball direction
+      }, 200);
+  
+    // Restart the animation loop
+    requestAnimationFrame(update);
+  }

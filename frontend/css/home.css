@@ -19,7 +19,6 @@
 .home-games {
   width: 100%;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   flex-grow: 1;
@@ -123,11 +122,15 @@
 
 /* Styles for the game container */
 #game-container {
-  position: relative;
   /* Required for absolute positioning of win message */
-  width: 600px;
-  height: 300px;
-  margin: 0;
+  display: flex;
+  width: 100%;
+}
+
+.game-container canvas {
+    width: 100%;
+    border-top: 5px solid #b700ff;
+    border-bottom: 5px solid #b700ff;
 }
 
 /* Styles for the win message */
@@ -186,4 +189,41 @@
 
 .dropdown-toggle::after {
   color: #e3dce6; /* Color of the dropdown arrow */
+}
+
+.difficulty-overlay {
+    display: flex;
+    flex-direction: column; /* Stack the text and buttons vertically */
+    align-items: center; /* Center items horizontally */
+    justify-content: center; /* Center items vertically */
+    text-align: center;
+    color: #e3dce6; /* Existing styling for text color */
+    font-family: 'square';
+    width: 100%;
+    height: 20vh; /* Adjust the height as needed */
+}
+
+.difficulty-buttons {
+    display: flex; /* Keep the buttons in a row */
+    gap: 10px; /* Adds spacing between buttons */
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px; /* Creates space between the text and buttons */
+}
+
+.difficulty-buttons button {
+    margin: 0; /* No margin within the row */
+    padding: 10px 20px; /* Add padding for better button size */
+    font-size: 14px; /* Adjust font size if required */
+    border: 2px solid #e3dce6; /* Matching theme */
+    background-color: #151314; /* Maintain dark theme */
+    color: #b700ff; /* Matching button font color */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.difficulty-buttons button:hover {
+    background-color: #b700ff; /* Highlight on hover */
+    color: #151314; /* Invert text color */
+    transform: scale(1.1); /* Slight zoom on hover */
 }

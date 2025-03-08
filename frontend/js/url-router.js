@@ -99,7 +99,7 @@ function loadGame(gameType) {
 
   if (gameType === "local") {
     homeGames.innerHTML = `
-            <canvas id="board" style="width: 100%; height: 50%; border-top: 5px solid #b700ff; border-bottom: 5px solid #b700ff;"></canvas>
+            <canvas id="board" style="width: 100%; height: 100%; border-top: 5px solid #b700ff; border-bottom: 5px solid #b700ff;"></canvas>
             <script>
                 renderPongGame();
             </script>
@@ -107,15 +107,17 @@ function loadGame(gameType) {
     renderPongGame();
   } else if (gameType === "ai") {
     homeGames.innerHTML = `
-        <div id="difficulty-overlay">
-    <div class="difficulty-buttons">
-        <h2 style="color: white;">Choose Difficulty</h2>
-        <button onclick="startGame('easy')">Easy</button>
-        <button onclick="startGame('medium')">Medium</button>
-        <button onclick="startGame('hard')">Hard</button>
-    </div>
-</div>
-    <canvas id="ai-board" style="width: 100%; height: 50%; border-top: 5px solid #b700ff; border-bottom: 5px solid #b700ff;"></canvas>
+            <div class="game-container">
+                <div id="difficulty-overlay" class="difficulty-overlay">
+                <h2>Choose Difficulty</h2>
+                <div class="difficulty-buttons">
+                        <button onclick="startGame('easy')">Easy</button>
+                        <button onclick="startGame('medium')">Medium</button>
+                        <button onclick="startGame('hard')">Hard</button>
+                    </div>
+                </div>
+                <canvas id="ai-board"></canvas>
+            </div>
         `;
   } else if (gameType === "3d") {
     homeGames.innerHTML = `
