@@ -1,13 +1,13 @@
 // AIboard configs
 let AIboard;
-let AIboardWidth = 600;
+let AIboardWidth = 1024;
 let AIboardHeight = 300;
 let AIcontext;
 let isResetting = false;
 
 // Players configs
 let AIplayerWidth = 10;
-let AIplayerHeight = 50;
+let AIplayerHeight = 45;
 let AIplayerSpeedY = 0;
 const AIPlayerMaxSpeed = 3;
 
@@ -31,8 +31,8 @@ let AIplayer2Score = 0;
 // Ball config
 let AIballWidth = 10;
 let AIballHeight = 10;
-const AIballBaseSpeed = 2;
-const AImaxBallSpeed = 10; // Maximum speed of the ball
+const AIballBaseSpeed = 5;
+const AImaxBallSpeed = 15; // Maximum speed of the ball
 
 let AIball = {
   x: AIboardWidth / 2,
@@ -430,8 +430,8 @@ function exitToHome() {
 // Reset the game
 function AIresetGameStart() {
   AIGameOver = false;
-  AIplayer1Score = 0;
-  AIplayer2Score = 0;
+  AIplayer1Score = -1;
+  AIplayer2Score = -1;
 
   const winMessage = document.getElementById("win-message");
   winMessage.style.display = "none";
