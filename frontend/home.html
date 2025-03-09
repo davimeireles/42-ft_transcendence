@@ -4,11 +4,11 @@
         <img src="" alt="" id="profileImage" class="profile-image">
       </div>
       <a href="/profile" style="text-decoration: none;">
-          <h6 style="cursor: pointer;">Profile</h6>
+          <h6 style="cursor: pointer;" data-translate-key="Profile">Profile</h6>
       </a>
       <br>
       <div class="dropdown">
-        <h6 style="cursor: pointer;" class="dropdown-toggle" id="gamesDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <h6 style="cursor: pointer;" class="dropdown-toggle" id="gamesDropdown" data-bs-toggle="dropdown" aria-expanded="false" data-translate-key="Games">
           Games
         </h6>
         <ul class="dropdown-menu" aria-labelledby="gamesDropdown">
@@ -19,10 +19,10 @@
       </div>
   
       <a href="/edit" style="text-decoration: none;">
-          <h6 style="cursor: pointer;">Setting</h6>
+          <h6 style="cursor: pointer;" data-translate-key="Settings">Settings</h6>
       </a>
       <br>
-      <h6 style="cursor: pointer;" onclick="logout()">Logout</h6>
+      <h6 style="cursor: pointer;" onclick="logout()" data-translate-key="Logout">Logout</h6>
     </div>
     <div class="home-main-div">
       <h1 id="welcome_user"></h1>
@@ -33,12 +33,12 @@
     <div class="home-right-bar">
       <div class="home-search-bar">
         <div class="input-group mb-3">
-          <input id="user-search" class="form-control" placeholder="Search users" oninput="searchProfile()"
+          <input id="user-search" class="form-control" placeholder="Search users" data-translate-key="Search users" oninput="searchProfile()"
             autocomplete="off">
         </div>
         <div id="results" style="cursor: pointer;"></div>
       </div>
-      <div class="home-friends-bar">
+      <div class="home-friends-bar" data-translate-key="Online Friends">
         <h5>Online Friends</h5>
         <ul id="friends-online"></ul>
       </div>

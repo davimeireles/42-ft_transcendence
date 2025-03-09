@@ -74,9 +74,15 @@ async function renderPage(page) {
     // Update history and current page
     history.pushState({ page: page }, "", `/${page}`);
     router.currentPage = page;
+
   } catch (error) {
     console.error("Error loading page:", error);
   }
+  
+  const selectedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+  loadLanguage(selectedLanguage).then((translations) => {
+    applyTranslations(translations);
+  });
 }
 
 // Handle browser back/forward
@@ -128,11 +134,4 @@ function loadGame(gameType) {
         `;
     initialize3DPong();
   }
-}
-
-function loadSelectedGame() {
-  const selectElement = document.getElementById("game-select");
-  const selectedGame = selectElement.value;
-
-  loadGame(selectedGame);
 }
