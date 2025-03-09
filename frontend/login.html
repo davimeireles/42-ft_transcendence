@@ -1,13 +1,13 @@
 <form id="loginForm" class="login-form">
     <div class="container-login d-flex justify-content-center align-items-center vh-100">
         <div class="card-login p-4" style="width: 400px;">
-            <h2 class="text-center mb-4">Login</h2>
+            <h2 class="text-center mb-4" data-translate-key="Login">Login</h2>
 
 
-            <label for="username" class="form-label-username">Username</label>
+            <label for="username" class="form-label-username" data-translate-key="Username">Username</label>
             <input type="text" class="form-control" id="username" required>
 
-            <label for="password" class="form-label-password">Password</label>
+            <label for="password" class="form-label-password" data-translate-key="Password">Password</label>
             <div class="input-group">
                 <input type="password" class="form-control" id="password" required>
                 <span class="input-group-text toggle-password" onclick="togglePasswordVisibility()">
@@ -15,11 +15,11 @@
                 </span>
             </div>
             <div id="login-error-message" class="error-message"></div>
-            <button type="submit" class="login-btn" name="action" value="loginuser">Login</button>
-            <button id="link42" class="login-btn" onclick="redi42()">Login with 42</button>
-            <p class="sing-up-text text-center mt-3">
-                Don't have an account?
-                <a href="/register" class="register-here-text">Register here</a>
+            <button type="submit" class="login-btn" name="action" value="loginuser" data-translate-key="Login">Login</button>
+            <button id="link42" class="login-btn" onclick="redi42()" data-translate-key="Login with 42">Login with 42</button>
+            <p class="sing-up-text text-center mt-3" >
+                <span data-translate-key="Don't have an account">Don't have an account?</span>
+                <a href="/register" class="register-here-text" data-translate-key="Register here">Register here</a>
             </p>
         </div>
     </div>
