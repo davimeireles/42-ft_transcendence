@@ -55,13 +55,10 @@ function LoginFormListener() {
               throw new Error("Failed to fetch user");
             }
             const user = await response.json();
-            // console.log(user.access_token)
-            console.log(user.photo);
-
             const sessionUser = {
               username: user.username,
               email: user.email,
-              nickiname: user.nickname,
+              nickname: user.nickname,
               friends: user.friends,
               online: user.online,
               photo: user.photo,

@@ -1,0 +1,14 @@
+.profile-container {
+    display: flex;
+    align-items: center;
+}
+
+.user-info {
+    margin-left: 10px; 
+    display: flex;
+    flex-direction: column;
+}
+
+#text-user {
+    margin-bottom: 5px;
+}

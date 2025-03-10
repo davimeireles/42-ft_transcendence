@@ -8,7 +8,6 @@ const renderProfile =  function(){
     else{
         online.innerHTML = 'Offline'
     }
-    console.log(session_user.photo)
     if (imageTag && session_user.photo){
         console.log('hello')
         imageTag.src = `http://localhost:8000/media/${session_user.username}.jpg`;
@@ -24,16 +23,11 @@ const renderProfile =  function(){
             friends_list.appendChild(friendItem);
             console.log(friend)
      });
-    } else {
-        const friends_list = document.getElementById('friends-list');
-        const friendItem = document.createElement("li");
-        friendItem.textContent = 'You have no friends :(';
-        friends_list.appendChild(friendItem);
     }
     const text = document.getElementById("text-text")
     const text_user = document.getElementById("text-user")
     if (text_user){
-        text_user.innerHTML = `${session_user.username}`
+        text_user.innerHTML = `${session_user.nickname}`
     }
 }
 

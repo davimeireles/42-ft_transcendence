@@ -19,10 +19,12 @@ async function searchProfile(){
             console.log(data);
             results.innerHTML = '';
             data.forEach((user) => {
-                const h6 = document.createElement('h6');
-                h6.textContent = `${user.username}`; // Display username and email
-                results.appendChild(h6);
-                h6.addEventListener('click', () => getProfile(user.username))
+                if (user.username !== 'admin' && user.username !== 'Player2'&& user.username !== 'EasyAI'&& user.username !== 'MediumAI'&& user.username !== 'HardAI'){
+                    const h6 = document.createElement('h6');
+                    h6.textContent = `${user.username}`; // Display username and email
+                    results.appendChild(h6);
+                    h6.addEventListener('click', () => getProfile(user.username))
+                }
             });
         })
         .catch((error) => console.log('Error', error));
