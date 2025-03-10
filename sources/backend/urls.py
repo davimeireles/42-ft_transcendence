@@ -34,6 +34,7 @@ urlpatterns = [
     path('verify_2fa_first_time/', app.views.verify_2fa_first_time, name='verify_2fa_first_time'),
     path('api/', include('app.api.urls')),
     path('get_match_details/', app.views.get_match_details, name='get_match_details'),
+    path('match_history_page/<int:user_id>/', app.views.match_history_page, name="match_history_page"),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

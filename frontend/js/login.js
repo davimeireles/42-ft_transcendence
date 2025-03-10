@@ -56,6 +56,7 @@ function LoginFormListener() {
             }
             const user = await response.json();
             const sessionUser = {
+              userId: user.id,
               username: user.username,
               email: user.email,
               nickname: user.nickname,
@@ -65,6 +66,7 @@ function LoginFormListener() {
               two_fa_enable: user.two_fa_enable,
             };
             localStorage.setItem("sessionUser", JSON.stringify(sessionUser));
+            console.log(sessionUser);
             if (sessionUser.two_fa_enable) {
               renderPage("verify2FA");
             } else {

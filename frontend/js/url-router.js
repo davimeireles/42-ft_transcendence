@@ -54,6 +54,7 @@ async function renderPage(page) {
         break;
       case "profile":
         renderProfile();
+        getMatchHistory();
         break;
       case "profiles":
         renderProfiles();

@@ -1,3 +1,5 @@
+'use strict'
+
 const renderProfile =  function(){
     const session_user = JSON.parse(localStorage.getItem('sessionUser'))
     const imageTag = document.getElementById("profileImage")
@@ -116,3 +118,67 @@ async function add_remove_friend(){
         }
 }
 
+async function getMatchHistory()
+{
+    const session_user = JSON.parse(localStorage.getItem('sessionUser'));
+    const token = localStorage.getItem("access_token")
+    if (!token)
+    {
+        console.log("Token not found !")
+        return ;
+    }
+    try
+    {
+        const response = await fetch(`http://localhost:8000/match_history_page/${session_user.userId}`,
+        {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": `Bearer ${token}`,
+            }
+        })
+        if(response.ok)
+        {
+            const match_history = await response.json();
+            displayMatchHistory(match_history.history);
+        }
+        else
+        {
+            console.log("not work :( @ getMatchHistory", response.status);
+        };
+    }
+    catch(error)
+    {
+        console.error("Error caught @getMatchHistory: ", error);
+    }
+}
+
+function displayMatchHistory(matchHistory) {
+    const session_user = JSON.parse(localStorage.getItem('sessionUser'));
+    const historyContainer = document.getElementById("HistoryGames");
+    historyContainer.innerHTML = ""; // Clear existing content
+
+    // Check if there are any matches
+    if (!matchHistory || matchHistory.length === 0) {
+        historyContainer.innerHTML = "<p>No match history available</p>";
+        return; 
+    }
+
+
+    // Create and append match entries
+    matchHistory.forEach(match => {
+        const matchElement = document.createElement("div");
+        matchElement.className = "match-entry"; // Optional: for styling
+
+        if (match.Winner === session_user.userId) {
+            matchElement.style.backgroundColor = "green";
+        } else {
+            matchElement.style.backgroundColor = "red";
+        }
+
+        matchElement.innerHTML = `
+            <p>${match.User1} ${match.User1Score} - ${match.User2Score} ${match.User2}</p>
+        `;
+        historyContainer.appendChild(matchElement);
+    });
+}
