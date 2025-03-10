@@ -3,15 +3,15 @@ all: up
 
 # Build and run the Docker containers
 up:
-	docker-compose up --build
+	docker compose up --build
 
 # Stop and remove the Docker containers
 down:
-	docker-compose down
+	docker compose down
 
 # Stop and remove the Docker containers, volumes, and networks
 clean:
-	docker-compose down -v --rmi all --remove-orphans
+	docker compose down -v --rmi all --remove-orphans
 
 # Remove all Docker images
 clean-images:

@@ -1,6 +1,8 @@
-console.log("Loaded login.js");
+'use strict'
 
 function LoginFormListener() {
+  let registerBtn = document.getElementById("register-btn");
+  registerBtn.addEventListener("click", function(event) {renderPage("register");});
   const form = document.getElementById("loginForm");
 
   if (!form) {

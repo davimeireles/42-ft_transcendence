@@ -6,10 +6,19 @@ html, body {
     overflow: hidden; /* Prevent scrolling */
 	background-color: transparent;
 }
-#animated-background {
+
+#animated-background{
+	width: 100%;
+	height: 100%;
+	display: block;
+	position: absolute;
+}
+
+#animated-background canvas{
   width: 100%;
   height: 100%;
   display: block;
+  position: absolute;
 }
 
 @font-face {
@@ -35,7 +44,10 @@ html, body {
 
 .screen-container
 {
+	position: absolute;
 	background-color: transparent;
+	width: 100%;
+	height: 100%;
 }
 
 #main-content

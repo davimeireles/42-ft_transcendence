@@ -1,3 +1,5 @@
+'use strict'
+
 // Router state
 const router = {
   currentPage: null,
@@ -22,7 +24,6 @@ const router = {
 
 // Page loader
 async function renderPage(page) {
-  console.log(`Attempting to render page: ${page}`);
 
   const accessToken = localStorage.getItem("access_token");
 
@@ -43,8 +44,6 @@ async function renderPage(page) {
     const html = await response.text();
     mainContent.innerHTML = html;
 
-    console.log(page);
-
     // Call the appropriate function based on the page
     switch (page) {
       case "register":
@@ -54,7 +53,7 @@ async function renderPage(page) {
         LoginFormListener();
         break;
       case "intro":
-        createBouncingBallBackground();
+        introListener();
         break;
       case "home":
         renderUser();
@@ -84,7 +83,7 @@ async function renderPage(page) {
         console.warn(`No specific function defined for page: ${page}`);
     }
 
-    // Update history and current page
+    // Update history and current page                 CHECK HERE
     history.pushState({ page: page }, "", `/${page}`);
     router.currentPage = page;
   } catch (error) {
@@ -96,7 +95,6 @@ async function renderPage(page) {
 window.addEventListener("popstate", (e) => {
   if (e.state?.page) {
     renderPage(e.state.page);
-    console.log(window.location.herf);
   }
 });
 
@@ -104,6 +102,7 @@ window.addEventListener("popstate", (e) => {
 window.addEventListener("load", () => {
   const initialPage = window.location.pathname.slice(1) || "intro";
   renderPage(initialPage);
+  
 });
 
 function loadGame(gameType) {
