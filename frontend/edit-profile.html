@@ -2,37 +2,66 @@
     <button id="btn-home" data-translate-key="Exit">Exit</button>
 </a>
 <div class="container d-flex justify-content-center align-items-center vh-100">
-    <div class="card bg-dark text-white p-4" style="width: 400px;">
-        <h2 class="text-center mb-4" data-translate-key="Edit Profile">Edit Profile</h2>
-        <form id="usernameForm">
+    <h2 class="text-center mb-4" data-translate-key="Edit Profile" style="color: #e3dce6; font-family: 'square';">Edit Profile</h2>
+    <div class="card d-flex align-items-center justify-content-center" style="width: 400px; background-color: #151314; color: #e3dce6; font-family: 'square';">
+
+        <!-- Username Form -->
+        <form id="usernameForm" style="width: 100%;">
             <div class="mb-3">
                 <label for="username" class="form-label" data-translate-key="Change Username">Change Username</label>
-                <input type="text" class="form-control" id="changeUsername" minlength="3" maxlength="128" required
+                <input type="text" class="form-control" id="changeUsername" minlength="3" maxlength="128"
                     title="Username must be between 3 and 128 characters.">
             </div>
-            <button type="submit" class="btn btn-custom w-100" data-translate-key="Edit Profile">Edit Profile</button>
         </form>
-        <form id="nickForm">
+
+        <!-- Nickname Form -->
+        <form id="nickForm" style="width: 100%;">
             <div class="mb-3">
                 <label for="nick" class="form-label" data-translate-key="Change Nickname">Change Nickname</label>
-                <input type="text" class="form-control" id="changeNick" minlength="3" maxlength="128" required
+                <input type="text" class="form-control" id="changeNick" minlength="3" maxlength="128"
                     title="Nickname must be between 3 and 128 characters.">
             </div>
-            <button type="submit" class="btn btn-custom w-100" data-translate-key="Edit Profile">Edit Profile</button>
         </form>
-        <form id="passwordForm">
-            <label for="password" class="form-label" data-translate-key="Password">Password</label>
-            <input type="password" class="form-control" id="Password" minlength="8" maxlength="128" required
-            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}"
-            title="Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.">
-            <label for="confirmPassword" class="form-label" data-translate-key="Confirm Password">Confirm Password</label>
-            <input type="password" class="form-control" id="RepeatPassword" minlength="8" maxlength="128"
-            required title="Please enter the same password as above.">
-            <button type="submit" class="btn btn-custom w-100" data-translate-key="Submit">Submit</button>
+
+        <!-- Password Form -->
+        <form id="passwordForm" style="width: 100%;">
+            <div class="mb-3">
+                <label for="password" class="form-label" data-translate-key="Password">Password</label>
+                <input type="password" class="form-control" id="Password" minlength="8" maxlength="128"
+                    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}"
+                    title="Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.">
+            </div>
+            <div class="mb-3">
+                <label for="confirmPassword" class="form-label" data-translate-key="Confirm Password">Confirm
+                    Password</label>
+                <input type="password" class="form-control" id="RepeatPassword" minlength="8" maxlength="128"
+                    title="Please enter the same password as above.">
+            </div>
         </form>
-        <form id="photoForm">
-            <input type="file" id="myFile" name="filename">
-            <button type="submit" class="btn btn-custom w-100" data-translate-key="Submit">Submit</button>
+
+        <!-- Photo Upload Form -->
+        <form id="photoForm" style="width: 100%;">
+            <label for="myFile" class="form-label">Upload Profile Picture</label>
+            <input type="file" class="form-control mb-3" id="myFile" name="filename">
         </form>
+
+        <button type="submit" class="btn btn-custom w-100" data-translate-key="Submit">Submit</button>
     </div>
 </div>
+
+
+<!--
+<div class="container">
+    <div class="row align-items-center">
+        <div class="col">
+        One of three columns
+        </div>
+        <div class="col">
+        One of three columns
+        </div>
+        <div class="col">
+        One of three columns
+        </div>
+    </div>
+</div>
+-->
