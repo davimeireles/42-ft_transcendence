@@ -1,50 +1,51 @@
-<div class="container-custom m-4">
+<div style="margin-top: 5px; position: relative; height: 40px; width: 70px; margin-bottom: 20px; font-family: 'square';">
     <a href="/home">
-        <button id="btn-home" data-translate-key="Home">Home</button>
+        <button id="btn-home" class="btn btn-sm btn-outline-secondary w-100" style="position: absolute; top: 0px;  padding: 5px 5px; font-size: medium;" data-translate-key="Home">Home</button>
     </a>
-    <div class="row">
-        <!-- Sidebar -->
-        <!-- Main Content -->
+</div>
+<div class="container-custom" style="height: 96vh; font-family: 'square'; color: #e3dce6;">
+    <div class="row" style="height: 96vh;">
         <div class="col sidebar">
-            <div class="img m-1">
-                <img src="" alt="" style="border-radius: 50%;" width="60rem" height="60rem" id="profileImage">
-                <h4 id="text-user" class="user"></h4>
-                <h6 id="online"></h6>
+            <div class="img m-1 profile-container">
+                <img src="" alt="" id="profileImage" style="width: 180px; height: 180px; border-radius: 50%;">
+                <div class="user-info mx-4">
+                    <h4 id="text-user" class="user"></h4>
+                    <h6 id="online"></h6>
+                </div>
             </div>
-            <a href="/edit">
-                <button id="btn-friend" data-translate-key="Edit Profile">Edit Profile</button>
-            </a>
             <div class="container-custom m-4">
                 <div class="row">
-                    <div class="col sidebar-achi" style="border-radius: 10px;" data-translate-key="Achievements">
-                        Achievements
-                    </div>
-                    <div class="col sidebar-tour" style="border-radius: 10px;" data-translate-key="Tournaments">
+                    <div class="col sidebar-tour mx-4" style="border-radius: 10px;" data-translate-key="Tournaments">
                         Tournaments
                     </div>
                     <div class="col sidebar-game" style="border-radius: 10px;" data-translate-key="Match History">
                         Match History
                     </div>
                 </div>
-                <div class="row-over" style="border-radius: 10px;" data-translate-key="Overview">
-                    Overview
-                </div>
             </div>
         </div>
         <!-- Right Sidebar -->
-        <div class="col-md-3">
-            <div class="input-group mb-3">
-                <input id="user-search" class="form-control" placeholder="Search users" oninput="searchProfile()"
+        <div class="col-md-4">
+            <span style="display: flex; align-items: center; justify-content: center;" data-translate-key="Search users">Search users</span>
+            <div class="input-group d-flex align-items-center justify-content-center">
+                <div class="col-6">
+                    <input id="user-search" class="form-control" oninput="searchProfile()"
                     autocomplete="off">
+                    <br>
+                    <div id="results" onclick="getProfile()" style="cursor: pointer;"></div>
+                </div>
             </div>
-            <div id="results" onclick="getProfile()" style="cursor: pointer;"></div>
             <div class="friends-box">
-                <h5 data-translate-key="Friends">Friends</h5>
+                <h5 data-translate-key="Friends" style="display: flex; align-items: center; justify-content: center;">Friends</h5>
+                <h6 data-translate-key="You have no friends" style="display: flex; align-items: center; justify-content: center;">You have no friends</h6>
                 <ul id="friends-list">
                 </ul>
             </div>
-            <div>
-                <a href="/enable2FA" class="btn btn-primary" data-translate-key="Enable 2FA">Enable 2FA</a>
+            <div style="align-items: center; justify-content: center; display: flex;">
+                <a style="padding: 5px 5px; font-size: medium;" href="/enable2FA" class="btn btn-custom " data-translate-key="Enable 2FA">Enable 2FA</a>
+                <a href="/edit">
+                    <button style="padding: 5px 5px; font-size: medium;" id="btn-friend" class="btn btn-custom" data-translate-key="Edit Profile">Edit Profile</button>
+                </a>
             </div> 
         </div>
     </div>

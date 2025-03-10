@@ -184,6 +184,7 @@ def oauth42(request):
                 file_path = os.path.join(settings.MEDIA_ROOT, new_filename)
                 with open(file_path, 'wb') as file:
                     file.write(requests.get(user_data['image']['versions']['large']).content)
+                file_url = f"{settings.MEDIA_URL}{new_filename}"
                 refresh = RefreshToken.for_user(user)
                 access_token = str(refresh.access_token)
                 refresh_token = str(refresh)
@@ -242,7 +243,7 @@ def session_user(request):
         "friends": friends_data,
         "online": user.online,
         "photo": user.photo,
-        "two_fa_enable": user.two_fa_enable
+        "two_fa_enable": user.two_fa_enable,
     }, status=status.HTTP_200_OK)
 
 @api_view(['POST'])

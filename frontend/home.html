@@ -1,31 +1,38 @@
 <div class="home-parent">
     <div class="home-left-bar">
       <div class="profile-img">
-        <img src="" alt="" id="profileImage" class="profile-image">
+        <div style="width: 50%; max-width: 300px;">
+            <img src="" alt="" id="profileImage" class="profile-image" style="border-radius: 50%;">
+        </div>
       </div>
-      <a href="/profile" style="text-decoration: none;">
-          <h6 style="cursor: pointer;" data-translate-key="Profile">Profile</h6>
-      </a>
-      <br>
-      <div class="dropdown">
-        <h6 style="cursor: pointer;" class="dropdown-toggle" id="gamesDropdown" data-bs-toggle="dropdown" aria-expanded="false" data-translate-key="Games">
-          Games
-        </h6>
-        <ul class="dropdown-menu" aria-labelledby="gamesDropdown">
-          <li><a class="dropdown-item" href="#" onclick="loadGame('local')">Local</a></li>
-          <li><a class="dropdown-item" href="#" onclick="loadGame('ai')">AI</a></li>
-          <li><a class="dropdown-item" href="#" onclick="loadGame('3d')">3D</a></li>
-        </ul>
-      </div>
-  
-      <a href="/edit" style="text-decoration: none;">
-          <h6 style="cursor: pointer;" data-translate-key="Settings">Settings</h6>
-      </a>
-      <br>
-      <h6 style="cursor: pointer;" onclick="logout()" data-translate-key="Logout">Logout</h6>
+      <div style="display: flex; flex-direction: column; justify-content: space-around; height: 250px; margin-top: 100px;">
+        <a href="/profile" style="text-decoration: none;">
+            <h6 style="cursor: pointer;" data-translate-key="Profile">Profile</h6>
+        </a>
+    
+        <div class="dropdown">
+            <h6 style="cursor: pointer;" class="dropdown-toggle" id="gamesDropdown" data-bs-toggle="dropdown" aria-expanded="false" data-translate-key="Games">
+                Games
+            </h6>
+            <ul class="dropdown-menu" aria-labelledby="gamesDropdown">
+                <li><a class="dropdown-item" href="#" onclick="loadGame('local')">Local</a></li>
+                <li><a class="dropdown-item" href="#" onclick="loadGame('ai')">AI</a></li>
+                <li><a class="dropdown-item" href="#" onclick="loadGame('3d')">3D</a></li>
+            </ul>
+        </div>
+    
+        <a href="/edit" style="text-decoration: none;">
+            <h6 style="cursor: pointer;" data-translate-key="Settings">Settings</h6>
+        </a>
+    
+        <h6 style="cursor: pointer;" onclick="logout()" data-translate-key="Logout">Logout</h6>
+    </div>
     </div>
     <div class="home-main-div">
-      <h1 id="welcome_user"></h1>
+        <div style="display: flex; align-items: center;">
+            <h1 data-translate-key="Welcome" style="width: auto; display: inline-block; margin-right: 10px;">Welcome</h1>
+            <h1 id="welcome_user" style="width: auto; display: inline-block;"></h1>
+        </div>
       <div class="home-games" id="home-games">
         <!-- Game content will be loaded here -->
       </div>
@@ -33,9 +40,11 @@
     <div class="home-right-bar">
       <div class="home-search-bar">
         <div class="input-group mb-3">
-          <input id="user-search" class="form-control" placeholder="Search users" data-translate-key="Search users" oninput="searchProfile()"
-            autocomplete="off">
-        </div>
+            <span style="font-family: 'square'; color: #e3dce6" data-translate-key="Search users">Search users</span>
+            <div class="input-group mb-3 mt-3">
+                <input id="user-search" class="form-control" oninput="searchProfile()"
+                    autocomplete="off">
+            </div>
         <div id="results" style="cursor: pointer;"></div>
       </div>
       <div class="home-friends-bar" data-translate-key="Online Friends">
