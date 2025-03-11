@@ -1,0 +1,14 @@
+global:
+  smtp_smarthost: "${EMAIL_HOST}:${EMAIL_PORT}"
+  smtp_from: "${EMAIL_HOST_USER}"
+  smtp_auth_username: "${EMAIL_HOST_USER}"
+  smtp_auth_password: "${EMAIL_HOST_PASSWORD}"
+
+route:
+  group_by: ["alertname"]
+  receiver: "email-notifications"
+
+receivers:
+  - name: "email-notifications"
+    email_configs:
+      - to: "${EMAIL_HOST_USER}"

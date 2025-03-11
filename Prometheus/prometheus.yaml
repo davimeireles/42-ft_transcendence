@@ -8,7 +8,7 @@ global:
   #  monitor: 'codelab-monitor'
 
 rule_files:
-  - /etc/prometheus/alert_rules.yml
+  - "/etc/prometheus/rules/alert_rules.yml"
 
 alerting:
   alertmanagers:
