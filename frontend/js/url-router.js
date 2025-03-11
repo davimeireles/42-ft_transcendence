@@ -25,7 +25,7 @@ async function renderPage(page, shouldPushState = true) {
 
   const accessToken = localStorage.getItem("access_token");
 
-  const protectedPages = ["profile", "profiles", "edit", "home", "tournament"];
+  const protectedPages = ["profile", "profiles", "edit", "tournament"];
   const initialPages = ["intro", "register", "login"];
 
   if (!accessToken && protectedPages.includes(page)) {
@@ -33,12 +33,12 @@ async function renderPage(page, shouldPushState = true) {
     window.location.href = "/login";
     return;
   }
-  if (accessToken && initialPages.includes(page)) {
+  /* if (accessToken && initialPages.includes(page)) {
     window.location.href = "home";
     return ;
-  }
+  } */
 
-  if (router.currentPage === page) return;
+  if (router.currentPage === page && page != 'profiles') return;
 
   try {
     // Load the new page

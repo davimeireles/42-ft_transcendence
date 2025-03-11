@@ -41,6 +41,36 @@ class Tournament {
 	}
 }
 
+
 function renderTournament() {
-  console.log("calling tournament button");
-}
+  let profile = document.getElementById("profile-button");
+  profile.addEventListener("click", function() {renderPage("profile");});
+  let setting = document.getElementById("setting-button");
+  setting.addEventListener("click", function() {renderPage("edit");});
+  let home = document.getElementById("btn-home");
+  home.addEventListener("click", function() {renderPage("home");});
+
+
+
+
+  let sizeInput = document.getElementById("tournament-size");
+  sizeInput.addEventListener("input", function(event) {
+    let tournamentTable = document.getElementById("tournament-table");
+    let participants = event.data;
+    let i = 0;
+    console.log("participantes: " + participants);
+    tournamentTable.innerHTML = "";
+    
+    while (i < participants)
+    {
+      let row = document.createElement("row");
+      row.innerHTML = `<p class="text-primary">Participant ${i + 1}</p>`;
+      tournamentTable.appendChild(row);
+      i++;
+    }
+  })
+
+
+
+
+};

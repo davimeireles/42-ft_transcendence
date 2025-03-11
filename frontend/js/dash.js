@@ -1,18 +1,29 @@
 const renderUser = async () => {
+  let profile = document.getElementById("profile-button");
+  profile.addEventListener("click", function() {renderPage("profile");});
+  let setting = document.getElementById("setting-button");
+  setting.addEventListener("click", function() {renderPage("edit");});
   let tournament = document.getElementById("tournament-button");
   tournament.addEventListener("click", function(event) {renderPage("tournament");});
   const imageTag = document.getElementById("profileImage")
   const session_user = JSON.parse(localStorage.getItem('sessionUser'))
-  console.log(session_user.username)
-  console.log(session_user.photo)
   if (imageTag && session_user.photo){
-    imageTag.src = `http://localhost:8000/media/${session_user.username}.jpg`;
+    const response = await fetch(`http://localhost:8000/media/${session_user.username}.jpg`);
+    if (!response.ok)
+      throw new Error("Failed to fetch image");
+    const blob = await response.blob();
+    const reader = new FileReader();
+    reader.readAsDataURL(blob);
+    reader.onloadend = () => {
+        localStorage.setItem(`userPhoto_${session_user.username}`, reader.result);
+        imageTag.src = reader.result;
+    };
   }else{
     imageTag.src = 'media/default.jpg'
   }
   const welcome_user = document.getElementById("welcome_user");
   if (welcome_user)
-    welcome_user.innerHTML= `Welcome, ${session_user.username}`;
+    welcome_user.innerHTML= `, ${session_user.nickname}`;
   const mode = document.getElementById("mode");
   if (mode)
     mode.innerHTML= `Select game mode`;

@@ -1,23 +1,21 @@
-<div id="tournament-modal" class="position-absolute w-100 h-100 row">
-  <div class="home-left-bar bg-dark col-sm-1 min-w-25 mw- rounded-end-5 mt-5 mb-5">
-    <h6 href="/profile" style="cursor: pointer;">Profile</h6>
-    <br>
-
-    <div class="dropdown">
-      <h6 style="cursor: pointer;" class="dropdown-toggle" id="gamesDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-        Games
-      </h6>
-      <ul class="dropdown-menu" aria-labelledby="gamesDropdown">
-        <li><a class="dropdown-item" href="#" onclick="loadGame('local')">Local</a></li>
-        <li><a class="dropdown-item" href="#" onclick="loadGame('ai')">AI</a></li>
-        <li><a class="dropdown-item" href="#" onclick="loadGame('3d')">3D</a></li>
-      </ul> 
+<div style="margin-top: 5px; position: relative; height: 40px; width: 70px; font-family: 'square';">
+      <button id="btn-home" class="btn btn-sm btn-outline-secondary w-100" style="position: absolute; top: 0px;  padding: 5px 5px; font-size: medium;" data-translate-key="Home">Home</button>
+</div>
+<div id="tournament-modal" class="position-relative w-100 h-100 row">
+  <div class="home-left-bar bg-dark w-25 rounded-end-5 mt-3 mb-3">
+    <div class="col">
+      <h6 id="profile-button" class="row">Profile</h6>
+      <br>
+      <h6 id="setting-button" class="row">Setting</h6>
+      <br>
+      <h6 onclick="logout()" class="row">Logout</h6>
     </div>
-    <h6 style="cursor: pointer;" href="/edit">Setting</h6>
-    <br>
-    <h6 style="cursor: pointer;" onclick="logout()">Logout</h6>
   </div>
-  <div id="create-tournament" class="bg-dark col-md w-75 rounded-5 m-5">
-
+  <div id="create-tournament" class="bg-dark col w-75 rounded-5 m-3">
+    <form id="tournament-form">
+      <label for="tournament-size" data-translate-key="Size" class="form-label-username pt-3">Size</label>
+      <input id="tournament-size" class="form-control" type="number" min="1" max="8">
+    </form>
+    <table id="tournament-table"></table>
   </div>
 </div>

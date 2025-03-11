@@ -58,6 +58,8 @@ async function getProfile(username) {
 }
 
 function renderProfiles(){
+    let home = document.getElementById("btn-home");
+    home.addEventListener("click", function() {renderPage("home");});
     const btn_friend = document.getElementById('btn-friend')
     const searchedUser = localStorage.getItem('searchedUser');
     const session_user = JSON.parse(localStorage.getItem('sessionUser'))
@@ -90,8 +92,10 @@ function renderProfiles(){
         friends.forEach(friend => {
             if (user.username === friend.username){
                 btn_friend.innerHTML = 'Friends';
+                btn_friend.setAttribute("data-translate-key", "Friends");
             }else{
                 btn_friend.innerHTML = 'Add Friend';
+                btn_friend.setAttribute("data-translate-key", "Add Friend");
             }
         });
     }

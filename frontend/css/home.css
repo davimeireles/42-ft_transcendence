@@ -1,6 +1,5 @@
 /* Existing styles (from your home.css) */
 .home-main-div {
-  background-color: #151314;
   width: 60%;
   padding: 10px;
   display: flex;
@@ -60,13 +59,16 @@
 }
 
 .home-left-bar {
-  background-color: #151314;
   width: 20%;
+  max-width: 220px;
+  min-width: 200px;
+  min-height: 200px;
   color: #e3dce6;
   font-family: "square";
   overflow: hidden;
   box-sizing: border-box;
   padding: 10px;
+
 }
 
 .profile-img {
@@ -92,13 +94,19 @@
 } */
 
 .home-left-bar h6 {
-  width: 100%;
+  position: relative;
   text-align: center;
   white-space: normal;
-  word-wrap: break-word;
-  padding: 0 10px;
-  box-sizing: border-box;
   font-size: x-large;
+  cursor: pointer;
+}
+
+.home-left-bar .col {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  left: 50px;
 }
 
 .home-right-bar {
@@ -237,4 +245,9 @@
     background-color: #b700ff; /* Highlight on hover */
     color: #151314; /* Invert text color */
     transform: scale(1.1); /* Slight zoom on hover */
+}
+
+
+#create-tournament {
+  min-width: 170px;
 }
