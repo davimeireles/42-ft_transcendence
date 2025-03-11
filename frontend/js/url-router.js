@@ -33,10 +33,10 @@ async function renderPage(page, shouldPushState = true) {
     window.location.href = "/login";
     return;
   }
-  if (accessToken && initialPages.includes(page)) {
-    window.location.href = "home";
-    return ;
-  }
+//   if (accessToken && initialPages.includes(page)) {
+//     window.location.href = "home";
+//     return ;
+//   }
 
   if (router.currentPage === page) return;
 

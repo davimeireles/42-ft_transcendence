@@ -1,0 +1,116 @@
+{
+    "annotations": {
+      "list": []
+    },
+    "editable": true,
+    "graphTooltip": 0,
+    "panels": [
+      {
+        "title": "CPU Usage",
+        "type": "gauge",
+        "datasource": "Prometheus",
+        "targets": [
+          {
+            "expr": "100 - (avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\"}[30s])) * 100)",
+            "legendFormat": "Current CPU %"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 4,
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "title": "CPU History",
+        "type": "graph",
+        "datasource": "Prometheus",
+        "targets": [
+          {
+            "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[30s])) * 100)",
+            "legendFormat": "CPU %"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 4,
+          "y": 0
+        },
+        "lines": true,
+        "linewidth": 2
+      },
+      {
+        "title": "Memory Usage",
+        "type": "gauge",
+        "datasource": "Prometheus",
+        "targets": [
+          {
+            "expr": "100 * (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes))",
+            "legendFormat": "Current Memory %"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 4,
+          "x": 12,
+          "y": 0
+        }
+      },
+      {
+        "title": "Memory History",
+        "type": "graph",
+        "datasource": "Prometheus",
+        "targets": [
+          {
+            "expr": "100 * (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes))",
+            "legendFormat": "Memory %"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 16,
+          "y": 0
+        },
+        "lines": true,
+        "linewidth": 2
+      },
+      {
+        "title": "Network Traffic",
+        "type": "graph",
+        "datasource": "Prometheus",
+        "targets": [
+          {
+            "expr": "rate(node_network_receive_bytes_total{device!=\"lo\"}[30s])",
+            "legendFormat": "Received"
+          },
+          {
+            "expr": "rate(node_network_transmit_bytes_total{device!=\"lo\"}[30s])",
+            "legendFormat": "Transmitted"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 16,
+          "y": 0
+        },
+        "lines": true,
+        "linewidth": 2,
+        "yaxes": [
+          {
+            "format": "bytes"
+          }
+        ]
+      }
+    ],
+    "refresh": "1s",
+    "schemaVersion": 16,
+    "style": "dark",
+    "time": {
+      "from": "now-1m",
+      "to": "now"
+    }
+  }
