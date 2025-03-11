@@ -1,10 +1,12 @@
 .container-login {
-    display: flex;
+	position: absolute;
+	display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #151314;
+    background-color: transparent;
     display: flex;
     justify-content: center;
+	height: 100%;
     width: 100%;
 }
 
@@ -27,12 +29,13 @@
 }
 
 .login-form {
-    width: 100%;
+    position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: black;
-    text-align: center;
+    height: 100vh;
+	width: 100%;
+	background-color: transparent;
 }
 
 .form-label-username {
@@ -83,4 +86,5 @@
     font-weight: bold;
     text-decoration: none;
     color: #39ff14;
+    cursor: pointer;
 }
