@@ -19,20 +19,26 @@ const router = {
     chat: "/chat.html",
     enable_two_fa: "/enable-2fa.html",
     verify2FA: "/verify-2fa.html",
+    tournament: "/tournament.html"
   },
 };
 
 // Page loader
-async function renderPage(page) {
+async function renderPage(page, shouldPushState = true) {
 
   const accessToken = localStorage.getItem("access_token");
 
-  const protectedPages = ["profile", "profiles", "edit"];
+  const protectedPages = ["profile", "profiles", "edit", "home", "tournament"];
+  const initialPages = ["intro", "register", "login"];
 
   if (!accessToken && protectedPages.includes(page)) {
     console.warn("Unauthorized access attempt. Redirecting to login...");
     window.location.href = "/login"; // Redirect to login page
     return;
+  }
+  if (accessToken && initialPages.includes(page)) {
+    window.location.href = "home";
+    return ;
   }
 
   if (router.currentPage === page) return;
@@ -79,12 +85,18 @@ async function renderPage(page) {
       case "verify2FA":
         verifyOTP();
         break;
+      case "tournament":
+        renderTournament();
+        break;
       default:
         console.warn(`No specific function defined for page: ${page}`);
     }
 
     // Update history and current page                 CHECK HERE
-    history.pushState({ page: page }, "", `/${page}`);
+    if (shouldPushState) {
+      history.pushState({ page: page }, "", `/${page}`);
+    }
+
     router.currentPage = page;
   } catch (error) {
     console.error("Error loading page:", error);
@@ -94,15 +106,17 @@ async function renderPage(page) {
 // Handle browser back/forward
 window.addEventListener("popstate", (e) => {
   if (e.state?.page) {
-    renderPage(e.state.page);
+    renderPage(e.state.page, false);
   }
 });
 
 // Load initial page
 window.addEventListener("load", () => {
   const initialPage = window.location.pathname.slice(1) || "intro";
-  renderPage(initialPage);
-  
+  if (!history.state) {
+    history.replaceState({ page: initialPage }, "", `/${initialPage}`);
+  }
+  renderPage(initialPage, false);
 });
 
 function loadGame(gameType) {

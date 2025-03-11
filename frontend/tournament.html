@@ -1,0 +1,23 @@
+<div id="tournament-modal" class="position-absolute w-100 h-100 row">
+  <div class="home-left-bar bg-dark col-sm-1 min-w-25 mw- rounded-end-5 mt-5 mb-5">
+    <h6 href="/profile" style="cursor: pointer;">Profile</h6>
+    <br>
+
+    <div class="dropdown">
+      <h6 style="cursor: pointer;" class="dropdown-toggle" id="gamesDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        Games
+      </h6>
+      <ul class="dropdown-menu" aria-labelledby="gamesDropdown">
+        <li><a class="dropdown-item" href="#" onclick="loadGame('local')">Local</a></li>
+        <li><a class="dropdown-item" href="#" onclick="loadGame('ai')">AI</a></li>
+        <li><a class="dropdown-item" href="#" onclick="loadGame('3d')">3D</a></li>
+      </ul> 
+    </div>
+    <h6 style="cursor: pointer;" href="/edit">Setting</h6>
+    <br>
+    <h6 style="cursor: pointer;" onclick="logout()">Logout</h6>
+  </div>
+  <div id="create-tournament" class="bg-dark col-md w-75 rounded-5 m-5">
+
+  </div>
+</div>

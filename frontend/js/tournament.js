@@ -40,3 +40,7 @@ class Tournament {
 		return (order);
 	}
 }
+
+function renderTournament() {
+  console.log("calling tournament button");
+}
