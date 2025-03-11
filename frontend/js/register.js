@@ -1,5 +1,8 @@
-console.log("Loaded register.js");
+'use strict'
+
 function RegisterFormListener() {
+  let loginBtn = document.getElementById("login-btn");
+  loginBtn.addEventListener("click", function(event) {renderPage("login");});
   const form = document.getElementById("registrationForm");
   if (!form) {
     console.error("Form not found");
