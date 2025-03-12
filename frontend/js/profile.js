@@ -118,6 +118,68 @@ async function add_remove_friend(){
         }
 }
 
+async function getUserGameInfo()
+{
+    const session_user = JSON.parse(localStorage.getItem('sessionUser'));
+    const token = localStorage.getItem("access_token")
+    if (!token)
+    {
+        console.log("Token not found !")
+        return ;
+    }
+	try
+    {
+        const response = await fetch(`http://localhost:8000/count_user_games/${session_user.userId}`,
+        {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": `Bearer ${token}`,
+            }
+        })
+        if(response.ok)
+        {
+            const gameInfo = await response.json();
+            drawCharts(gameInfo);
+            console.log(gameInfo)
+        }
+        else
+        {
+            console.log("not work :( @ count_user_games", response.status);
+        };
+    }
+    catch(error)
+    {
+        console.error("Error caught @count_user_games: ", error);
+    }
+}
+
+function drawCharts(gameInfo)
+{
+    console.log(gameInfo);
+
+    new Chart(document.getElementById("newcanvas"), {
+        type: "pie",
+        data: {
+            labels: ["Games Won", "Games Lost"],
+            datasets: [{
+                data: [gameInfo.total_wins, (gameInfo.total_games - gameInfo.total_wins)],
+                backgroundColor: [
+                    "#0d6efd", // Bootstrap primary color
+                    "#198754", // Bootstrap success color
+                    "#ffc107", // Bootstrap warning color
+                    "#dee2e6"  // Light gray
+                ],
+                    borderColor: "transparent"
+                }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            responsive: true,
+        }
+    })
+}
+
 async function getMatchHistory()
 {
     const session_user = JSON.parse(localStorage.getItem('sessionUser'));

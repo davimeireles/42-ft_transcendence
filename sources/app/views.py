@@ -21,7 +21,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
-from app.models import User, Match, MatchParticipant, GameType
+from app.models import User, Match, MatchParticipant, GameType, Tournament, TournamentParticipant
 
 import logging
 
@@ -518,6 +518,7 @@ def get_match_details(request):
         logger.error("Error: %s", str(e))
         return Response({'error': str(e)}, status=500)
 
+
 @api_view(['GET'])
 def match_history_page(request, user_id):
     matches = MatchParticipant.objects.filter(userID=user_id).select_related('matchID')
@@ -541,4 +542,19 @@ def match_history_page(request, user_id):
             "User2Score": user2.score,
         })
 
-    return Response({'history': history}, status=200)
+    return Response({
+            'history': history,
+        },  status=200)
+
+@api_view(['GET'])
+def count_user_games(request, user_id):
+    game_count = MatchParticipant.objects.filter(userID=user_id).count()
+    total_wins = Match.objects.filter(matchWinner=user_id).count()
+    total_tournaments = TournamentParticipant.objects.filter(user=user_id).count()
+
+    return Response({
+        'total_games': game_count,
+        'total_wins': total_wins,
+        'total_tournaments': total_tournaments,
+    },  status=200)
+
