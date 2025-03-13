@@ -1,3 +1,5 @@
+'use strict'
+
 // Router state
 
 const router = {
@@ -14,21 +16,27 @@ const router = {
     chat: "/chat.html",
     enable2FA: "/enable-2fa.html",
     verify2FA: "/verify-2fa.html",
+    tournament: "/tournament.html"
   },
 };
 
-async function renderPage(page) {
-  console.log(`Attempting to render page: ${page}`);
+// Page loader
+async function renderPage(page, shouldPushState = true) {
 
   const accessToken = localStorage.getItem("access_token");
 
-  const protectedPages = ["profile", "profiles", "edit"];
+  const protectedPages = ["profile", "profiles", "edit", "home", "tournament"];
+  const initialPages = ["intro", "register", "login"];
 
   if (!accessToken && protectedPages.includes(page)) {
     console.warn("Unauthorized access attempt. Redirecting to login...");
     window.location.href = "/login";
     return;
   }
+//   if (accessToken && initialPages.includes(page)) {
+//     window.location.href = "home";
+//     return ;
+//   }
 
   if (router.currentPage === page) return;
 
@@ -39,8 +47,6 @@ async function renderPage(page) {
     const html = await response.text();
     mainContent.innerHTML = html;
 
-    console.log(page);
-
     // Call the appropriate function based on the page
     switch (page) {
       case "register":
@@ -48,6 +54,9 @@ async function renderPage(page) {
         break;
       case "login":
         LoginFormListener();
+        break;
+      case "intro":
+        introListener();
         break;
       case "home":
         renderUser();
@@ -69,12 +78,18 @@ async function renderPage(page) {
       case "verify2FA":
         verifyOTP();
         break;
+      case "tournament":
+        renderTournament();
+        break;
       default:
         console.warn(`No specific function defined for page: ${page}`);
     }
 
-    // Update history and current page
-    history.pushState({ page: page }, "", `/${page}`);
+    // Update history and current page                 CHECK HERE
+    if (shouldPushState) {
+      history.pushState({ page: page }, "", `/${page}`);
+    }
+
     router.currentPage = page;
 
   } catch (error) {
@@ -90,15 +105,17 @@ async function renderPage(page) {
 // Handle browser back/forward
 window.addEventListener("popstate", (e) => {
   if (e.state?.page) {
-    renderPage(e.state.page);
-    console.log(window.location.herf);
+    renderPage(e.state.page, false);
   }
 });
 
 // Load initial page
 window.addEventListener("load", () => {
   const initialPage = window.location.pathname.slice(1) || "intro";
-  renderPage(initialPage);
+  if (!history.state) {
+    history.replaceState({ page: initialPage }, "", `/${initialPage}`);
+  }
+  renderPage(initialPage, false);
 });
 
 function loadGame(gameType) {
