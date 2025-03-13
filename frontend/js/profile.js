@@ -11,7 +11,6 @@ const renderProfile =  function(){
         online.innerHTML = 'Offline'
     }
     if (imageTag && session_user.photo){
-        console.log('hello')
         imageTag.src = `http://localhost:8000/media/${session_user.username}.jpg`;
     }else{
         imageTag.src = 'media/default.jpg'
@@ -23,7 +22,6 @@ const renderProfile =  function(){
             const friendItem = document.createElement("li");
             friendItem.textContent = `${friend.username}`;
             friends_list.appendChild(friendItem);
-            console.log(friend)
      });
     }
     const text = document.getElementById("text-text")
@@ -44,7 +42,6 @@ async function add_remove_friend(){
     const btn_friend = document.getElementById('btn-friend')
     const user_text = document.getElementById('text-user');
     const profileUsername = user_text.innerHTML;
-    console.log(profileUsername)
     if (!btn_friend){
         return ;
     }
@@ -156,8 +153,6 @@ async function getUserGameInfo()
 
 function drawCharts(gameInfo)
 {
-    console.log(gameInfo);
-
     new Chart(document.getElementById("newcanvas"), {
         type: "pie",
         data: {
@@ -231,6 +226,8 @@ function displayMatchHistory(matchHistory) {
     matchHistory.forEach(match => {
         const matchElement = document.createElement("div");
         matchElement.className = "match-entry"; // Optional: for styling
+        console.log(match.matchId)
+        matchElement.setAttribute("match-id", match.matchId)
 
         if (match.Winner === session_user.userId) {
             matchElement.style.backgroundColor = "green";
@@ -244,3 +241,43 @@ function displayMatchHistory(matchHistory) {
         historyContainer.appendChild(matchElement);
     });
 }
+
+// Function to fetch match details
+function fetchMatchDetails(matchID) {
+    fetch(`http://localhost:8000/get_match_info/${matchID}`)
+        .then(response => response.json())
+        .then(game => {
+            const matchDetailsList = document.getElementById("matchDetails");
+            const match = game.game_info;
+            matchDetailsList.innerHTML = ""; // Clear previous list items
+            // Create list items dynamically
+            const details = [
+                `Player 1: ${match.User1}`,
+                `Player 2: ${match.User2}`,
+                `Final Score:  ${match.User1Score} - ${match.User2Score}`,
+                `Date: ${new Date(match.matchDate).toLocaleString()}`,
+            ];
+            console.log(details)
+            details.forEach(detail => {
+                const li = document.createElement("li");
+                li.textContent = detail;
+                matchDetailsList.appendChild(li);
+            });
+        })
+        .catch(error => console.error("Error fetching match details:", error));
+}
+
+document.addEventListener("click", function (event) {
+    if (event.target.closest(".match-entry")) {
+        const matchElement = event.target.closest(".match-entry");
+        const matchID = matchElement.getAttribute("match-id");
+
+        // Store match ID in modal
+        const modalElement = document.getElementById("matchModal");
+        modalElement.setAttribute("data-match-id", matchID);
+        fetchMatchDetails(matchID)
+        // Open modal using Bootstrap API (ensures event fires)
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+    }
+});

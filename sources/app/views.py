@@ -540,11 +540,32 @@ def match_history_page(request, user_id):
             "Winner": match.matchWinner.id,
             "User1Score": user1.score,
             "User2Score": user2.score,
+            "matchId": match.id,
         })
 
     return Response({
             'history': history,
         },  status=200)
+
+@api_view(['GET'])
+def get_match_info(request, match_id):
+    participants = MatchParticipant.objects.filter(matchID=match_id)
+    match = Match.objects.get(id=match_id)
+    user1 = participants[0]
+    user2 = participants[1]
+    
+    game_info = ({
+            "User1": user1.userID.nickname,
+            "User2": user2.userID.nickname,
+            "User1Score": user1.score,
+            "User2Score": user2.score,
+            "matchDate": match.createdAt
+    })
+
+    return Response({
+        'game_info': game_info,
+    }, status=200)
+    
 
 @api_view(['GET'])
 def count_user_games(request, user_id):

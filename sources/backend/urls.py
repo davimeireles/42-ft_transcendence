@@ -36,6 +36,7 @@ urlpatterns = [
     path('get_match_details/', app.views.get_match_details, name='get_match_details'),
     path('match_history_page/<int:user_id>/', app.views.match_history_page, name="match_history_page"),
     path('count_user_games/<int:user_id>/', app.views.count_user_games, name="count_user_games"),
+    path('get_match_info/<int:match_id>/', app.views.get_match_info, name="get_match_info"),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
