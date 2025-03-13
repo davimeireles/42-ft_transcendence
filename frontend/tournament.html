@@ -1,21 +1,23 @@
 <div style="margin-top: 5px; position: relative; height: 40px; width: 70px; font-family: 'square';">
-      <button id="btn-home" class="btn btn-sm btn-outline-secondary w-100" style="position: absolute; top: 0px;  padding: 5px 5px; font-size: medium;" data-translate-key="Home">Home</button>
+    <button id="btn-home" class="btn btn-sm btn-outline-secondary w-100" style="position: absolute; top: 0px; padding: 5px 5px; font-size: medium;" data-translate-key="Home">Home</button>
 </div>
 <div id="tournament-modal" class="position-relative w-100 h-100 row">
-  <div class="home-left-bar bg-dark w-25 rounded-end-5 mt-3 mb-3">
-    <div class="col">
-      <h6 id="profile-button" class="row">Profile</h6>
-      <br>
-      <h6 id="setting-button" class="row">Setting</h6>
-      <br>
-      <h6 onclick="logout()" class="row">Logout</h6>
+    <div class="home-left-bar semi-transparent w-25 rounded-end-5 mt-3 mb-3">
+        <div class="col">
+            <h6 id="profile-button" class="row" data-translate-key="Profile">Profile</h6>
+            <br>
+            <h6 id="setting-button" class="row" data-translate-key="Settings">Settings</h6>
+            <br>
+            <h6 onclick="logout()" class="row" data-translate-key="Logout">Logout</h6>
+        </div>
     </div>
-  </div>
-  <div id="create-tournament" class="bg-dark col w-75 rounded-5 m-3">
-    <form id="tournament-form">
-      <label for="tournament-size" data-translate-key="Size" class="form-label-username pt-3">Size</label>
-      <input id="tournament-size" class="form-control" type="number" min="1" max="8">
-    </form>
-    <table id="tournament-table"></table>
-  </div>
+    <div id="create-tournament" class="semi-transparent col w-75 rounded-5 m-3">
+        <form id="tournament-form">
+            <label for="tournament-title" data-translate-key="Title" class="form-label-username pt-3">Title</label>
+            <input id="tournament-title" class="form-control" type="text" maxlength = 20>
+            <label for="tournament-size" data-translate-key="Size" class="form-label-username pt-3">Size</label>
+            <input id="tournament-size" class="form-control" type="number" min="1" max="8">
+        </form>
+        <table id="tournament-table"></table>
+    </div>
 </div>

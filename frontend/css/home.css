@@ -60,8 +60,8 @@
 
 .home-left-bar {
   width: 20%;
-  max-width: 220px;
-  min-width: 200px;
+  max-width: 240px;
+  min-width: 230px;
   min-height: 200px;
   color: #e3dce6;
   font-family: "square";
@@ -99,6 +99,11 @@
   white-space: normal;
   font-size: x-large;
   cursor: pointer;
+}
+
+.home-left-bar h6:hover {
+    transition: all 0.3s ease;
+    color: #39ff14;
 }
 
 .home-left-bar .col {

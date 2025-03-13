@@ -43,34 +43,77 @@ class Tournament {
 
 
 function renderTournament() {
-  let profile = document.getElementById("profile-button");
-  profile.addEventListener("click", function() {renderPage("profile");});
-  let setting = document.getElementById("setting-button");
-  setting.addEventListener("click", function() {renderPage("edit");});
-  let home = document.getElementById("btn-home");
-  home.addEventListener("click", function() {renderPage("home");});
+	let profile = document.getElementById("profile-button");
+	profile.addEventListener("click", function() {renderPage("profile");});
+	let setting = document.getElementById("setting-button");
+	setting.addEventListener("click", function() {renderPage("edit");});
+	let home = document.getElementById("btn-home");
+	home.addEventListener("click", function() {renderPage("home");});
 
 
 
 
-  let sizeInput = document.getElementById("tournament-size");
-  sizeInput.addEventListener("input", function(event) {
-    let tournamentTable = document.getElementById("tournament-table");
-    let participants = event.data;
-    let i = 0;
-    console.log("participantes: " + participants);
-    tournamentTable.innerHTML = "";
-    
-    while (i < participants)
-    {
-      let row = document.createElement("row");
-      row.innerHTML = `<p class="text-primary">Participant ${i + 1}</p>`;
-      tournamentTable.appendChild(row);
-      i++;
-    }
-  })
+	let sizeInput = document.getElementById("tournament-size");
+	sizeInput.addEventListener("input", function(event) {
+		let tournamentTable = document.getElementById("tournament-table");
+		tournamentTable.classList.add("w-100", "container", "mt-5")
+		let participants = event.data;
+		let i = 0;
+		console.log("participantes: " + participants);
+		tournamentTable.innerHTML = "";
+        let tournament = {
+            name: "",
+            size: 0,
+            competitors: []
+        }
+		while (i < participants && i < 8)
+		{
+			createCompetitorNode(i, tournamentTable);
+			i++;
+		}
+		if (i > 0)
+		{
+			let confirm = document.createElement("button");
+			confirm.classList.add("vapor-btn");
+			confirm.textContent = "Start Tournament";
+            confirm.addEventListener("click", createTournament.bind(tournament))
+			tournamentTable.appendChild(confirm);
+		}
+	})
 
 
 
 
 };
+
+function createCompetitorNode(i, tournamentTable){
+	let row = document.createElement("row");
+	row.classList.add("competitor-row", "row", "justify-content-start", "mb-1")
+	let label = document.createElement("label");
+	label.classList.add("competitor-label", "col-4", "w-25");
+	label.innerHTML = `P${i + 1}`;
+	let input = document.createElement("input");
+	input.classList.add("col-8");
+	input.setAttribute("placeholder", `Player ${i + 1}`);
+	input.value = `Player ${i + 1}`;
+	row.appendChild(label);
+	row.appendChild(input);
+	tournamentTable.appendChild(row);
+}
+
+function createTournament(e) {
+    console.log(e);
+}
+
+
+
+
+// ESC to close modals;
+
+document.addEventListener('keydown', function (e) {
+	// console.log(e.key);
+  
+	if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+	  closeModal();
+	}
+  });
