@@ -19,7 +19,7 @@ async function searchProfile(){
             console.log(data);
             results.innerHTML = '';
             data.forEach((user) => {
-                if (user.username !== 'admin' && user.username !== 'Player2'&& user.username !== 'EasyAI'&& user.username !== 'MediumAI'&& user.username !== 'HardAI'){
+                if (user.username !== 'admin' && user.username !== 'LocalPlayer'&& user.username !== 'EasyAI'&& user.username !== 'MediumAI'&& user.username !== 'HardAI'){
                     const h6 = document.createElement('h6');
                     h6.textContent = `${user.username}`; // Display username and email
                     results.appendChild(h6);

@@ -23,8 +23,6 @@ class User(AbstractUser):
         blank=True
     )
     otp_secret = models.CharField(max_length=32, default=pyotp.random_base32)
-    wins = models.IntegerField(default=0)
-    losses = models.IntegerField(default=0)
     
     def get_otp_uri(self):
         """Generate the OTP URI for the user."""

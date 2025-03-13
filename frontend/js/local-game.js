@@ -246,7 +246,7 @@ async function update(time) {
     let winner;
 
     if (player1Score >= 3) winner = session_user.username;
-    else winner = "Player2";
+    else winner = "LocalPlayer";
 
     const data = {
       game_type_id: 1,
@@ -254,7 +254,7 @@ async function update(time) {
       p1_score: player1Score,
       p2_score: player2Score,
       p1_username: session_user.username,
-      p2_username: "Player2",
+      p2_username: "LocalPlayer",
     };
 
     try {
