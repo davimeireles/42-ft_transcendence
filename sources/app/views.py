@@ -21,7 +21,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
-from app.models import User, Match, MatchParticipant, GameType
+from app.models import User, Match, MatchParticipant, GameType, Tournament, TournamentParticipant
 
 import logging
 
@@ -237,6 +237,7 @@ def session_user(request):
     friends = user.friends.all()
     friends_data = [{"username": friend.username, "email": friend.email, "nickname": friend.nickname} for friend in friends]
     return Response({
+        "id": user.id,
         "email": user.email,
         "username": user.username,
         "nickname": user.nickname,
@@ -516,3 +517,65 @@ def get_match_details(request):
     except Exception as e:
         logger.error("Error: %s", str(e))
         return Response({'error': str(e)}, status=500)
+
+
+@api_view(['GET'])
+def match_history_page(request, user_id):
+    matches = MatchParticipant.objects.filter(userID=user_id).select_related('matchID')
+    history = []
+
+    for participant in matches:
+        match = participant.matchID
+        participants = MatchParticipant.objects.filter(matchID=match)
+
+        if len(participants) < 2:
+            continue  # Skip if the match is incomplete
+
+        user1 = participants[0]
+        user2 = participants[1]
+
+        history.append({
+            "User1": user1.userID.nickname,
+            "User2": user2.userID.nickname,
+            "Winner": match.matchWinner.id,
+            "User1Score": user1.score,
+            "User2Score": user2.score,
+            "matchId": match.id,
+        })
+
+    return Response({
+            'history': history,
+        },  status=200)
+
+@api_view(['GET'])
+def get_match_info(request, match_id):
+    participants = MatchParticipant.objects.filter(matchID=match_id)
+    match = Match.objects.get(id=match_id)
+    user1 = participants[0]
+    user2 = participants[1]
+    
+    game_info = ({
+            "User1": user1.userID.nickname,
+            "User2": user2.userID.nickname,
+            "User1Score": user1.score,
+            "User2Score": user2.score,
+            "matchDate": match.createdAt
+    })
+
+    return Response({
+        'game_info': game_info,
+    }, status=200)
+    
+
+@api_view(['GET'])
+def count_user_games(request, user_id):
+    game_count = MatchParticipant.objects.filter(userID=user_id).count()
+    total_wins = Match.objects.filter(matchWinner=user_id).count()
+    total_tournaments = TournamentParticipant.objects.filter(user=user_id).count()
+
+    return Response({
+        'total_games': game_count,
+        'total_wins': total_wins,
+        'total_tournaments': total_tournaments,
+    },  status=200)
+

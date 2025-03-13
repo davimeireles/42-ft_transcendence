@@ -23,8 +23,6 @@ class User(AbstractUser):
         blank=True
     )
     otp_secret = models.CharField(max_length=32, default=pyotp.random_base32)
-    wins = models.IntegerField(default=0)
-    losses = models.IntegerField(default=0)
     
     def get_otp_uri(self):
         """Generate the OTP URI for the user."""
@@ -53,11 +51,19 @@ class GameType(models.Model):
     
 class Tournament(models.Model):
     winner = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class TournamentParticipant(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    userStanding = models.PositiveIntegerField()
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+
     
 class Match(models.Model):
     gameTypeID = models.ForeignKey(GameType, on_delete=models.CASCADE)
     matchWinner = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
+    tournament= models.ForeignKey(Tournament, on_delete=models.CASCADE, null=True)
+    createdAt = models.DateTimeField(auto_now_add=True)
 
 class MatchParticipant(models.Model):
     matchID = models.ForeignKey(Match, on_delete=models.CASCADE)

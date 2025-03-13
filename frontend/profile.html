@@ -20,6 +20,12 @@
                     </div>
                     <div class="col sidebar-game" style="border-radius: 10px;" data-translate-key="Match History">
                         Match History
+                        <div id="HistoryGames">
+                        
+                        </div>
+                        <div id="newdiv">
+                            <canvas id="newcanvas"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -47,6 +53,19 @@
                     <button style="padding: 5px 5px; font-size: medium;" id="btn-friend" class="btn btn-custom" data-translate-key="Edit Profile">Edit Profile</button>
                 </a>
             </div> 
+        </div>
+    </div>
+    <div class="modal fade custom-modal" id="matchModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Match Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <ul id="matchDetails"></ul>
+                </div>
+            </div>
         </div>
     </div>
 </div>

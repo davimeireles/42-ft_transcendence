@@ -10,7 +10,7 @@ from app.models import GameType, User
 User = get_user_model()
 
 if User.objects.count() == 0:
-    User.objects.create_user(username='Player2', password='42Porto!', nickname='player2', email='player2@42porto.com')
+    User.objects.create_user(username='LocalPlayer', password='42Porto!', nickname='LocalPlayer', email='LocalPlayer@42porto.com')
     User.objects.create_user(username='EasyAI', password='42Porto!', nickname='EasyAI', email='easyai@42porto.com') 
     User.objects.create_user(username='MediumAI', password='42Porto!', nickname='MediumAI', email='mediumai@42porto.com') 
     User.objects.create_user(username='HardAI', password='42Porto!', nickname='HardAI', email='hardai@42porto.com')

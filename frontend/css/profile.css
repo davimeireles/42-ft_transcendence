@@ -12,3 +12,19 @@
 #text-user {
     margin-bottom: 5px;
 }
+
+.custom-modal .modal-content {
+    background-color: black;  /* Black background */
+    color: white;  /* White text */
+    border: 2px solid white;  /* White outline around the modal */
+    border-radius: 10px;  /* Optional: rounded corners */
+}
+
+.custom-modal .modal-header {
+    background-color: black; /* Keep the header black */
+    color: white; /* White text for title */
+}
+
+.custom-modal .modal-body {
+    color: white; /* Make text inside the body white */
+}

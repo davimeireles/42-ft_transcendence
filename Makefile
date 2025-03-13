@@ -1,6 +1,8 @@
 # Build and run the Docker containers
 all: up
 
+quick: down up
+
 # Build and run the Docker containers
 up:
 	docker compose up --build
@@ -31,4 +33,4 @@ clean-networks:
 
 restart: clean up
 
-.PHONY: all up down clean clean-images clean-containers clean-volumes clean-networks restart
+.PHONY: all up down clean clean-images clean-containers clean-volumes clean-networks restart quick
