@@ -409,9 +409,8 @@ def new_session(request):
 def setup_2fa(request):
     user = request.user
 
-    if not user.two_fa_secret:
-        user.two_fa_secret = pyotp.random_base32()
-        user.save()
+    user.two_fa_secret = pyotp.random_base32()
+    user.save()
     
     otp_uri = pyotp.totp.TOTP(user.two_fa_secret).provisioning_uri(
         name=user.username,
