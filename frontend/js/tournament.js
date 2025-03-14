@@ -50,13 +50,54 @@ function renderTournament() {
 	let home = document.getElementById("btn-home");
 	home.addEventListener("click", function() {renderPage("home");});
 
+    tournamentCreator();
+};
 
+function tournamentCreator() {
+    let tournamentModal = document.getElementById("tournament-modal");
 
+    let createTournament = document.createElement("div");
+    createTournament.classList.add("semi-transparent", "col", "w-75", "m-3");
+    createTournament.id = "create-tournament";
+    tournamentModal.append(createTournament);
+    
+    let tournamentForm = document.createElement("form");
+    tournamentForm.id = "tournament-form";
+    createTournament.append(tournamentForm);
+    
+    let titleLabel = document.createElement("label");
+    titleLabel.classList.add("form-label-username", "pt-3");
+    titleLabel.for = "tournament-title";
+    titleLabel.dataset.translateKey = "Title";
+    titleLabel.textContent = "Title";
+    tournamentForm.append(titleLabel);
 
-	let sizeInput = document.getElementById("tournament-size");
-	sizeInput.addEventListener("input", function(event) {
-		let tournamentTable = document.getElementById("tournament-table");
-		tournamentTable.classList.add("w-100", "container", "mt-5")
+    let tournamentTitle = document.createElement("input");
+    tournamentTitle.id = "tournament-title";
+    tournamentTitle.type = "text";
+    tournamentTitle.maxlength = "20";
+    titleLabel.after(tournamentTitle);
+    
+    let sizeLabel = document.createElement("label");
+    sizeLabel.classList.add("form-label-username", "pt-3");
+    sizeLabel.for = "tournament-size";
+    sizeLabel.dataset.translateKey = "Size";
+    sizeLabel.textContent = "Size";
+    tournamentTitle.after(sizeLabel);
+    
+    let tournamentSize = document.createElement("input");
+    tournamentSize.id = "tournament-size";
+    tournamentSize.type = "number";
+    tournamentSize.min = "1";
+    tournamentSize.max = "8";
+    sizeLabel.after(tournamentSize);
+    
+    let tournamentTable = document.createElement("table");
+    tournamentTable.classList.add("w-100", "container", "mt-5")
+    tournamentTable.id = "tournament-table";
+    tournamentForm.after(tournamentTable);
+
+	tournamentSize.addEventListener("input", function(event) {
 		let participants = event.data;
 		let i = 0;
 		console.log("participantes: " + participants);
@@ -76,15 +117,12 @@ function renderTournament() {
 			let confirm = document.createElement("button");
 			confirm.classList.add("vapor-btn");
 			confirm.textContent = "Start Tournament";
-            confirm.addEventListener("click", createTournament.bind(tournament))
+            confirm.addEventListener("click", ft_createTournament);
 			tournamentTable.appendChild(confirm);
 		}
 	})
+}
 
-
-
-
-};
 
 function createCompetitorNode(i, tournamentTable){
 	let row = document.createElement("row");
@@ -93,16 +131,17 @@ function createCompetitorNode(i, tournamentTable){
 	label.classList.add("competitor-label", "col-4", "w-25");
 	label.innerHTML = `P${i + 1}`;
 	let input = document.createElement("input");
-	input.classList.add("col-8");
-	input.setAttribute("placeholder", `Player ${i + 1}`);
+	input.classList.add("competitor-input", "col-8");
+	input.placeholder = `Player ${i + 1}`;
 	input.value = `Player ${i + 1}`;
+    input.id = `player-${i}`;
 	row.appendChild(label);
 	row.appendChild(input);
 	tournamentTable.appendChild(row);
 }
 
-function createTournament(e) {
-    console.log(e);
+function ft_createTournament(e) {
+    let competitors = document.querySelectorAll(".competitor-input")
 }
 
 
@@ -116,4 +155,4 @@ document.addEventListener('keydown', function (e) {
 	if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
 	  closeModal();
 	}
-  });
+});
