@@ -17,12 +17,27 @@
                 <div class="row">
                     <div class="col sidebar-tour mx-4" style="border-radius: 10px;" data-translate-key="Tournaments">
                         Tournaments
+                        <button type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off" onclick="makeTourney()">
+                            Dummy tournament
+                        </button>
+                        <div id="HistoryTournament">
+                        
+                        </div>
+                        <ul class="pagination pagination-sm" id="tournament-pages">
+                            
+                        </ul>
+                        <div id="newdiv">
+                            <canvas id="tournamentcanvas"></canvas>
+                        </div>
                     </div>
-                    <div class="col sidebar-game" style="border-radius: 10px;" data-translate-key="Match History">
+                    <div class="col sidebar-game" style="border-radius: 10px; align-items: center;" data-translate-key="Match History">
                         Match History
                         <div id="HistoryGames">
                         
                         </div>
+                        <ul class="pagination pagination-sm" id="match-pages">
+                            
+                        </ul>
                         <div id="newdiv">
                             <canvas id="newcanvas"></canvas>
                         </div>

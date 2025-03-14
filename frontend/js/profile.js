@@ -1,5 +1,15 @@
 'use strict'
 
+let total_tourney_entries;
+let currentTourneyPage;
+let TOTAL_TOURNEY_PAGES;
+
+let total_entries;
+let currentPage;
+let TOTAL_PAGES;
+
+const ITEMS_PER_PAGE = 2;
+
 const renderProfile =  function(){
     const session_user = JSON.parse(localStorage.getItem('sessionUser'))
     const imageTag = document.getElementById("profileImage")
@@ -115,38 +125,70 @@ async function add_remove_friend(){
         }
 }
 
-async function getUserGameInfo()
+async function makeTourney()
 {
     const session_user = JSON.parse(localStorage.getItem('sessionUser'));
     const token = localStorage.getItem("access_token")
-    if (!token)
-    {
+    if (!token){
         console.log("Token not found !")
         return ;
     }
-	try
-    {
-        const response = await fetch(`http://localhost:8000/count_user_games/${session_user.userId}`,
-        {
+	try{
+        const response = await fetch(`http://localhost:8000/make_tourney/${session_user.userId}/`,{
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": `Bearer ${token}`,
+            }
+        })
+        if(response.ok){
+
+        }
+        else{
+            console.log("not work :( @ makeTourney", response.status);
+        };
+    }
+    catch(error){
+        console.error("Error caught @makeTourney: ", error);
+    }
+}
+
+async function getUserGameInfo(page)
+{
+    const session_user = JSON.parse(localStorage.getItem('sessionUser'));
+    const token = localStorage.getItem("access_token")
+    if (!token){
+        console.log("Token not found !")
+        return ;
+    }
+	try{
+        const response = await fetch(`http://localhost:8000/count_user_games/${session_user.userId}`,{
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
                 "Authorization": `Bearer ${token}`,
             }
         })
-        if(response.ok)
-        {
+        if(response.ok){
             const gameInfo = await response.json();
+            total_entries = gameInfo.total_games;
+            TOTAL_PAGES = Math.ceil(total_entries / ITEMS_PER_PAGE);
+            total_tourney_entries = gameInfo.total_tournaments;
+            TOTAL_TOURNEY_PAGES = total_tourney_entries / ITEMS_PER_PAGE;
+
+            currentTourneyPage = 1;
+            currentPage = 1;
+
+            renderTourneyPagination();
+            renderPagination();
             drawCharts(gameInfo);
             console.log(gameInfo)
         }
-        else
-        {
+        else{
             console.log("not work :( @ count_user_games", response.status);
         };
     }
-    catch(error)
-    {
+    catch(error){
         console.error("Error caught @count_user_games: ", error);
     }
 }
@@ -175,7 +217,8 @@ function drawCharts(gameInfo)
     })
 }
 
-async function getMatchHistory()
+
+async function getTournamentHistory(page)
 {
     const session_user = JSON.parse(localStorage.getItem('sessionUser'));
     const token = localStorage.getItem("access_token")
@@ -186,7 +229,80 @@ async function getMatchHistory()
     }
     try
     {
-        const response = await fetch(`http://localhost:8000/match_history_page/${session_user.userId}`,
+        const response = await fetch(`http://localhost:8000/tournament_history_page/${session_user.userId}/${page}/`,
+        {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": `Bearer ${token}`,
+            }
+        })
+        if(response.ok)
+        {
+            const match_history = await response.json();
+            displayTournamentHistory(match_history.history);
+        }
+        else
+        {
+            console.log("not work :( @ getMatchHistory", response.status);
+        };
+    }
+    catch(error)
+    {
+        console.error("Error caught @getMatchHistory: ", error);
+    }
+}
+
+function displayTournamentHistory(matchHistory) {
+    const session_user = JSON.parse(localStorage.getItem('sessionUser'));
+    const historyContainer = document.getElementById("HistoryTournament");
+    historyContainer.innerHTML = ""; // Clear existing content
+
+    // Check if there are any matches
+    if (!matchHistory || matchHistory.length === 0) {
+        historyContainer.innerHTML = "<p>No previous Tournaments available</p>";
+        return; 
+    }
+
+    matchHistory.forEach(entry => {
+        console.log("Tournament ID:", entry.tournament.id);
+        console.log("Created By:", entry.tournament.createdBy);
+        console.log("Winner:", entry.tournament.winner);
+        console.log("Created At:", entry.tournament.created_at);
+    
+        console.log("----");
+    });
+     matchHistory.forEach(match => {
+        const matchElement = document.createElement("div");
+        matchElement.className = "tournament-entry"; // Optional: for styling
+        matchElement.setAttribute("tournament-id", match.tournament.id)
+
+        if (match.tournament.winner === session_user.nickname) {
+            matchElement.style.backgroundColor = "green";
+        } else {
+            matchElement.style.backgroundColor = "red";
+        }
+
+        matchElement.innerHTML = `
+            <p>Tournament: ${match.tournament.name}</p>
+        `;
+        historyContainer.appendChild(matchElement);
+    });
+}
+
+
+async function getMatchHistory(page)
+{
+    const session_user = JSON.parse(localStorage.getItem('sessionUser'));
+    const token = localStorage.getItem("access_token")
+    if (!token)
+    {
+        console.log("Token not found !")
+        return ;
+    }
+    try
+    {
+        const response = await fetch(`http://localhost:8000/match_history_page/${session_user.userId}/${page}/`,
         {
             method: "GET",
             headers: {
@@ -226,7 +342,6 @@ function displayMatchHistory(matchHistory) {
     matchHistory.forEach(match => {
         const matchElement = document.createElement("div");
         matchElement.className = "match-entry"; // Optional: for styling
-        console.log(match.matchId)
         matchElement.setAttribute("match-id", match.matchId)
 
         if (match.Winner === session_user.userId) {
@@ -241,6 +356,8 @@ function displayMatchHistory(matchHistory) {
         historyContainer.appendChild(matchElement);
     });
 }
+
+
 
 // Function to fetch match details
 function fetchMatchDetails(matchID) {
@@ -257,12 +374,32 @@ function fetchMatchDetails(matchID) {
                 `Final Score:  ${match.User1Score} - ${match.User2Score}`,
                 `Date: ${new Date(match.matchDate).toLocaleString()}`,
             ];
-            console.log(details)
             details.forEach(detail => {
                 const li = document.createElement("li");
                 li.textContent = detail;
                 matchDetailsList.appendChild(li);
             });
+        })
+        .catch(error => console.error("Error fetching match details:", error));
+}
+
+function fetchTournamentDetails(tournamentID) {
+    fetch(`http://localhost:8000/get_tournament_info/${tournamentID}`)
+        .then(response => response.json())
+        .then(game => {
+            const tournamentDetailsList = document.getElementById("matchDetails");
+            const tournament = game.game_info;
+            tournamentDetailsList.innerHTML = ""; // Clear previous list items
+            // Create list items dynamically
+            console.log(tournament)
+            tournament.forEach(player => {
+                const li = document.createElement("li");
+                li.textContent = `${player.name} - ${player.standing}`;
+                tournamentDetailsList.appendChild(li);
+            });
+            const li = document.createElement("li");
+            li.textContent = new Date(game.creation_date).toLocaleString();
+            tournamentDetailsList.appendChild(li);
         })
         .catch(error => console.error("Error fetching match details:", error));
 }
@@ -281,3 +418,141 @@ document.addEventListener("click", function (event) {
         modal.show();
     }
 });
+
+document.addEventListener("click", function (event) {
+    if (event.target.closest(".tournament-entry")) {
+        const matchElement = event.target.closest(".tournament-entry");
+        const tournamentID = matchElement.getAttribute("tournament-id");
+    
+        // Store tournament ID in modal
+        const modalElement = document.getElementById("matchModal");
+        modalElement.setAttribute("data-match-id", tournamentID);
+        console.log(tournamentID)
+        fetchTournamentDetails(tournamentID)
+        // Open modal using Bootstrap API (ensures event fires)
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+    }
+});z
+
+
+function renderTourneyPagination() {
+    const pagination = document.getElementById("tournament-pages");
+    pagination.innerHTML = "";  
+    
+
+    if(currentTourneyPage != 1)
+    {
+        pagination.innerHTML += `<li class="page-item ${currentTourneyPage === 1 ? 'disabled' : ''}">
+            <a class="page-link" href="#" onclick="changeTourneyPage(1)">First</a>
+        </li>`;
+    }
+
+    
+    // Previous Button
+    pagination.innerHTML += `<li class="page-item ${currentTourneyPage === 1 ? 'disabled' : ''}">
+    <a class="page-link" href="#" onclick="changeTourneyPage(${currentTourneyPage - 1})"><</a>
+    </li>`;
+    
+    if(currentTourneyPage > 1)
+    {
+        pagination.innerHTML += `<li class="page-item disabled">
+            <a class="page-link">...</a>
+        </li>`;
+    }
+
+    // Page Numbers
+    for (let i = currentTourneyPage; i <= TOTAL_TOURNEY_PAGES && i < currentTourneyPage + 3; i++) {
+        pagination.innerHTML += `<li class="page-item ${i === currentTourneyPage ? 'active' : ''}">
+            <a class="page-link" href="#" onclick="changeTourneyPage(${i})">${i}</a>
+        </li>`;
+    }
+    
+    if(currentTourneyPage < TOTAL_TOURNEY_PAGES - 2)
+    {
+        pagination.innerHTML += `<li class="page-item disabled">
+            <a class="page-link">...</a>
+        </li>`;
+    }
+
+    // Next Button
+    pagination.innerHTML += `<li class="page-item ${currentTourneyPage === TOTAL_TOURNEY_PAGES ? 'disabled' : ''}">
+        <a class="page-link" href="#" onclick="changeTourneyPage(${currentTourneyPage + 1})">></a>
+    </li>`;
+
+
+    if(currentTourneyPage != TOTAL_TOURNEY_PAGES)
+    {
+        pagination.innerHTML += `<li class="page-item ${currentTourneyPage === TOTAL_TOURNEY_PAGES ? 'disabled' : ''}">
+            <a class="page-link" href="#" onclick="changeTourneyPage(${TOTAL_TOURNEY_PAGES})">Last</a>
+        </li>`;
+    }
+}
+
+function renderPagination() {
+    const TOTAL_PAGES = Math.ceil(total_entries / ITEMS_PER_PAGE);
+    const pagination = document.getElementById("match-pages");
+    pagination.innerHTML = "";  
+    
+
+    if(currentPage != 1)
+    {
+        pagination.innerHTML += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+            <a class="page-link" href="#" onclick="changePage(1)">First</a>
+        </li>`;
+    }
+
+    
+    // Previous Button
+    pagination.innerHTML += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+    <a class="page-link" href="#" onclick="changePage(${currentPage - 1})"><</a>
+    </li>`;
+    
+    if(currentPage > 1)
+    {
+        pagination.innerHTML += `<li class="page-item disabled">
+            <a class="page-link">...</a>
+        </li>`;
+    }
+
+    // Page Numbers
+    for (let i = currentPage; i <= TOTAL_PAGES && i < currentPage + 3; i++) {
+        pagination.innerHTML += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+            <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+        </li>`;
+    }
+    
+    if(currentPage < TOTAL_PAGES - 2)
+    {
+        pagination.innerHTML += `<li class="page-item disabled">
+            <a class="page-link">...</a>
+        </li>`;
+    }
+
+    // Next Button
+    pagination.innerHTML += `<li class="page-item ${currentPage === TOTAL_PAGES ? 'disabled' : ''}">
+        <a class="page-link" href="#" onclick="changePage(${currentPage + 1})">></a>
+    </li>`;
+
+
+    if(currentPage != TOTAL_PAGES)
+    {
+        pagination.innerHTML += `<li class="page-item ${currentPage === TOTAL_PAGES ? 'disabled' : ''}">
+            <a class="page-link" href="#" onclick="changePage(${TOTAL_PAGES})">Last</a>
+        </li>`;
+    }
+}
+
+function changeTourneyPage(page) {
+    if (page < 1 || page > TOTAL_TOURNEY_PAGES || page == currentTourneyPage) return;  
+    currentTourneyPage = page; 
+    renderTourneyPagination();
+    getTournamentHistory(page);
+}
+
+function changePage(page) {
+    if (page < 1 || page > TOTAL_PAGES || page == currentPage) return;  
+    currentPage = page; 
+    renderPagination();
+    getMatchHistory(page)
+}

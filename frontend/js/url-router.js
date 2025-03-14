@@ -64,7 +64,8 @@ async function renderPage(page, shouldPushState = true) {
       case "profile":
         renderProfile();
         getUserGameInfo();
-        getMatchHistory();
+        getMatchHistory(1);
+        getTournamentHistory(1);
         break;
       case "profiles":
         renderProfiles();

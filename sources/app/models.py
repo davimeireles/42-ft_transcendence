@@ -50,11 +50,14 @@ class GameType(models.Model):
     type = models.CharField(max_length=32, null=False, unique=True)
     
 class Tournament(models.Model):
-    winner = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=32, null=False)
+    winner = models.CharField(max_length=32, null=False)
+    createdBy = models.ForeignKey(User, on_delete = models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
 class TournamentParticipant(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    nickname = models.CharField(max_length=32, null=False)
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     userStanding = models.PositiveIntegerField()
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
 

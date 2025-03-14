@@ -230,7 +230,7 @@ function render() {
     m.uniforms.time.value = time;
   });
   renderer.render(scene, camera);
-  requestAnimationFrame(render);
+  //requestAnimationFrame(render);
 }
 
 function resize(renderer) {

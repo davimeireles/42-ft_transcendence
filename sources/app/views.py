@@ -12,15 +12,18 @@ from django.http import JsonResponse
 from django.contrib.auth import login
 from django.contrib.auth import authenticate
 from django.forms.models import model_to_dict
+from django.db.models import Count
 from django.shortcuts import get_object_or_404
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
+from django.core.paginator import Paginator
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
+from faker import Faker
 from app.models import User, Match, MatchParticipant, GameType, Tournament, TournamentParticipant
 
 import logging
@@ -520,8 +523,43 @@ def get_match_details(request):
 
 
 @api_view(['GET'])
-def match_history_page(request, user_id):
-    matches = MatchParticipant.objects.filter(userID=user_id).select_related('matchID')
+def tournament_history_page(request, user_id, page_num):
+    max_results_per_page = 2
+    userid = User.objects.get(id=user_id)
+    all_tourneys = TournamentParticipant.objects.filter(user=userid).select_related('tournament').order_by('-id')
+    paginator = Paginator(all_tourneys, max_results_per_page)
+    tourneys = paginator.get_page(page_num)
+
+    history = []
+
+    for entry in tourneys:
+        tourney = entry.tournament
+        participants = TournamentParticipant.objects.filter(tournament=tourney)
+        tourney_data = {
+            'tournament': {
+                'name': tourney.name,
+                'id': tourney.id,
+                'winner': tourney.winner,
+                'createdBy': tourney.createdBy.nickname,
+                'created_at': tourney.created_at,
+            }
+        }
+        history.append(tourney_data)
+
+    return Response({
+            'history': history
+        },  status=200)
+
+
+
+
+@api_view(['GET'])
+def match_history_page(request, user_id, page_num):
+    max_results_per_page = 2
+    all_matches = MatchParticipant.objects.filter(userID=user_id).select_related('matchID').order_by('-id')
+    paginator = Paginator(all_matches, max_results_per_page)
+    matches = paginator.get_page(page_num)
+
     history = []
 
     for participant in matches:
@@ -566,16 +604,79 @@ def get_match_info(request, match_id):
         'game_info': game_info,
     }, status=200)
     
+@api_view(['GET'])
+def get_tournament_info(request, tournament_id):
+    t_id = Tournament.objects.get(id=tournament_id)
+    participants = TournamentParticipant.objects.filter(tournament=t_id)
+    game_info = []
+    
+    for player in participants:
+        playerInfo = ({
+            "name": player.nickname,
+            "user": player.user.nickname if player.user else None,
+            "standing": player.userStanding,
+        })
+        game_info.append(playerInfo)
+
+    return Response({
+        'game_info': game_info,
+        'creation_date': t_id.created_at,
+    }, status=200)
+    
+
 
 @api_view(['GET'])
 def count_user_games(request, user_id):
     game_count = MatchParticipant.objects.filter(userID=user_id).count()
     total_wins = Match.objects.filter(matchWinner=user_id).count()
-    total_tournaments = TournamentParticipant.objects.filter(user=user_id).count()
+    total_tournaments = Tournament.objects.filter(createdBy=user_id).count()
+    userid = User.objects.get(id=user_id)
+    standings_count = (
+        TournamentParticipant.objects.filter(user=userid)
+        .values('userStanding')  # Group by the standing
+        .annotate(count=Count('userStanding'))  # Count how many times each standing appears
+        .order_by('userStanding')  # Optional: Order by standing
+    )
+
+    standings = {}
+    for entry in standings_count:
+        standings[entry['userStanding']] = entry['count']
 
     return Response({
         'total_games': game_count,
         'total_wins': total_wins,
         'total_tournaments': total_tournaments,
-    },  status=200)
+        'standings': standings
+        },
+          status=200)
 
+@api_view(['POST'])
+def make_tourney(request, user_id):
+    fake = Faker()
+
+    # Create a dummy user
+    userid = User.objects.get(id=user_id)
+
+    # Create a dummy tournament
+    tournament = Tournament.objects.create(
+        name=fake.name(),
+        winner=userid.nickname,
+        createdBy=userid,
+    )
+
+    # Create dummy participants
+    for _ in range(5):  # 5 participants
+        TournamentParticipant.objects.create(
+            nickname=fake.name(),
+            userStanding=fake.random_int(min=1, max=10),
+            tournament=tournament
+        )
+
+    TournamentParticipant.objects.create(
+        nickname=userid.nickname,
+        user = userid,
+        userStanding=fake.random_int(min=1, max=10),
+        tournament=tournament
+    )
+
+    return Response(status=201)
