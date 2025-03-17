@@ -142,17 +142,17 @@ function createCompetitorNode(i, tournamentTable){
 
 function ft_createTournament(e) {
     let competitors = document.querySelectorAll(".competitor-input")
+    let title = document.getElementById("tournament-title");
+    if (title &&)
+    {
+
+    }
 }
 
 
-
-
-// ESC to close modals;
-
-document.addEventListener('keydown', function (e) {
-	// console.log(e.key);
-  
-	if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-	  closeModal();
-	}
-});
+function verifyCompetitors(competitors) {
+    for (id in competitors) {
+        if (!competitors.textContent)
+            console.log(id);
+    }
+}
