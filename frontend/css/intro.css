@@ -61,3 +61,7 @@
     height: 100%;
     z-index: 0;
 }
+
+.semi-transparent {
+  background-color: rgba(21, 19, 20, 0.90);
+}
