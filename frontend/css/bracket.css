@@ -150,3 +150,8 @@
   .playoff-table .playoff-table-tour:last-child .playoff-table-pair:before {
     display: none;
 }
+
+
+.hidden {
+    visibility: hidden;
+}

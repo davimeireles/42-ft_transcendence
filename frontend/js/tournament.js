@@ -52,7 +52,6 @@ async function getTournament() {
         })
         if (response.ok) {
             const tournament = await response.json();
-            console.log(tournament)
             tournamentScreen(tournament);
         }else {
             tournamentCreator();
@@ -176,7 +175,6 @@ async function ft_createTournament(e) {
     let competitorList = new Array();
     competitors.forEach(id => competitorList.push(id.value));
     let tournament = new Tournament(title.value, competitorList);
-    console.log(tournament);
     try {
         const response = await fetch("http://localhost:8000/get_tournament_details/", {
             method: "POST",
@@ -213,12 +211,12 @@ async function tournamentScreen(tournament) {
     tournamentScreen.append(title);
 
 
-    let summarized = await playoffTable(tournament);
+    let summarized = await playoffTable(tournament, "tournament-screen");
 
     let nextMatch = getNextMatch(summarized.matches);
-    console.log(nextMatch);
+    if (!nextMatch)
+        return ;
     let nextPlayers = getNextPlayers(summarized, nextMatch);
-    console.log(nextPlayers);
 
     let p1 = nextPlayers[0].nickname;
     let p2 = nextPlayers[1].nickname;
@@ -294,9 +292,9 @@ async function getPlayers(match) {
 
 const tSLoader = tournamentScreen;
 
-async function playoffTable(tournament) {
+async function playoffTable(tournament, modal) {
     let cols;
-    let tournamentScreen = document.getElementById("tournament-screen");
+    let tournamentScreen = document.getElementById(modal);
     let pos = 0;
 
     let {matches} = await getMatches(tournament);
@@ -319,8 +317,6 @@ async function playoffTable(tournament) {
         };
       })());
     let size = uniqueById.length;
-    console.log(matches);
-    console.log(players);
 
 
     if (size == 2)
@@ -365,6 +361,19 @@ async function playoffTable(tournament) {
                     rightPlayer.textContent = players[pos].nickname;
                 rightPlayer.id = `player-pos-${pos++}`;
                 playoffPair.append(rightPlayer);
+                if (i == 0 && j == 1 && k == 1 && size == 6){
+                    leftPlayer.textContent = "";
+                    pos--;
+                    rightPlayer.textContent = "";
+                    pos--;
+                    playoffGroup.classList.add("hidden");
+                }
+                if (i == 1 && j == 1 && k == 1 && size == 6) {
+                    leftPlayer.textContent = document.getElementById("player-pos-4").textContent;
+                    pos--;
+                    rightPlayer.textContent = document.getElementById("player-pos-5").textContent;
+                    pos--;
+                }
             }
         } 
     }
@@ -391,10 +400,18 @@ async function playoffTable(tournament) {
 
 
 function tournamentGame() {
-    console.log(this);
     let tournament = this.tournament;
     let match = this.nextMatch;
     let players = this.nextPlayers;
+    let aiMatch = false;
+    if (players[1].nickname === "Mighty Bot") {
+        aiMatch = true;
+        let aiPlayer = 1;
+    }
+    else if (players[0].nickname === "Mighty Bot") {
+        aiMatch = true;
+        let aiPlayer = 0;
+    }
 
     let tournamentScreen = document.getElementById("tournament-screen");
     tournamentScreen.innerHTML = "";
@@ -502,33 +519,11 @@ function tournamentGame() {
             winMessage.style.textAlign = "center";
             gameContainer.appendChild(winMessage);
         }
-
-        // Create customization modal (color picker)
-        customizationModal = document.createElement("div");
-        customizationModal.id = "customization-modal";
-        customizationModal.style.display = "flex"; // Initially hidden
-        customizationModal.style.position = "absolute";
-        customizationModal.style.top = "50%";
-        customizationModal.style.left = "50%";
-        customizationModal.style.transform = "translate(-50%, -50%)";
-        customizationModal.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
-        customizationModal.style.color = "white";
-        customizationModal.style.padding = "20px";
-        customizationModal.style.fontSize = "16px";
-        customizationModal.style.textAlign = "center";
-        customizationModal.style.flexDirection = "column";
-        gameContainer.appendChild(customizationModal);
-
-        // Player 1 customization
-        const p1Customization = createPlayerCustomization("Player 1", setPlayer1Color);
-        customizationModal.appendChild(p1Customization);
-
-        // Player 2 customization
-        const p2Customization = createPlayerCustomization("Player 2", setPlayer2Color);
-        customizationModal.appendChild(p2Customization);
-
+        
         // Start the initial game loop
-        showCustomizationModal();
+        document.addEventListener("keyup", stopPlayer);
+        document.addEventListener("keydown", movePlayer);
+        resetGameStart();
         }
     }
 
@@ -558,18 +553,6 @@ function tournamentGame() {
         return container;
     }
 
-    // Set player 1 color
-    function setPlayer1Color(color) {
-        player1Color = color;
-        console.log("Player 1 color set to " + color);
-    }
-
-    // Set player 2 color
-    function setPlayer2Color(color) {
-        player2Color = color;
-        console.log("Player 2 color set to " + color);
-    }
-
     // Show customization modal
     function showCustomizationModal() {
         // Create a "Start Game" button
@@ -586,10 +569,31 @@ function tournamentGame() {
         customizationModal.style.display = "flex";
     }
 
+    function moveAIHard(pPos) {
+        // Predict where the ball will intersect with the paddle's x-position
+        let AIplayer;
+        if (pPos)
+            AIplayer = player2;
+        else
+            AIplayer = player1;
+        const paddleX = AIplayer.x;
+        const ballTrajectory =
+          ball.y + (ball.speedY / ball.speedX) * (paddleX - ball.x);
+      
+        // Move the paddle to intercept the ball
+        if (AIplayer.y + AIplayer.height / 2 < ballTrajectory - 5) {
+          AIplayer.y += 3; // Move down
+        } else if (AIplayer.y + AIplayer.height / 2 > ballTrajectory + 5) {
+          AIplayer.y -= 3; // Move up
+        }
+      }
+
     // Main game loop
     async function update(time) {
         if (!gameOver) {
-        requestAnimationFrame(update); // Continue the animation loop
+            requestAnimationFrame(update); // Continue the animation loop
+            if (aiMatch)
+                moveAIHard();
         }
 
         const deltaTime = time - lastTime;
@@ -648,39 +652,6 @@ function tournamentGame() {
         // Check for win condition
         if ((player1Score >= 3 || player2Score >= 3) && !gameOver) {
         gameOver = true;
-
-        const session_user = JSON.parse(localStorage.getItem("sessionUser"));
-
-        let winner;
-
-        if (player1Score >= 3) winner = session_user.username;
-        else winner = "Player2";
-
-        const data = {
-            game_type_id: 1,
-            match_winner: winner,
-            p1_score: player1Score,
-            p2_score: player2Score,
-            p1_username: session_user.username,
-            p2_username: "Player2",
-        };
-
-        try {
-            const response = await fetch("http://localhost:8000/get_match_details/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-                },
-                body: JSON.stringify(data),
-                credentials: "include",
-            });
-            if (response.ok) {
-                console.log("Match details sent successfully");
-            }
-        } catch (error) {
-            console.error("Error:", error);
-        }
         displayWinMessage();
         }
     }
@@ -777,7 +748,6 @@ function tournamentGame() {
             p_win = players[1];
             winnerText = `${players[1].nickname} Wins!`;
         }
-        console.log({match: match, winner: p_win});
         try {
             const response = await fetch(`http://localhost:8000/update_match/`, {
                 method: 'POST',
