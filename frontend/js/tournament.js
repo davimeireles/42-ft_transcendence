@@ -256,11 +256,10 @@ function getNextPlayers(tournament, nextMatch) {
 
 async function getMatches(tournament) {
     try {
-        const response = await fetch("http://localhost:8000/get_matches/", {
-            method: "POST",
+        const response = await fetch(`http://localhost:8000/get_matches/${tournament.id}`, {
+            method: "GET",
             headers: { "Content-Type": "application/json",
                 "Authorization": `Bearer ${localStorage.getItem('access_token')}`},
-            body: JSON.stringify(tournament)
         });
         if (response.ok) {
             let matches = await response.json();
@@ -274,11 +273,10 @@ async function getMatches(tournament) {
 
 async function getPlayers(match) {
     try {
-        const response = await fetch("http://localhost:8000/get_players/", {
-            method: "POST",
+        const response = await fetch(`http://localhost:8000/get_players/${match.id}`, {
+            method: "GET",
             headers: { "Content-Type": "application/json",
                 "Authorization": `Bearer ${localStorage.getItem('access_token')}`},
-            body: JSON.stringify(match)
         });
         if (response.ok) {
             let {players} = await response.json();

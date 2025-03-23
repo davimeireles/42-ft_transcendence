@@ -575,7 +575,7 @@ def get_tournament_by_id(request, tourney_id):
             "id": tourney.id,
             "name": tourney.name,
             "winner": tourney.winner,
-            "createdBy": tourney.created_by.nickname,
+            "createdBy": tourney.createdBy.nickname,
             "created_at": tourney.created_at,
             "finished": tourney.finished
         }
@@ -664,21 +664,21 @@ def get_tournament(request):
             return Response({'message': 'No tournament'}, status=status.HTTP_404_NOT_FOUND)
     return Response({'message': 'Error'}, status=status.HTTP_404_NOT_FOUND)
 
-@api_view(['POST'])
-def get_matches(request):
-    tournamentId = request.data.get('id')
-    if request.method == 'POST':
-        matches = TournamentMatches.objects.filter(tournament=tournamentId).values()
-        return JsonResponse({"matches": list(matches)})
-    return Response({'message': 'Error'}, status=status.HTTP_404_NOT_FOUND)
+@api_view(['GET'])
+def get_matches(request, tournament_id):
+    matches = TournamentMatches.objects.filter(tournament=tournament_id).values()
+    if not matches.exists():
+        return Response({'message': 'Match not found'}, status=status.HTTP_404_NOT_FOUND)
+    return JsonResponse({"matches": list(matches)})
 
-@api_view(['POST'])
-def get_players(request):
-    tournamentMatchId = request.data.get('id')
-    if request.method == 'POST':
-        players = TournamentParticipant.objects.filter(match=tournamentMatchId).values()
-        return JsonResponse({"players": list(players)})
-    return Response({'message': 'Error'}, status=status.HTTP_404_NOT_FOUND)
+@api_view(['GET'])
+def get_players(request, match_id):
+
+    players = TournamentParticipant.objects.filter(match=match_id).values()
+    if not players.exists():
+        return Response({'message': 'Match not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+    return JsonResponse({"players": list(players)})
 
 @api_view(['POST'])
 def update_match(request):

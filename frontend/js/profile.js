@@ -342,15 +342,15 @@ function displayMatchHistory(matchHistory) {
     });
 }
 
-
-
 // Function to fetch match details
 function fetchMatchDetails(matchID) {
     fetch(`http://localhost:8000/get_match_info/${matchID}`)
         .then(response => response.json())
         .then(game => {
-            const matchDetailsList = document.getElementById("matchDetails");
+            const matchDetailsList = document.getElementById("profileModalBody");
             const match = game.game_info;
+            
+            document.getElementById("modal-title").innerHTML = "Match Details";
             matchDetailsList.innerHTML = ""; // Clear previous list items
             // Create list items dynamically
             const details = [
@@ -387,7 +387,7 @@ document.addEventListener("click", async function (event) {
     if (event.target.closest(".tournament-entry")) {
         const tourneyElement = event.target.closest(".tournament-entry");
         const tournamentID = tourneyElement.getAttribute("tournament-id");
-        if (event.target.closest(".match-entry")) {
+        if (event.target.closest(".tournament-entry")) {
             try {
                 const response = await fetch(`http://localhost:8000/get_tournament_by_id/${tournamentID}`, {
                     method: 'GET',
@@ -397,15 +397,20 @@ document.addEventListener("click", async function (event) {
                 })
                 if (response.ok) {
                     const tournament = await response.json();
-                    playoffTable(tournament, 'profileModal')
+                    document.getElementById("modal-title").innerHTML = tournament.name;
+                    console.log(tournament);
+                    playoffTable(tournament, 'profileModalBody')
                 }
             }
             catch(error){
                 console.log(error)
             }
         }
+        const modalElement = document.getElementById("profileModal");
         const modal = new bootstrap.Modal(modalElement);
         modal.show();
+        const profileModal = document.getElementById("profileModalBody");
+        profileModal.innerHTML = ""
     }
 });
 
@@ -431,7 +436,7 @@ function renderTourneyPagination() {
     <a class="page-link" href="#" onclick="changeTourneyPage(${currentTourneyPage - 1})"><</a>
     </li>`;
     
-    if(currentTourneyPage > 1)
+    if(currentTourneyPage > 1 )
     {
         pagination.innerHTML += `<li class="page-item disabled">
             <a class="page-link">...</a>
