@@ -1,6 +1,7 @@
 import os
 import io
 import json
+import math
 import pyotp
 import qrcode
 import base64
@@ -15,13 +16,13 @@ from django.forms.models import model_to_dict
 from django.shortcuts import get_object_or_404
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
-from rest_framework import status
+from rest_framework import status, serializers
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
-from app.models import User, Match, MatchParticipant, GameType
+from app.models import User, Match, MatchParticipant, GameType, Tournament, TournamentMatches, TournamentParticipant
 
 import logging
 
@@ -516,3 +517,99 @@ def get_match_details(request):
     except Exception as e:
         logger.error("Error: %s", str(e))
         return Response({'error': str(e)}, status=500)
+    
+
+@api_view(['POST'])
+def get_tournament_details(request):
+    name = request.data.get('_name')
+    created_by = request.data.get('_created_by')
+    competitors = request.data.get('_competitors')
+
+    try:
+        with transaction.atomic():
+            creator = User.objects.get(username=created_by)
+            tournament = Tournament.objects.create(name=name, createdBy=creator)
+            logger.info("Tournament created: %s", tournament)
+            if (len(competitors) % 2):
+                size = len(competitors)
+            else:
+                size = len(competitors) - 1
+            for i in range(0, size):
+                match = TournamentMatches.objects.create(tournament=tournament, tournament_leg=math.log(size - i, 2))
+                logger.info("Tournament match created: %s", match)
+                if (i * 2) + 1 <= size + 1:
+                    for nickname in competitors[i * 2 : (i * 2) + 2]:
+                        participant = TournamentParticipant.objects.create(nickname=nickname, match=match)
+                        logger.info("Tournament participant created: %s", participant)
+            return Response({'message': 'Tournament details saved successfully.'}, status=201)
+    except Exception as e:
+        logger.error("Error: %s", str(e))
+        return Response({'error': str(e)}, status=500)
+
+
+
+@api_view(['POST'])
+def get_tournament(request):
+    created_by = request.data.get('username')
+    creator = User.objects.get(username=created_by)
+    if request.method == 'POST':
+        if Tournament.objects.filter(createdBy=creator, finished=False).exists():
+            tournament = Tournament.objects.get(createdBy=creator, finished=False)
+            if (tournament.winner):
+                winner = tournament.winner.nickname
+            else:
+                winner = None
+            data = {
+                "id": tournament.id,
+                "name": tournament.name,
+                "winner": winner,
+                "createdBy": created_by,
+                "created_at": tournament.created_at,
+                "finished": tournament.finished
+            }
+            return JsonResponse(data)
+        else:
+            return Response({'message': 'No tournament'}, status=status.HTTP_404_NOT_FOUND)
+    return Response({'message': 'Error'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['POST'])
+def get_matches(request):
+    tournamentId = request.data.get('id')
+    if request.method == 'POST':
+        matches = TournamentMatches.objects.filter(tournament=tournamentId).values()
+        return JsonResponse({"matches": list(matches)})
+    return Response({'message': 'Error'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['POST'])
+def get_players(request):
+    tournamentMatchId = request.data.get('id')
+    if request.method == 'POST':
+        players = TournamentParticipant.objects.filter(match=tournamentMatchId).values()
+        return JsonResponse({"players": list(players)})
+    return Response({'message': 'Error'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['POST'])
+def update_match(request):
+    coming_match = request.data.get('match')
+    tournament_id = coming_match.get("tournament_id")
+    tournament_leg = coming_match.get("tournament_leg")
+    winner = request.data.get('winner')
+    winner_id = winner.get("id")
+    winner_nick = winner.get("nickname")
+    if request.method == 'POST':
+        match = TournamentMatches.objects.get(tournament=tournament_id, tournament_leg=tournament_leg)
+        match.winner = TournamentParticipant.objects.get(id=winner_id)
+        match.played = True
+        match.save()
+        if (match.tournament_leg > 0):
+            next_match_leg = math.log(int(math.pow(2, tournament_leg)/2), 2)
+            next_match = TournamentMatches.objects.get(tournament=tournament_id, tournament_leg=next_match_leg)
+            participant = TournamentParticipant.objects.create(nickname=winner_nick, match=next_match)
+            return JsonResponse({"message": "Match status saved"})
+        else:
+            tournament = Tournament.objects.get(id=tournament_id)
+            tournament.winner = TournamentParticipant.objects.get(id=winner_id).nickname
+            tournament.finished = True
+            tournament.save()
+            return JsonResponse({"message": tournament_id})
+    return Response({'message': 'Error'}, status=status.HTTP_404_NOT_FOUND)

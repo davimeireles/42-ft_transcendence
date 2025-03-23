@@ -34,6 +34,11 @@ urlpatterns = [
     path('verify_2fa_first_time/', app.views.verify_2fa_first_time, name='verify_2fa_first_time'),
     path('api/', include('app.api.urls')),
     path('get_match_details/', app.views.get_match_details, name='get_match_details'),
+    path('get_tournament_details/', app.views.get_tournament_details, name='get_tournament_details'),
+    path('get_tournament/', app.views.get_tournament, name='get_tournament'),
+    path('get_matches/', app.views.get_matches, name='get_matches'),
+    path('get_players/', app.views.get_players, name='get_players'),
+    path('update_match/', app.views.update_match, name='update_match'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

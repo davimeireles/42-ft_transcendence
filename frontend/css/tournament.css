@@ -26,9 +26,43 @@
 	background-color: #151314;
 	color: #e3dce6;
 	transition: all 0.3s ease;
-	margin-top: 10px; /* Add margin to space the buttons */
+	margin-top: 10px;
 }
 
 .vapor-btn:hover {
 	border-color: #39ff14;
+}
+
+
+
+.glow-red {
+    font-family: 'alien';
+    font-size: 2rem;
+    color: #FEEBEC;
+    animation: glow-red 1.5s infinite alternate;
+}
+
+@keyframes glow-red {
+    from {
+        text-shadow: 0 0 5px #FC1723, 0 0 10px #FC1723, 0 0 20px #FC1723, 0 0 40px #FC1723;
+    }
+    to {
+        text-shadow: 0 0 10px #FC1723, 0 0 20px #FC1723, 0 0 40px #FC1723, 0 0 80px #FC1723;
+    }
+}
+
+.glow-green {
+    font-family: 'alien';
+    font-size: 2rem;
+    color: #EEFFEB;
+    animation: glow-green 1.5s infinite alternate;
+}
+
+@keyframes glow-green {
+    from {
+        text-shadow: 0 0 5px #39FF14, 0 0 10px #39FF14, 0 0 20px #39FF14, 0 0 40px #39FF14;
+    }
+    to {
+        text-shadow: 0 0 10px #39FF14, 0 0 20px #39FF14, 0 0 40px #39FF14, 0 0 80px #39FF14;
+    }
 }

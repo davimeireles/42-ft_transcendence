@@ -2,7 +2,8 @@ function initialize3DPong() {
   // Get the dimensions of the home-games div
   const homeGamesDiv = document.getElementById("home-games");
   gameButton = document.getElementById("gamesDropdown");
-  gameButton.style.display = "none";
+  if (gameButton)
+    gameButton.style.display = "none";
   const width = homeGamesDiv.clientWidth;
   const height = homeGamesDiv.clientHeight;
 

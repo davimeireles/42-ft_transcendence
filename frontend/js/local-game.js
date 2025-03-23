@@ -56,7 +56,8 @@ let winMessage;
 // Initialize the game
 async function renderPongGame() {
   gameButton = document.getElementById("gamesDropdown");
-  gameButton.style.display = "none";
+  if (gameButton)
+    gameButton.style.display = "none";
   board = document.getElementById("board");
   gameOver = false;
   player1Score = 0;
@@ -400,7 +401,8 @@ function resetGameStart() {
     player2SpeedY = 0;
   
     const winMessage = document.getElementById("win-message");
-    winMessage.style.display = "none";
+    if (winMessage)
+        winMessage.style.display = "none";
   
     resetBall(0); // Reset ball to the center - do not assign points
     lastTime = 0; // Reset lastTime to avoid large deltaTime on restart
