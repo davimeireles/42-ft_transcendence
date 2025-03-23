@@ -1,6 +1,5 @@
 'use strict'
 
-<<<<<<< HEAD
 let total_tourney_entries;
 let currentTourneyPage;
 let TOTAL_TOURNEY_PAGES;
@@ -9,10 +8,8 @@ let total_entries;
 let currentPage;
 let TOTAL_PAGES;
 
-const ITEMS_PER_PAGE = 2;
+const ITEMS_PER_PAGE = 5;
 
-const renderProfile =  function(){
-=======
 const renderProfile = async function(){
     let setting = document.getElementById("setting-button");
     setting.addEventListener("click", function() {renderPage("edit");});
@@ -21,7 +18,6 @@ const renderProfile = async function(){
 
     let home = document.getElementById("btn-home");
     home.addEventListener("click", function() {renderPage("home");});
->>>>>>> dev
     const session_user = JSON.parse(localStorage.getItem('sessionUser'))
     const imageTag = document.getElementById("profileImage")
     const online = document.getElementById("online")
@@ -145,34 +141,6 @@ async function add_remove_friend(){
         }
 }
 
-async function makeTourney()
-{
-    const session_user = JSON.parse(localStorage.getItem('sessionUser'));
-    const token = localStorage.getItem("access_token")
-    if (!token){
-        console.log("Token not found !")
-        return ;
-    }
-	try{
-        const response = await fetch(`http://localhost:8000/make_tourney/${session_user.userId}/`,{
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                "Authorization": `Bearer ${token}`,
-            }
-        })
-        if(response.ok){
-
-        }
-        else{
-            console.log("not work :( @ makeTourney", response.status);
-        };
-    }
-    catch(error){
-        console.error("Error caught @makeTourney: ", error);
-    }
-}
-
 async function getUserGameInfo(page)
 {
     const session_user = JSON.parse(localStorage.getItem('sessionUser'));
@@ -195,12 +163,15 @@ async function getUserGameInfo(page)
             TOTAL_PAGES = Math.ceil(total_entries / ITEMS_PER_PAGE);
             total_tourney_entries = gameInfo.total_tournaments;
             TOTAL_TOURNEY_PAGES = total_tourney_entries / ITEMS_PER_PAGE;
-
             currentTourneyPage = 1;
             currentPage = 1;
 
-            renderTourneyPagination();
-            renderPagination();
+            console.log("Total entries:", total_entries);
+            console.log("Total tournament entries", total_tourney_entries);
+            if(total_tourney_entries > 0)
+                renderTourneyPagination();
+            if(total_entries > 0)
+                renderPagination();
             drawCharts(gameInfo);
             console.log(gameInfo)
         }
@@ -215,26 +186,28 @@ async function getUserGameInfo(page)
 
 function drawCharts(gameInfo)
 {
-    new Chart(document.getElementById("newcanvas"), {
-        type: "pie",
-        data: {
-            labels: ["Games Won", "Games Lost"],
-            datasets: [{
-                data: [gameInfo.total_wins, (gameInfo.total_games - gameInfo.total_wins)],
-                backgroundColor: [
-                    "#0d6efd", // Bootstrap primary color
-                    "#198754", // Bootstrap success color
-                    "#ffc107", // Bootstrap warning color
-                    "#dee2e6"  // Light gray
-                ],
-                    borderColor: "transparent"
-                }]
-        },
-        options: {
-            maintainAspectRatio: false,
-            responsive: true,
-        }
-    })
+    if(total_entries > 0){
+        new Chart(document.getElementById("newcanvas"), {
+            type: "pie",
+            data: {
+                labels: ["Games Won", "Games Lost"],
+                datasets: [{
+                    data: [gameInfo.total_wins, (gameInfo.total_games - gameInfo.total_wins)],
+                    backgroundColor: [
+                        "#0d6efd", // Bootstrap primary color
+                        "#198754", // Bootstrap success color
+                        "#ffc107", // Bootstrap warning color
+                        "#dee2e6"  // Light gray
+                    ],
+                        borderColor: "transparent"
+                    }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+            }
+        })
+    }
 }
 
 
@@ -284,27 +257,19 @@ function displayTournamentHistory(matchHistory) {
         return; 
     }
 
-    matchHistory.forEach(entry => {
-        console.log("Tournament ID:", entry.tournament.id);
-        console.log("Created By:", entry.tournament.createdBy);
-        console.log("Winner:", entry.tournament.winner);
-        console.log("Created At:", entry.tournament.created_at);
-    
+    matchHistory.forEach(tournament => {
+        console.log("Tournament Name:", tournament.entry.name);
+        console.log("Tournament ID:", tournament.entry.id);
         console.log("----");
     });
-     matchHistory.forEach(match => {
+    matchHistory.forEach(tournament => {
         const matchElement = document.createElement("div");
         matchElement.className = "tournament-entry"; // Optional: for styling
-        matchElement.setAttribute("tournament-id", match.tournament.id)
-
-        if (match.tournament.winner === session_user.nickname) {
-            matchElement.style.backgroundColor = "green";
-        } else {
-            matchElement.style.backgroundColor = "red";
-        }
+        matchElement.setAttribute("tournament-id", tournament.entry.id)
+        matchElement.style.backgroundColor = "green";
 
         matchElement.innerHTML = `
-            <p>Tournament: ${match.tournament.name}</p>
+            <p>Tournament: ${tournament.entry.name}</p>
         `;
         historyContainer.appendChild(matchElement);
     });
@@ -361,7 +326,7 @@ function displayMatchHistory(matchHistory) {
     // Create and append match entries
     matchHistory.forEach(match => {
         const matchElement = document.createElement("div");
-        matchElement.className = "match-entry"; // Optional: for styling
+        matchElement.className = "match-entry text-center"; // Optional: for styling
         matchElement.setAttribute("match-id", match.matchId)
 
         if (match.Winner === session_user.userId) {
@@ -403,34 +368,13 @@ function fetchMatchDetails(matchID) {
         .catch(error => console.error("Error fetching match details:", error));
 }
 
-function fetchTournamentDetails(tournamentID) {
-    fetch(`http://localhost:8000/get_tournament_info/${tournamentID}`)
-        .then(response => response.json())
-        .then(game => {
-            const tournamentDetailsList = document.getElementById("matchDetails");
-            const tournament = game.game_info;
-            tournamentDetailsList.innerHTML = ""; // Clear previous list items
-            // Create list items dynamically
-            console.log(tournament)
-            tournament.forEach(player => {
-                const li = document.createElement("li");
-                li.textContent = `${player.name} - ${player.standing}`;
-                tournamentDetailsList.appendChild(li);
-            });
-            const li = document.createElement("li");
-            li.textContent = new Date(game.creation_date).toLocaleString();
-            tournamentDetailsList.appendChild(li);
-        })
-        .catch(error => console.error("Error fetching match details:", error));
-}
-
 document.addEventListener("click", function (event) {
     if (event.target.closest(".match-entry")) {
         const matchElement = event.target.closest(".match-entry");
         const matchID = matchElement.getAttribute("match-id");
 
         // Store match ID in modal
-        const modalElement = document.getElementById("matchModal");
+        const modalElement = document.getElementById("profileModal");
         modalElement.setAttribute("data-match-id", matchID);
         fetchMatchDetails(matchID)
         // Open modal using Bootstrap API (ensures event fires)
@@ -439,28 +383,41 @@ document.addEventListener("click", function (event) {
     }
 });
 
-document.addEventListener("click", function (event) {
+document.addEventListener("click", async function (event) {
     if (event.target.closest(".tournament-entry")) {
-        const matchElement = event.target.closest(".tournament-entry");
-        const tournamentID = matchElement.getAttribute("tournament-id");
-    
-        // Store tournament ID in modal
-        const modalElement = document.getElementById("matchModal");
-        modalElement.setAttribute("data-match-id", tournamentID);
-        console.log(tournamentID)
-        fetchTournamentDetails(tournamentID)
-        // Open modal using Bootstrap API (ensures event fires)
+        const tourneyElement = event.target.closest(".tournament-entry");
+        const tournamentID = tourneyElement.getAttribute("tournament-id");
+        if (event.target.closest(".match-entry")) {
+            try {
+                const response = await fetch(`http://localhost:8000/get_tournament_by_id/${tournamentID}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                if (response.ok) {
+                    const tournament = await response.json();
+                    playoffTable(tournament, 'profileModal')
+                }
+            }
+            catch(error){
+                console.log(error)
+            }
+        }
         const modal = new bootstrap.Modal(modalElement);
         modal.show();
     }
-});z
+});
 
 
 function renderTourneyPagination() {
+    if(total_tourney_entries === 0)
+        return;
+
+    const TOTAL_TOURNEY_PAGES = Math.ceil(total_tourney_entries / ITEMS_PER_PAGE);
     const pagination = document.getElementById("tournament-pages");
     pagination.innerHTML = "";  
     
-
     if(currentTourneyPage != 1)
     {
         pagination.innerHTML += `<li class="page-item ${currentTourneyPage === 1 ? 'disabled' : ''}">
@@ -510,6 +467,8 @@ function renderTourneyPagination() {
 }
 
 function renderPagination() {
+    if(total_entries === 0)
+        return;
     const TOTAL_PAGES = Math.ceil(total_entries / ITEMS_PER_PAGE);
     const pagination = document.getElementById("match-pages");
     pagination.innerHTML = "";  

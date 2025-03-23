@@ -15,9 +15,6 @@
                 <div class="row">
                     <div class="col sidebar-tour mx-4 bg-dark" style="border-radius: 10px;" data-translate-key="Tournaments">
                         Tournaments
-                        <button type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off" onclick="makeTourney()">
-                            Dummy tournament
-                        </button>
                         <div id="HistoryTournament">
                         
                         </div>
@@ -33,7 +30,7 @@
                         <div id="HistoryGames">
                         
                         </div>
-                        <ul class="pagination pagination-sm" id="match-pages">
+                        <ul class="pagination pagination-sm justify-content-center" id="match-pages">
                             
                         </ul>
                         <div id="newdiv">
@@ -66,15 +63,15 @@
             </div> 
         </div>
     </div>
-    <div class="modal fade custom-modal" id="matchModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade custom-modal" id="profileModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Match Details</h5>
+                    <h5 class="modal-title">Details</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <ul id="matchDetails"></ul>
+                    <ul id="profileModalBody"></ul>
                 </div>
             </div>
         </div>
