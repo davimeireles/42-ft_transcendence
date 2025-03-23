@@ -1,6 +1,13 @@
 'use strict'
 
-const renderProfile =  function(){
+const renderProfile = async function(){
+    let setting = document.getElementById("setting-button");
+    setting.addEventListener("click", function() {renderPage("edit");});
+    let twoFA = document.getElementById("twoFA-button");
+    twoFA.addEventListener("click", function() {renderPage("enable2FA");});
+
+    let home = document.getElementById("btn-home");
+    home.addEventListener("click", function() {renderPage("home");});
     const session_user = JSON.parse(localStorage.getItem('sessionUser'))
     const imageTag = document.getElementById("profileImage")
     const online = document.getElementById("online")
@@ -11,9 +18,18 @@ const renderProfile =  function(){
         online.innerHTML = 'Offline'
     }
     if (imageTag && session_user.photo){
-        imageTag.src = `http://localhost:8000/media/${session_user.username}.jpg`;
+      const response = await fetch(`http://localhost:8000/media/${session_user.username}.jpg`);
+      if (!response.ok)
+        throw new Error("Failed to fetch image");
+      const blob = await response.blob();
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onloadend = () => {
+          localStorage.setItem(`userPhoto_${session_user.username}`, reader.result);
+          imageTag.src = reader.result;
+      };
     }else{
-        imageTag.src = 'media/default.jpg'
+      imageTag.src = 'media/default.jpg'
     }
     const friends = session_user.friends
     if (friends && friends.length > 0) {

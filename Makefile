@@ -15,6 +15,12 @@ down:
 clean:
 	docker compose down -v --rmi all --remove-orphans
 
+nclean:
+	docker rm $$(docker ps -a -q)
+	docker rmi 42-ft_transcendence-frontend 42-ft_transcendence-backend
+	docker volume rm 42-ft_transcendence_db-postgres 42-ft_transcendence_grafana-data 42-ft_transcendence_prometheus-data
+	docker network rm 42-ft_transcendence_default app_network
+
 # Remove all Docker images
 clean-images:
 	docker rmi $$(docker images -q)
@@ -33,4 +39,6 @@ clean-networks:
 
 restart: clean up
 
-.PHONY: all up down clean clean-images clean-containers clean-volumes clean-networks restart quick
+re: nclean up
+
+.PHONY: all up down clean clean-images clean-containers clean-volumes clean-networks restart

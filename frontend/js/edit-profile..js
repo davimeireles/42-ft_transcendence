@@ -1,4 +1,6 @@
 function UsernameForm() {
+    let home = document.getElementById("btn-home");
+    home.addEventListener("click", function() {renderPage("home");});
     const token = localStorage.getItem("access_token");
 
     if (!token) {

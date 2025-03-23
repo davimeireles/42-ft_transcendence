@@ -1,12 +1,10 @@
-<div style="margin-top: 5px; position: relative; height: 40px; width: 70px; margin-bottom: 20px; font-family: 'square';">
-    <a href="/home">
-        <button id="btn-home" class="btn btn-sm btn-outline-secondary w-100" style="position: absolute; top: 0px;  padding: 5px 5px; font-size: medium;" data-translate-key="Home">Home</button>
-    </a>
+<div style="margin-top: 5px; position: relative; height: 40px; width: 70px; font-family: 'square';">
+  <button id="btn-home" class="btn btn-sm btn-outline-secondary w-100" style="position: absolute; top: 0px;  padding: 5px 5px; font-size: medium;" data-translate-key="Home">Home</button>
 </div>
 <div class="container-custom" style="height: 96vh; font-family: 'square'; color: #e3dce6;">
     <div class="row" style="height: 96vh;">
         <div class="col sidebar">
-            <div class="img m-1 profile-container">
+            <div class="img m-1 profile-container bg-dark p-3 rounded-5">
                 <img src="" alt="" id="profileImage" style="width: 180px; height: 180px; border-radius: 50%;">
                 <div class="user-info mx-4">
                     <h4 id="text-user" class="user"></h4>
@@ -15,10 +13,10 @@
             </div>
             <div class="container-custom m-4">
                 <div class="row">
-                    <div class="col sidebar-tour mx-4" style="border-radius: 10px;" data-translate-key="Tournaments">
+                    <div class="col sidebar-tour mx-4 bg-dark" style="border-radius: 10px;" data-translate-key="Tournaments">
                         Tournaments
                     </div>
-                    <div class="col sidebar-game" style="border-radius: 10px;" data-translate-key="Match History">
+                    <div class="col sidebar-game bg-dark" style="border-radius: 10px;" data-translate-key="Match History">
                         Match History
                         <div id="HistoryGames">
                         
@@ -31,7 +29,7 @@
             </div>
         </div>
         <!-- Right Sidebar -->
-        <div class="col-md-4">
+        <div class="col-md-4 bg-dark">
             <span style="display: flex; align-items: center; justify-content: center;" data-translate-key="Search users">Search users</span>
             <div class="input-group d-flex align-items-center justify-content-center">
                 <div class="col-6">
@@ -43,15 +41,13 @@
             </div>
             <div class="friends-box">
                 <h5 data-translate-key="Friends" style="display: flex; align-items: center; justify-content: center;">Friends</h5>
-                <h6 data-translate-key="You have no friends" style="display: flex; align-items: center; justify-content: center;">You have no friends</h6>
+                <h6 data-translate-key="You have no friends" style="display: flex; align-items: center; justify-content: center;" id="no_friends">You have no friends</h6>
                 <ul id="friends-list">
                 </ul>
             </div>
             <div style="align-items: center; justify-content: center; display: flex;">
-                <a style="padding: 5px 5px; font-size: medium;" href="/enable2FA" class="btn btn-custom " data-translate-key="Enable 2FA">Enable 2FA</a>
-                <a href="/edit">
-                    <button style="padding: 5px 5px; font-size: medium;" id="btn-friend" class="btn btn-custom" data-translate-key="Edit Profile">Edit Profile</button>
-                </a>
+                <button style="padding: 5px 5px; font-size: medium;" id="twoFA-button" class="btn btn-custom " data-translate-key="Enable 2FA">Enable 2FA</button>
+                <button style="padding: 5px 5px; font-size: medium;" id="setting-button" class="btn btn-custom" data-translate-key="Edit Profile">Edit Profile</button>
             </div> 
         </div>
     </div>
