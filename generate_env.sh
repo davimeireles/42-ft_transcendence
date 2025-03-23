@@ -14,7 +14,6 @@ SECRET=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
 URI=https://localhost/home"
 
 # Cria o arquivo .env e escreve o conteúdo nele
-"
 echo "$env_content" > .env
 
 echo ".env file created successfully."

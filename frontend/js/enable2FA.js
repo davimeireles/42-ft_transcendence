@@ -1,4 +1,6 @@
 async function enable2FA() {
+    let home = document.getElementById("btn-home");
+    home.addEventListener("click", function() {renderPage("home");});
 
     const token = localStorage.getItem('access_token');
 

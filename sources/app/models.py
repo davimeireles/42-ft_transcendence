@@ -14,7 +14,7 @@ class User(AbstractUser):
     last_login = models.DateTimeField(blank=True, null=True, verbose_name='last login')
     photo = models.BooleanField(default=False)
     two_fa_enable = models.BooleanField(default=False) # True for test.
-    two_fa_secret = models.CharField(max_length=16, null=True, blank=True, default=False)
+    two_fa_secret = models.CharField(max_length=32, null=True, blank=True, default=False)
     online = models.BooleanField(default=False)
     friends = models.ManyToManyField(
         'self',
@@ -50,18 +50,22 @@ class GameType(models.Model):
     type = models.CharField(max_length=32, null=False, unique=True)
     
 class Tournament(models.Model):
-    name = models.CharField(max_length=32, null=False)
-    winner = models.CharField(max_length=32, null=False)
+    name = models.CharField(max_length=12, null=False)
+    winner = models.CharField(max_length=12, default="")
     createdBy = models.ForeignKey(User, on_delete = models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-
-class TournamentParticipant(models.Model):
-    nickname = models.CharField(max_length=32, null=False)
-    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
-    userStanding = models.PositiveIntegerField()
+    finished = models.BooleanField(default=False)
+    
+class TournamentMatches(models.Model):
+    played = models.BooleanField(default=False)
+    tournament_leg = models.FloatField()
+    winner = models.ForeignKey('TournamentParticipant', null=True, blank=True, on_delete=models.CASCADE)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
 
-    
+class TournamentParticipant(models.Model):
+    nickname = models.CharField(max_length=12, null=False)
+    match = models.ForeignKey(TournamentMatches, on_delete=models.CASCADE)
+
 class Match(models.Model):
     gameTypeID = models.ForeignKey(GameType, on_delete=models.CASCADE)
     matchWinner = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -72,4 +76,3 @@ class MatchParticipant(models.Model):
     matchID = models.ForeignKey(Match, on_delete=models.CASCADE)
     userID = models.ForeignKey(User, on_delete=models.CASCADE)
     score = models.IntegerField(null=True)
-    

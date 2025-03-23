@@ -53,4 +53,5 @@ html, body {
 #main-content
 {
 	background-color: transparent;
+  height: calc(100% - 90px);
 }
