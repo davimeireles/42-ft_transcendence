@@ -184,9 +184,66 @@ async function getUserGameInfo(page)
     }
 }
 
-function drawCharts(gameInfo)
+async function drawCharts(gameInfo)
 {
     if(total_entries > 0){
+        const session_user = JSON.parse(localStorage.getItem('sessionUser'));
+        const token = localStorage.getItem("access_token")
+        if (!token){
+            console.log("Token not found !")
+            return ;
+        }
+        try{
+            const response = await fetch(`http://localhost:8000/get_playing_habits/${session_user.userId}`,{
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    "Authorization": `Bearer ${token}`,
+                }
+            })
+            if(response.ok){
+                const playinghabits = await response.json();
+                console.log(playinghabits);
+                const ctx = document.getElementById("habitsCanvas")
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: playinghabits.months,  // x-axis labels (months)
+                        datasets: [{
+                            label: 'Games Played',
+                            data: playinghabits.games_played,  // y-axis data (games played)
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Month'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Games Played'
+                                },
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+            else{
+                console.log("not work :( @ drawCharts", response.status);
+            };
+        }
+        catch(error){
+            console.error("Error caught @drawCharts: ", error);
+        }
+
         new Chart(document.getElementById("newcanvas"), {
             type: "pie",
             data: {
@@ -539,4 +596,21 @@ function changePage(page) {
     currentPage = page; 
     renderPagination();
     getMatchHistory(page)
+}
+
+async function makeMatches(n){
+    const id = JSON.parse(localStorage.getItem('sessionUser')).userId;
+    const response = await fetch('http://localhost:8000/dummy_matches/',{
+        method: 'POST',
+        headers:{
+            'COntent-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            num_matches: n,
+            user_id: id
+        }),
+    });
+
+    const data = await response.json();
+    console.log(data);
 }

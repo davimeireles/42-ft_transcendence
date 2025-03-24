@@ -6,7 +6,9 @@ import pyotp
 import qrcode
 import base64
 import requests
+import random
 import urllib.parse
+from datetime import timedelta, date, datetime
 from django.conf import settings
 from django.db import transaction
 from django.http import JsonResponse
@@ -14,10 +16,12 @@ from django.contrib.auth import login
 from django.contrib.auth import authenticate
 from django.forms.models import model_to_dict
 from django.db.models import Count
+from django.db.models.functions import TruncMonth
 from django.shortcuts import get_object_or_404
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.core.paginator import Paginator
+from faker import Faker
 from rest_framework import status
 from rest_framework import status, serializers
 from rest_framework.response import Response
@@ -25,7 +29,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
-from app.models import User, Match, MatchParticipant, GameType, Tournament, TournamentParticipant
 from app.models import User, Match, MatchParticipant, GameType, Tournament, TournamentMatches, TournamentParticipant
 import logging
 
@@ -516,7 +519,7 @@ def get_match_details(request):
 
 @api_view(['GET'])
 def match_history_page(request, user_id, page_num):
-    max_results_per_page = 2
+    max_results_per_page = 5
     all_matches = MatchParticipant.objects.filter(userID=user_id).select_related('matchID').order_by('-id')
     paginator = Paginator(all_matches, max_results_per_page)
     matches = paginator.get_page(page_num)
@@ -606,12 +609,12 @@ def count_user_games(request, user_id):
     total_wins = Match.objects.filter(matchWinner=user_id).count()
     total_tourneys = Tournament.objects.filter(createdBy=user_id, finished=True).count()
 
-    return Response({
-        'total_games': game_count,
-        'total_wins': total_wins,
-        'total_tournaments': total_tourneys,
-        },
-          status=status.HTTP_200_OK)
+    return Response(
+        {
+            'total_games': game_count,
+            'total_wins': total_wins,
+            'total_tournaments': total_tourneys,
+        },  status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 def get_tournament_details(request):
@@ -705,3 +708,58 @@ def update_match(request):
             tournament.save()
             return JsonResponse({"message": tournament_id})
     return Response({'message': 'Error'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+def get_playing_habits(request, user_id):
+    get_object_or_404(User, id=user_id)
+
+    # Set the date range for the last year
+    year = date.today() - timedelta(days=365)
+
+    # Aggregate data by month
+    data = (
+        MatchParticipant.objects
+        .filter(userID=user_id, matchID__createdAt__gte=year)
+        .annotate(month=TruncMonth("matchID__createdAt"))
+        .values("month")
+        .annotate(games_played=Count("matchID_id"))
+        .order_by("month")
+    )
+
+    # Prepare data for the frontend
+    months = [entry['month'].strftime('%b %Y') for entry in data]  # Month labels (e.g., 'Mar 2025')
+    games_played = [entry['games_played'] for entry in data]
+
+    return Response({'months': months, 'games_played': games_played}, status=status.HTTP_200_OK)
+    
+@api_view(['POST'])
+def dummy_matches(request):
+    try:
+        data = json.loads(request.body)
+        num_matches = int(data.get("num_matches"))
+        user_id = data.get("user_id")
+
+        numbers = [1, 2, 3]
+        fake = Faker()
+        user = get_object_or_404(User, id=user_id)
+        gameType = get_object_or_404(GameType, id=2)
+
+        now = datetime.now()
+        one_year_ago = now - timedelta(days=365)
+
+        for _ in range(num_matches):
+            date = fake.date_time_between(start_date=one_year_ago, end_date=now)
+            match = Match.objects.create(gameTypeID=gameType, matchWinner=user)
+            match.createdAt = date
+            match.save()
+
+            random.shuffle(numbers)
+            user2 = get_object_or_404(User, id=numbers[0])
+            MatchParticipant.objects.create(matchID=match, userID=user, score=3)
+            MatchParticipant.objects.create(matchID=match, userID=user2, score=2)
+
+        return JsonResponse({
+            "message": f"Created {num_matches} matches."
+        }, status=201)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=400)

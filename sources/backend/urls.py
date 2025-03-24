@@ -42,7 +42,9 @@ urlpatterns = [
     path('get_tournament_by_id/<int:tourney_id>', app.views.get_tournament_by_id, name='get_tournament_by_id'),
     path('get_tournament/', app.views.get_tournament, name='get_tournament'),
     path('get_matches/<int:tournament_id>', app.views.get_matches, name='get_matches'),
+    path('get_playing_habits/<int:user_id>', app.views.get_playing_habits, name='get_playing_habits'),
     path('get_players/<int:match_id>', app.views.get_players, name='get_players'),
+    path('dummy_matches/', app.views.dummy_matches, name='dummy_matches'),
     path('update_match/', app.views.update_match, name='update_match'),
 ]
 if settings.DEBUG:
