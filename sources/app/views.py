@@ -6,16 +6,23 @@ import pyotp
 import qrcode
 import base64
 import requests
+import random
 import urllib.parse
+from datetime import timedelta, date, datetime
 from django.conf import settings
 from django.db import transaction
 from django.http import JsonResponse
 from django.contrib.auth import login
 from django.contrib.auth import authenticate
 from django.forms.models import model_to_dict
+from django.db.models import Count
+from django.db.models.functions import TruncMonth
 from django.shortcuts import get_object_or_404
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
+from django.core.paginator import Paginator
+from faker import Faker
+from rest_framework import status
 from rest_framework import status, serializers
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -23,13 +30,10 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 from app.models import User, Match, MatchParticipant, GameType, Tournament, TournamentMatches, TournamentParticipant
-
 import logging
 
 # Configure logging
 logger = logging.getLogger(__name__)
-
-
 
 @api_view(['POST'])
 def user_signin(request):
@@ -291,7 +295,6 @@ def remove_user(request):
             return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
     return Response({'message': 'Error'}, status=status.HTTP_400_BAD_REQUEST)
 
-
 @api_view(['POST'])
 def change_username(request):
     name = request.data.get('user')
@@ -315,7 +318,6 @@ def change_username(request):
     except User.DoesNotExist:
         return Response({'message': 'Error: User not found'}, status=status.HTTP_404_NOT_FOUND)
 
-
 @api_view(['POST'])
 def change_nick(request):
     name = request.data.get('user')
@@ -329,7 +331,6 @@ def change_nick(request):
             return Response({'message': 'Changed Username'}, status=status.HTTP_200_OK)
     except User.DoesNotExist:
             return Response({'message': 'Error'}, status=status.HTTP_404_NOT_FOUND)
-
 
 @api_view(['POST'])
 def upload_photo(request):
@@ -358,7 +359,6 @@ def upload_photo(request):
 
     return JsonResponse({"message": "File uploaded successfully", "file_url": file_url})
 
-
 @api_view(['POST'])
 def change_password(request):
     psw = request.data.get('password')
@@ -377,7 +377,7 @@ def change_password(request):
 def check_token(request):
     try:
         access_token = AccessToken(request.data.get('token'))
-        return Response({"valid": True}, status=200)
+        return Response({"valid": True}, status=status.HTTP_200_OK)
     except TokenError:
         return Response({"valid": False}, status=401)
     
@@ -441,10 +441,9 @@ def verify_2fa_first_time(request):
     if totp.verify(otp_code):
         user.two_fa_enable = True
         user.save()
-        return JsonResponse({'message': '2FA verification successful'}, status=200)
+        return JsonResponse({'message': '2FA verification successful'}, status=status.HTTP_200_OK)
     else:
         return JsonResponse({'message': 'Invalid OTP code'}, status=400)
-
 
 @api_view(['POST'])
 def verify_2fa(request):
@@ -462,7 +461,7 @@ def verify_2fa(request):
             if totp.verify(otp_code):
                 user.two_fa_enable = True
                 user.save()
-                return JsonResponse({'message': '2FA verification successful'}, status=200)
+                return JsonResponse({'message': '2FA verification successful'}, status=status.HTTP_200_OK)
             else:
                 return JsonResponse({'message': 'Invalid OTP code'}, status=400)
     except User.DoesNotExist:
@@ -518,10 +517,13 @@ def get_match_details(request):
         logger.error("Error: %s", str(e))
         return Response({'error': str(e)}, status=500)
 
-
 @api_view(['GET'])
-def match_history_page(request, user_id):
-    matches = MatchParticipant.objects.filter(userID=user_id).select_related('matchID')
+def match_history_page(request, user_id, page_num):
+    max_results_per_page = 5
+    all_matches = MatchParticipant.objects.filter(userID=user_id).select_related('matchID').order_by('-id')
+    paginator = Paginator(all_matches, max_results_per_page)
+    matches = paginator.get_page(page_num)
+
     history = []
 
     for participant in matches:
@@ -545,7 +547,42 @@ def match_history_page(request, user_id):
 
     return Response({
             'history': history,
-        },  status=200)
+        },  status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def tournament_history_page(request, user_id, page_num):
+    tournaments = Tournament.objects.filter(createdBy=user_id, finished=True).order_by('-id')
+    results_per_page = 5
+    paginator = Paginator(tournaments, results_per_page)
+    paged_tournaments = paginator.get_page(page_num)
+
+    history = []
+
+    for entry in paged_tournaments:
+        tourney_data = {
+            'entry': {
+                'name': entry.name,
+                'id': entry.id,
+            }
+        }
+        history.append(tourney_data)
+
+    return Response({
+        'history': history
+    },  status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def get_tournament_by_id(request, tourney_id):
+    tourney = get_object_or_404(Tournament, id=tourney_id)
+    data = {
+            "id": tourney.id,
+            "name": tourney.name,
+            "winner": tourney.winner,
+            "createdBy": tourney.createdBy.nickname,
+            "created_at": tourney.created_at,
+            "finished": tourney.finished
+        }
+    return JsonResponse(data)
 
 @api_view(['GET'])
 def get_match_info(request, match_id):
@@ -564,23 +601,20 @@ def get_match_info(request, match_id):
 
     return Response({
         'game_info': game_info,
-    }, status=200)
-    
+    }, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def count_user_games(request, user_id):
     game_count = MatchParticipant.objects.filter(userID=user_id).count()
     total_wins = Match.objects.filter(matchWinner=user_id).count()
-    total_tournaments = TournamentParticipant.objects.filter(user=user_id).count()
+    total_tourneys = Tournament.objects.filter(createdBy=user_id, finished=True).count()
 
-    return Response({
-        'total_games': game_count,
-        'total_wins': total_wins,
-        'total_tournaments': total_tournaments,
-    },  status=200)
-
-
-    
+    return Response(
+        {
+            'total_games': game_count,
+            'total_wins': total_wins,
+            'total_tournaments': total_tourneys,
+        },  status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 def get_tournament_details(request):
@@ -609,8 +643,6 @@ def get_tournament_details(request):
         logger.error("Error: %s", str(e))
         return Response({'error': str(e)}, status=500)
 
-
-
 @api_view(['POST'])
 def get_tournament(request):
     created_by = request.data.get('username')
@@ -635,21 +667,21 @@ def get_tournament(request):
             return Response({'message': 'No tournament'}, status=status.HTTP_404_NOT_FOUND)
     return Response({'message': 'Error'}, status=status.HTTP_404_NOT_FOUND)
 
-@api_view(['POST'])
-def get_matches(request):
-    tournamentId = request.data.get('id')
-    if request.method == 'POST':
-        matches = TournamentMatches.objects.filter(tournament=tournamentId).values()
-        return JsonResponse({"matches": list(matches)})
-    return Response({'message': 'Error'}, status=status.HTTP_404_NOT_FOUND)
+@api_view(['GET'])
+def get_matches(request, tournament_id):
+    matches = TournamentMatches.objects.filter(tournament=tournament_id).values()
+    if not matches.exists():
+        return Response({'message': 'Match not found'}, status=status.HTTP_404_NOT_FOUND)
+    return JsonResponse({"matches": list(matches)})
 
-@api_view(['POST'])
-def get_players(request):
-    tournamentMatchId = request.data.get('id')
-    if request.method == 'POST':
-        players = TournamentParticipant.objects.filter(match=tournamentMatchId).values()
-        return JsonResponse({"players": list(players)})
-    return Response({'message': 'Error'}, status=status.HTTP_404_NOT_FOUND)
+@api_view(['GET'])
+def get_players(request, match_id):
+
+    players = TournamentParticipant.objects.filter(match=match_id).values()
+    if not players.exists():
+        return Response({'message': 'Match not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+    return JsonResponse({"players": list(players)})
 
 @api_view(['POST'])
 def update_match(request):
@@ -676,3 +708,58 @@ def update_match(request):
             tournament.save()
             return JsonResponse({"message": tournament_id})
     return Response({'message': 'Error'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+def get_playing_habits(request, user_id):
+    get_object_or_404(User, id=user_id)
+
+    # Set the date range for the last year
+    year = date.today() - timedelta(days=365)
+
+    # Aggregate data by month
+    data = (
+        MatchParticipant.objects
+        .filter(userID=user_id, matchID__createdAt__gte=year)
+        .annotate(month=TruncMonth("matchID__createdAt"))
+        .values("month")
+        .annotate(games_played=Count("matchID_id"))
+        .order_by("month")
+    )
+
+    # Prepare data for the frontend
+    months = [entry['month'].strftime('%b %Y') for entry in data]  # Month labels (e.g., 'Mar 2025')
+    games_played = [entry['games_played'] for entry in data]
+
+    return Response({'months': months, 'games_played': games_played}, status=status.HTTP_200_OK)
+    
+@api_view(['POST'])
+def dummy_matches(request):
+    try:
+        data = json.loads(request.body)
+        num_matches = int(data.get("num_matches"))
+        user_id = data.get("user_id")
+
+        numbers = [1, 2, 3]
+        fake = Faker()
+        user = get_object_or_404(User, id=user_id)
+        gameType = get_object_or_404(GameType, id=2)
+
+        now = datetime.now()
+        one_year_ago = now - timedelta(days=365)
+
+        for _ in range(num_matches):
+            date = fake.date_time_between(start_date=one_year_ago, end_date=now)
+            match = Match.objects.create(gameTypeID=gameType, matchWinner=user)
+            match.createdAt = date
+            match.save()
+
+            random.shuffle(numbers)
+            user2 = get_object_or_404(User, id=numbers[0])
+            MatchParticipant.objects.create(matchID=match, userID=user, score=3)
+            MatchParticipant.objects.create(matchID=match, userID=user2, score=2)
+
+        return JsonResponse({
+            "message": f"Created {num_matches} matches."
+        }, status=201)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=400)

@@ -12,15 +12,34 @@
                 </div>
             </div>
             <div class="container-custom m-4">
+                <div id="playingHabits">
+                    <canvas id="habitsCanvas">
+                        
+                    </canvas>
+                </div>
+            </div>
+            <div class="container-custom m-4">
                 <div class="row">
                     <div class="col sidebar-tour mx-4 bg-dark" style="border-radius: 10px;" data-translate-key="Tournaments">
                         Tournaments
+                        <div id="HistoryTournament">
+                        
+                        </div>
+                        <ul class="pagination pagination-sm" id="tournament-pages">
+                            
+                        </ul>
+                        <div id="newdiv">
+                            <canvas id="tournamentcanvas"></canvas>
+                        </div>
                     </div>
                     <div class="col sidebar-game bg-dark" style="border-radius: 10px;" data-translate-key="Match History">
                         Match History
                         <div id="HistoryGames">
                         
                         </div>
+                        <ul class="pagination pagination-sm justify-content-center" id="match-pages">
+                            
+                        </ul>
                         <div id="newdiv">
                             <canvas id="newcanvas"></canvas>
                         </div>
@@ -51,15 +70,15 @@
             </div> 
         </div>
     </div>
-    <div class="modal fade custom-modal" id="matchModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade custom-modal" id="profileModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Match Details</h5>
+                    <h5 class="modal-title" id="modal-title">Details</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <ul id="matchDetails"></ul>
+                    <div id="profileModalBody"></div>
                 </div>
             </div>
         </div>

@@ -16,3 +16,4 @@ djangorestframework-simplejwt==5.4
 django-otp>=1.5.4
 pyotp>=2.9.0
 qrcode>=8.0
+Faker>=37.0.0
