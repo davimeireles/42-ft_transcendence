@@ -23,18 +23,23 @@
 
 <body>
 	<div id="animated-background"></div>
-<div class="language-switcher-container" style="font-family: 'square';">
-    <div class="dropdown">
-        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="fas fa-globe"></i> <span data-translate-key="Language">Language</span>
-        </button>
-        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="languageDropdown">
-            <li><a class="dropdown-item" href="#" data-lang="en"><i class="fas fa-flag-usa"></i> English</a></li>
-            <li><a class="dropdown-item" href="#" data-lang="pt"><i class="fas fa-flag-brazil"></i> Portuguese</a></li>
-            <li><a class="dropdown-item" href="#" data-lang="fr"><i class="fas fa-flag-france"></i> French</a></li>
-        </ul>
+<nav class="navbar">
+    <div style=" margin-top: 5px; position: relative; height: 40px; width: 70px; font-family: 'square';">
+        <button id="btn-home" class="btn btn-sm btn-outline-secondary w-100" style="position: absolute; top: 0px;  padding: 5px 5px; font-size: medium;" data-translate-key="Home">Home</button>
     </div>
-</div>
+    <div class="language-switcher-container" style="font-family: 'square';">
+        <div class="dropdown">
+            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-globe"></i> <span data-translate-key="Language">Language</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="languageDropdown">
+                <li><a class="dropdown-item" href="#" data-lang="en"><i class="fas fa-flag-usa"></i> English</a></li>
+                <li><a class="dropdown-item" href="#" data-lang="pt"><i class="fas fa-flag-brazil"></i> Portuguese</a></li>
+                <li><a class="dropdown-item" href="#" data-lang="fr"><i class="fas fa-flag-france"></i> French</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
     <div class="screen-container">
         <div id="main-content"></div>

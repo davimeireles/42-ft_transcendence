@@ -1,10 +1,19 @@
 .profile-container {
-    display: flex;
     align-items: center;
+    max-height: 15%;
+}
+
+#profileImage {
+    position: absolute;
+    width: 100px !important;
+    height: 100px !important;
+    padding: 0px !important;
+    border-radius: 50%;
 }
 
 .user-info {
-    margin-left: 10px; 
+    margin-left: 10px;
+    padding: 0px;
     display: flex;
     flex-direction: column;
 }
@@ -27,4 +36,19 @@
 
 .custom-modal .modal-body {
     color: white; /* Make text inside the body white */
+}
+
+#qr-code-container {
+    top: 0%;
+    padding: 20px;
+    border-radius: 3%;
+    margin-top: 2%;
+}
+
+#playingHabits {
+    max-height: 100%;
+}
+
+.sidebar-game, .sidebar-tour {
+    height: 10%;
 }

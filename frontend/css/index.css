@@ -44,14 +44,14 @@ html, body {
 
 .screen-container
 {
-	position: absolute;
+	position: relative;
+    top: 0%;
 	background-color: transparent;
 	width: 100%;
-	height: 100%;
+    height: 100%;
 }
 
 #main-content
 {
 	background-color: transparent;
-  height: calc(100% - 90px);
 }

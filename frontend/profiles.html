@@ -1,18 +1,15 @@
-<div style="margin-top: 5px; position: relative; height: 40px; width: 70px; font-family: 'square';">
-  <button id="btn-home" class="btn btn-sm btn-outline-secondary w-100" style="position: absolute; top: 0px;  padding: 5px 5px; font-size: medium;" data-translate-key="Home">Home</button>
-</div>
-<div class="container-custom m-4 " style="font-family: 'square'; color: #e3dce6;">
+<div class="container-fluid" style="font-family: 'square'; color: #e3dce6;">
     <div class="row">
-        <div class="col sidebar">
-            <div class="img m-1 profile-container">
-                <img src="" alt="" id="profileImage" style="width: 180px; height: 180px; border-radius: 50%;">
-                <div class="user-info mx-4">
+        <div class="col-8 sidebar">
+            <div class="row profile-container bg-dark p-3 rounded-5">
+                <img src="" alt="" id="profileImage">
+                <div class="user-info">
                 <h4 id="text-user" class="users"></h4>
                 <h6 id="online"></h6>
                 <button class="btn btn-sm btn-outline-secondary w-100" onclick="add_remove_friend()" id="btn-friend" data-translate-key="Add Friend">Add Friend</button>
             </div>
-            </div>
-            <div class="container-custom m-4">
+        </div>
+            <div class="container-fluid row">
                 <div class="row">
                     <div class="col sidebar-tour" style="border-radius: 10px;" data-translate-key="Tournaments">
                         Tournaments
@@ -24,7 +21,7 @@
             </div>
         </div>
         <!-- Right Sidebar -->
-        <div class="col-md-4">
+        <div class="col-4">
             <span style="display: flex; align-items: center; justify-content: center;" data-translate-key="Search users">Search users</span>
             <div class="input-group d-flex align-items-center justify-content-center">
                 <div class="col-6">

@@ -302,7 +302,8 @@ async function playoffTable(tournament, modal) {
     for (let i = 0; i < matches.length; i++)
     {
         let p = await getPlayers(matches[i]);
-        players.push(...p);
+        if (p)
+            players.push(...p);
     }
     const uniqueById = players.filter((obj => {
         const seen = new Set();
@@ -402,13 +403,14 @@ function tournamentGame() {
     let match = this.nextMatch;
     let players = this.nextPlayers;
     let aiMatch = false;
+    let aiPlayer;
     if (players[1].nickname === "Mighty Bot") {
         aiMatch = true;
-        let aiPlayer = 1;
+        aiPlayer = 1;
     }
     else if (players[0].nickname === "Mighty Bot") {
         aiMatch = true;
-        let aiPlayer = 0;
+        aiPlayer = 0;
     }
 
     let tournamentScreen = document.getElementById("tournament-screen");
@@ -591,7 +593,7 @@ function tournamentGame() {
         if (!gameOver) {
             requestAnimationFrame(update); // Continue the animation loop
             if (aiMatch)
-                moveAIHard();
+                moveAIHard(aiPlayer);
         }
 
         const deltaTime = time - lastTime;

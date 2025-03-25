@@ -10,12 +10,6 @@
 	color: #f9eaff;
 }
 
-.competitor-form {
-
-}
-
-
-
 .vapor-btn {
 	font-family: 'square';
 	font-size: 1rem;
@@ -65,4 +59,8 @@
     to {
         text-shadow: 0 0 10px #39FF14, 0 0 20px #39FF14, 0 0 40px #39FF14, 0 0 80px #39FF14;
     }
+}
+
+#tournament-modal {
+    height: 90vh;
 }
