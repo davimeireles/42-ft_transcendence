@@ -223,13 +223,13 @@ var time = 0;
 const targetFPS = 30;
 const interval = 1000 / targetFPS;
 
-function renderLoop() {
+/* function renderLoop() {
   setTimeout(() => {
-    // requestAnimationFrame(renderLoop);
+    requestAnimationFrame(renderLoop);
     render();
   }, interval);
 }
-
+ */
 function render() {
   if (resize(renderer)) {
     camera.aspect = canvas.clientWidth / canvas.clientHeight;
@@ -253,4 +253,6 @@ function resize(renderer) {
   return needResize;
 }
 
-  renderLoop();
+//renderLoop();
+
+render();

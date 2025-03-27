@@ -20,7 +20,7 @@ const router = {
 };
 
 // Page loader
-async function renderPage(page, shouldPushState = true) {
+async function renderPage(page, shouldPushState = true, target_user = null) {
 
   const accessToken = localStorage.getItem("access_token");
 
@@ -32,7 +32,7 @@ async function renderPage(page, shouldPushState = true) {
     return;
   }
 
-  if (router.currentPage === page && page != 'profiles') return;
+  if (router.currentPage === page && page != 'profiles' && page != 'home') return;
 
   try {
     // Load the new page
@@ -62,7 +62,9 @@ async function renderPage(page, shouldPushState = true) {
         getTournamentHistory(1);
         break;
       case "profiles":
-        renderProfiles();
+        console.log(target_user);
+        if(target_user)
+          renderProfiles(target_user);
         break;
       case "edit":
         UsernameForm();

@@ -18,7 +18,7 @@ clean:
 nclean:
 	docker rm $$(docker ps -a -q)
 	docker rmi 42-ft_transcendence-frontend 42-ft_transcendence-backend
-	docker volume rm 42-ft_transcendence_db-postgres 42-ft_transcendence_grafana-data 42-ft_transcendence_prometheus-data
+	docker volume rm 42-ft_transcendence_db-postgres 42-ft_transcendence_prometheus-data
 	docker network rm 42-ft_transcendence_default app_network
 
 # Remove all Docker images

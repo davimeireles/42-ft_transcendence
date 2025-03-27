@@ -47,7 +47,8 @@ async function getProfile(username) {
             if (response.ok) {
                 const user = await response.json();
                 localStorage.setItem('searchedUser', JSON.stringify(user));
-                renderPage('profiles')
+                console.log("i was here");
+                renderPage('profiles', true, username)
             }else {
                 console.log('ERROR')
             }
@@ -56,8 +57,9 @@ async function getProfile(username) {
         }
     }
 }
-
+/* 
 function renderProfiles(){
+    console.log("i was called");
     let home = document.getElementById("btn-home");
     home.addEventListener("click", function() {renderPage("home");});
     const btn_friend = document.getElementById('btn-friend')
@@ -99,4 +101,4 @@ function renderProfiles(){
             }
         });
     }
-}
+} */

@@ -1,50 +1,97 @@
 'use strict'
 
-let total_tourney_entries;
-let currentTourneyPage;
-let TOTAL_TOURNEY_PAGES;
+let total_tourney_entriesP;
+let currentTourneyPageP;
+let TOTAL_TOURNEY_PAGESP;
 
-let total_entries;
-let currentPage;
-let TOTAL_PAGES;
+let total_entriesP;
+let currentPageP;
+let TOTAL_PAGESP;
 
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGEP = 5;
+let session_userP;
 
-const renderProfile = async function(){
-    let setting = document.getElementById("setting-button");
-    setting.addEventListener("click", function() {renderPage("edit");});
-    let twoFA = document.getElementById("twoFA-button");
-    twoFA.addEventListener("click", function() {renderPage("enable2FA");});
+async function get_user_by_str(username)
+{
+    try
+    {
+        console.log("hello" + username);
+        const response = await fetch(`http://localhost:8000/get_user_by_id/${username}/`,
+        {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        if(response.ok)
+        {
+            const user_info = await response.json();
+            return user_info;
+        }
+        else
+        {
+            console.log("not work :( @ get_user_by_str", response.status);
+        };
+    }
+    catch(error)
+    {
+        console.error("Error caught @get_user_by_str: ", error);
+    }
+}
+
+function isUserInArray(username, users) {
+    console.log(users);
+    console.log(username);
+    return users.some(user => user.username === username);
+}
+
+async function renderProfiles(target_user){
+    session_userP = await get_user_by_str(target_user);
+    console.log(session_userP);
+    const logged_user = JSON.parse(localStorage.getItem('sessionUser'));
+    const btn_friend = document.getElementById('btn-friend');
+
+    if(isUserInArray(session_userP.username, logged_user.friends))
+    {
+        console.log("found");
+        btn_friend.innerHTML = 'Friends';
+    }
+    else
+    {
+        console.log("not found");
+        btn_friend.innerHTML = 'Add Friend';
+    }
 
     let home = document.getElementById("btn-home");
     home.addEventListener("click", function() {renderPage("home");});
-    const session_user = JSON.parse(localStorage.getItem('sessionUser'))
     const imageTag = document.getElementById("profileImage")
     const online = document.getElementById("online")
-    if (online && session_user.online){
+
+    if (online && session_userP.online){
         online.innerHTML = 'Online'
     }
     else{
         online.innerHTML = 'Offline'
     }
-    if (imageTag && session_user.photo){
-      const response = await fetch(`http://localhost:8000/media/${session_user.username}.jpg`);
+    if (imageTag && session_userP.photo){
+      const response = await fetch(`http://localhost:8000/media/${session_userP.username}.jpg`);
       if (!response.ok)
         throw new Error("Failed to fetch image");
       const blob = await response.blob();
       const reader = new FileReader();
       reader.readAsDataURL(blob);
       reader.onloadend = () => {
-          localStorage.setItem(`userPhoto_${session_user.username}`, reader.result);
+          localStorage.setItem(`userPhoto_${session_userP.username}`, reader.result);
           imageTag.src = reader.result;
       };
     }else{
       imageTag.src = 'media/default.jpg'
     }
-    const friends = session_user.friends
+    const friends = session_userP.friends
     if (friends.length) {
-        let no_friends = document.getElementById("no_friends");
-        no_friends.remove();
+        let no_friends = document.getElementById("no_friends_2");
+        if (no_friends)
+            no_friends.remove();
     }
     if (friends && friends.length > 0) {
         friends.forEach(friend => {
@@ -57,52 +104,63 @@ const renderProfile = async function(){
     const text = document.getElementById("text-text")
     const text_user = document.getElementById("text-user")
     if (text_user){
-        text_user.innerHTML = `${session_user.nickname}`
+        text_user.innerHTML = `${session_userP.nickname}`
     }
+    getUserGameInfoP();
+    getMatchHistoryP(1);
+    getTournamentHistoryP(1);
 }
 
-/* async function add_remove_friend(){
-    const token = localStorage.getItem("access_token")
+async function add_remove_friendP(){
+    const token = localStorage.getItem("access_token");
+    const logged_user = JSON.parse(localStorage.getItem('sessionUser'));
     if (!token)
     {
-        console.log("Token not found !")
+        console.log("Token not found !");
         return ;
     }
-    const session_user = JSON.parse(localStorage.getItem('sessionUser'))
-    const btn_friend = document.getElementById('btn-friend')
+    const btn_friend = document.getElementById('btn-friend');
     const user_text = document.getElementById('text-user');
     const profileUsername = user_text.innerHTML;
+    console.log(profileUsername);
     if (!btn_friend){
         return ;
     }
+    console.log(session_userP.username);
+    console.log(logged_user.username);
     if (btn_friend.innerHTML === 'Add Friend'){
         try{
-            const response_add_user = await fetch("http://localhost:8000/add_user/", {
+            const response_add_user = await fetch("http://localhost:8000/add_userS/", {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
-                    "Authorization": `Bearer ${token}`,
                 },
-                body: JSON.stringify({profileUsername})
-                });
+                body: JSON.stringify({
+                    toAdd: session_userP.username,
+                    adder: logged_user.username
+                })});
             if (!response_add_user.ok) {
+                console.log(await response_add_user.json());
                 throw new Error("Failed to fetch user");
             }
             const user = await response_add_user.json();
             btn_friend.innerHTML = 'Friends';
         }catch(error){
-            console.log('Cannot get add_user')
+            console.log(error);
             return;
         }
     }else if (btn_friend.innerHTML === 'Friends'){
         try{
-            const response_remove_user = await fetch("http://localhost:8000/remove_user/", {
+            const response_remove_user = await fetch("http://localhost:8000/remove_userS/", {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
                     "Authorization": `Bearer ${token}`,
                 },
-                body: JSON.stringify({profileUsername})
+                body: JSON.stringify({
+                    toAdd: session_userP.username,
+                    adder: logged_user.username
+                })
             });
             if (!response_remove_user.ok) {
                 throw new Error("Failed to fetch user");
@@ -110,7 +168,7 @@ const renderProfile = async function(){
             const user = await response_remove_user.json();
             btn_friend.innerHTML = 'Add Friend';
         }catch(error){
-            console.log('Cannot get remove_user')
+            console.log('Cannot get remove_userS')
             return;
         }
     }
@@ -141,17 +199,16 @@ const renderProfile = async function(){
             console.log("Error:", error);
         }
 }
- */
-async function getUserGameInfo(page)
+
+async function getUserGameInfoP(page)
 {
-    const session_user = JSON.parse(localStorage.getItem('sessionUser'));
     const token = localStorage.getItem("access_token")
     if (!token){
         console.log("Token not found !")
         return ;
     }
 	try{
-        const response = await fetch(`http://localhost:8000/count_user_games/${session_user.userId}`,{
+        const response = await fetch(`http://localhost:8000/count_user_games/${session_userP.id}`,{
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
@@ -160,18 +217,21 @@ async function getUserGameInfo(page)
         })
         if(response.ok){
             const gameInfo = await response.json();
-            total_entries = gameInfo.total_games;
-            TOTAL_PAGES = Math.ceil(total_entries / ITEMS_PER_PAGE);
-            total_tourney_entries = gameInfo.total_tournaments;
-            TOTAL_TOURNEY_PAGES = total_tourney_entries / ITEMS_PER_PAGE;
-            currentTourneyPage = 1;
-            currentPage = 1;
+            total_entriesP = gameInfo.total_games;
+            TOTAL_PAGESP = Math.ceil(total_entriesP / ITEMS_PER_PAGEP);
+            total_tourney_entriesP = gameInfo.total_tournaments;
+            TOTAL_TOURNEY_PAGESP = total_tourney_entriesP / ITEMS_PER_PAGEP;
+            currentTourneyPageP = 1;
+            currentPageP = 1;
 
-            if(total_tourney_entries > 0)
-                renderTourneyPagination();
-            if(total_entries > 0)
-                renderPagination();
-            drawCharts(gameInfo);
+            console.log("Total entries:", total_entriesP);
+            console.log("Total tournament entries", total_tourney_entriesP);
+            if(total_tourney_entriesP > 0)
+                renderTourneyPaginationP();
+            if(total_entriesP > 0)
+                renderPaginationP();
+            drawChartsP(gameInfo);
+            console.log(gameInfo)
         }
         else{
             console.log("not work :( @ count_user_games", response.status);
@@ -182,17 +242,16 @@ async function getUserGameInfo(page)
     }
 }
 
-async function drawCharts(gameInfo)
+async function drawChartsP(gameInfo)
 {
-    if(total_entries > 0){
-        const session_user = JSON.parse(localStorage.getItem('sessionUser'));
+    if(total_entriesP > 0){
         const token = localStorage.getItem("access_token")
         if (!token){
             console.log("Token not found !")
             return ;
         }
         try{
-            const response = await fetch(`http://localhost:8000/get_playing_habits/${session_user.userId}`,{
+            const response = await fetch(`http://localhost:8000/get_playing_habits/${session_userP.id}`,{
                 method: "GET",
                 headers: {
                     'Content-Type': 'application/json',
@@ -266,9 +325,8 @@ async function drawCharts(gameInfo)
 }
 
 
-async function getTournamentHistory(page)
+async function getTournamentHistoryP(page)
 {
-    const session_user = JSON.parse(localStorage.getItem('sessionUser'));
     const token = localStorage.getItem("access_token")
     if (!token)
     {
@@ -277,7 +335,7 @@ async function getTournamentHistory(page)
     }
     try
     {
-        const response = await fetch(`http://localhost:8000/tournament_history_page/${session_user.userId}/${page}/`,
+        const response = await fetch(`http://localhost:8000/tournament_history_page/${session_userP.id}/${page}/`,
         {
             method: "GET",
             headers: {
@@ -288,7 +346,7 @@ async function getTournamentHistory(page)
         if(response.ok)
         {
             const match_history = await response.json();
-            displayTournamentHistory(match_history.history);
+            displayTournamentHistoryP(match_history.history);
         }
         else
         {
@@ -301,8 +359,7 @@ async function getTournamentHistory(page)
     }
 }
 
-function displayTournamentHistory(matchHistory) {
-    const session_user = JSON.parse(localStorage.getItem('sessionUser'));
+function displayTournamentHistoryP(matchHistory) {
     const historyContainer = document.getElementById("HistoryTournament");
     historyContainer.innerHTML = ""; // Clear existing content
 
@@ -331,9 +388,8 @@ function displayTournamentHistory(matchHistory) {
 }
 
 
-async function getMatchHistory(page)
+async function getMatchHistoryP(page)
 {
-    const session_user = JSON.parse(localStorage.getItem('sessionUser'));
     const token = localStorage.getItem("access_token")
     if (!token)
     {
@@ -342,7 +398,7 @@ async function getMatchHistory(page)
     }
     try
     {
-        const response = await fetch(`http://localhost:8000/match_history_page/${session_user.userId}/${page}/`,
+        const response = await fetch(`http://localhost:8000/match_history_page/${session_userP.id}/${page}/`,
         {
             method: "GET",
             headers: {
@@ -353,7 +409,7 @@ async function getMatchHistory(page)
         if(response.ok)
         {
             const match_history = await response.json();
-            displayMatchHistory(match_history.history);
+            displayMatchHistoryP(match_history.history);
         }
         else
         {
@@ -366,8 +422,7 @@ async function getMatchHistory(page)
     }
 }
 
-function displayMatchHistory(matchHistory) {
-    const session_user = JSON.parse(localStorage.getItem('sessionUser'));
+function displayMatchHistoryP(matchHistory) {
     const historyContainer = document.getElementById("HistoryGames");
     historyContainer.innerHTML = ""; // Clear existing content
 
@@ -384,7 +439,7 @@ function displayMatchHistory(matchHistory) {
         matchElement.className = "match-entry text-center"; // Optional: for styling
         matchElement.setAttribute("match-id", match.matchId)
 
-        if (match.Winner === session_user.userId) {
+        if (match.Winner === session_userP.id) {
             matchElement.style.backgroundColor = "#660A8A";
         } else {
             matchElement.style.backgroundColor = "#332837";
@@ -398,7 +453,7 @@ function displayMatchHistory(matchHistory) {
 }
 
 // Function to fetch match details
-function fetchMatchDetails(matchID) {
+function fetchMatchDetailsP(matchID) {
     fetch(`http://localhost:8000/get_match_info/${matchID}`)
         .then(response => response.json())
         .then(game => {
@@ -453,7 +508,6 @@ document.addEventListener("click", async function (event) {
                 if (response.ok) {
                     const tournament = await response.json();
                     document.getElementById("modal-title").innerHTML = tournament.name;
-                    console.log(tournament);
                     playoffTable(tournament, 'profileModalBody')
                 }
             }
@@ -470,28 +524,28 @@ document.addEventListener("click", async function (event) {
 });
 
 
-function renderTourneyPagination() {
-    if(total_tourney_entries === 0)
+function renderTourneyPaginationP() {
+    if(total_tourney_entriesP === 0)
         return;
 
-    const TOTAL_TOURNEY_PAGES = Math.ceil(total_tourney_entries / ITEMS_PER_PAGE);
+    const TOTAL_TOURNEY_PAGESP = Math.ceil(total_tourney_entriesP / ITEMS_PER_PAGEP);
     const pagination = document.getElementById("tournament-pages");
     pagination.innerHTML = "";  
     
-    if(currentTourneyPage != 1)
+    if(currentTourneyPageP != 1)
     {
-        pagination.innerHTML += `<li class="page-item ${currentTourneyPage === 1 ? 'disabled' : ''}">
-            <a class="page-link" href="#" onclick="changeTourneyPage(1)">First</a>
+        pagination.innerHTML += `<li class="page-item ${currentTourneyPageP === 1 ? 'disabled' : ''}">
+            <a class="page-link" href="#" onclick="changeTourneyPageP(1)">First</a>
         </li>`;
     }
 
     
     // Previous Button
-    pagination.innerHTML += `<li class="page-item ${currentTourneyPage === 1 ? 'disabled' : ''}">
-    <a class="page-link" href="#" onclick="changeTourneyPage(${currentTourneyPage - 1})"><</a>
+    pagination.innerHTML += `<li class="page-item ${currentTourneyPageP === 1 ? 'disabled' : ''}">
+    <a class="page-link" href="#" onclick="changeTourneyPageP(${currentTourneyPageP - 1})"><</a>
     </li>`;
     
-    if(currentTourneyPage > 1 )
+    if(currentTourneyPageP > 1 )
     {
         pagination.innerHTML += `<li class="page-item disabled">
             <a class="page-link">...</a>
@@ -499,13 +553,13 @@ function renderTourneyPagination() {
     }
 
     // Page Numbers
-    for (let i = currentTourneyPage; i <= TOTAL_TOURNEY_PAGES && i < currentTourneyPage + 3; i++) {
-        pagination.innerHTML += `<li class="page-item ${i === currentTourneyPage ? 'active' : ''}">
-            <a class="page-link" href="#" onclick="changeTourneyPage(${i})">${i}</a>
+    for (let i = currentTourneyPageP; i <= TOTAL_TOURNEY_PAGESP && i < currentTourneyPageP + 3; i++) {
+        pagination.innerHTML += `<li class="page-item ${i === currentTourneyPageP ? 'active' : ''}">
+            <a class="page-link" href="#" onclick="changeTourneyPageP(${i})">${i}</a>
         </li>`;
     }
     
-    if(currentTourneyPage < TOTAL_TOURNEY_PAGES - 2)
+    if(currentTourneyPageP < TOTAL_TOURNEY_PAGESP - 2)
     {
         pagination.innerHTML += `<li class="page-item disabled">
             <a class="page-link">...</a>
@@ -513,41 +567,41 @@ function renderTourneyPagination() {
     }
 
     // Next Button
-    pagination.innerHTML += `<li class="page-item ${currentTourneyPage === TOTAL_TOURNEY_PAGES ? 'disabled' : ''}">
-        <a class="page-link" href="#" onclick="changeTourneyPage(${currentTourneyPage + 1})">></a>
+    pagination.innerHTML += `<li class="page-item ${currentTourneyPageP === TOTAL_TOURNEY_PAGESP ? 'disabled' : ''}">
+        <a class="page-link" href="#" onclick="changeTourneyPageP(${currentTourneyPageP + 1})">></a>
     </li>`;
 
 
-    if(currentTourneyPage != TOTAL_TOURNEY_PAGES)
+    if(currentTourneyPageP != TOTAL_TOURNEY_PAGESP)
     {
-        pagination.innerHTML += `<li class="page-item ${currentTourneyPage === TOTAL_TOURNEY_PAGES ? 'disabled' : ''}">
-            <a class="page-link" href="#" onclick="changeTourneyPage(${TOTAL_TOURNEY_PAGES})">Last</a>
+        pagination.innerHTML += `<li class="page-item ${currentTourneyPageP === TOTAL_TOURNEY_PAGESP ? 'disabled' : ''}">
+            <a class="page-link" href="#" onclick="changeTourneyPageP(${TOTAL_TOURNEY_PAGESP})">Last</a>
         </li>`;
     }
 }
 
-function renderPagination() {
-    if(total_entries === 0)
+function renderPaginationP() {
+    if(total_entriesP === 0)
         return;
-    const TOTAL_PAGES = Math.ceil(total_entries / ITEMS_PER_PAGE);
+    const TOTAL_PAGESP = Math.ceil(total_entriesP / ITEMS_PER_PAGEP);
     const pagination = document.getElementById("match-pages");
     pagination.innerHTML = "";  
     
 
-    if(currentPage != 1)
+    if(currentPageP != 1)
     {
-        pagination.innerHTML += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-            <a class="page-link" href="#" onclick="changePage(1)">First</a>
+        pagination.innerHTML += `<li class="page-item ${currentPageP === 1 ? 'disabled' : ''}">
+            <a class="page-link" href="#" onclick="changePageP(1)">First</a>
         </li>`;
     }
 
     
     // Previous Button
-    pagination.innerHTML += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-    <a class="page-link" href="#" onclick="changePage(${currentPage - 1})"><</a>
+    pagination.innerHTML += `<li class="page-item ${currentPageP === 1 ? 'disabled' : ''}">
+    <a class="page-link" href="#" onclick="changePageP(${currentPageP - 1})"><</a>
     </li>`;
     
-    if(currentPage > 1)
+    if(currentPageP > 1)
     {
         pagination.innerHTML += `<li class="page-item disabled">
             <a class="page-link">...</a>
@@ -555,13 +609,13 @@ function renderPagination() {
     }
 
     // Page Numbers
-    for (let i = currentPage; i <= TOTAL_PAGES && i < currentPage + 3; i++) {
-        pagination.innerHTML += `<li class="page-item ${i === currentPage ? 'active' : ''}">
-            <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+    for (let i = currentPageP; i <= TOTAL_PAGESP && i < currentPageP + 3; i++) {
+        pagination.innerHTML += `<li class="page-item ${i === currentPageP ? 'active' : ''}">
+            <a class="page-link" href="#" onclick="changePageP(${i})">${i}</a>
         </li>`;
     }
     
-    if(currentPage < TOTAL_PAGES - 2)
+    if(currentPageP < TOTAL_PAGESP - 2)
     {
         pagination.innerHTML += `<li class="page-item disabled">
             <a class="page-link">...</a>
@@ -569,34 +623,34 @@ function renderPagination() {
     }
 
     // Next Button
-    pagination.innerHTML += `<li class="page-item ${currentPage === TOTAL_PAGES ? 'disabled' : ''}">
-        <a class="page-link" href="#" onclick="changePage(${currentPage + 1})">></a>
+    pagination.innerHTML += `<li class="page-item ${currentPageP === TOTAL_PAGESP ? 'disabled' : ''}">
+        <a class="page-link" href="#" onclick="changePageP(${currentPageP + 1})">></a>
     </li>`;
 
 
-    if(currentPage != TOTAL_PAGES)
+    if(currentPageP != TOTAL_PAGESP)
     {
-        pagination.innerHTML += `<li class="page-item ${currentPage === TOTAL_PAGES ? 'disabled' : ''}">
-            <a class="page-link" href="#" onclick="changePage(${TOTAL_PAGES})">Last</a>
+        pagination.innerHTML += `<li class="page-item ${currentPageP === TOTAL_PAGESP ? 'disabled' : ''}">
+            <a class="page-link" href="#" onclick="changePageP(${TOTAL_PAGESP})">Last</a>
         </li>`;
     }
 }
 
-function changeTourneyPage(page) {
-    if (page < 1 || page > TOTAL_TOURNEY_PAGES || page == currentTourneyPage) return;  
-    currentTourneyPage = page; 
-    renderTourneyPagination();
-    getTournamentHistory(page);
+function changeTourneyPageP(page) {
+    if (page < 1 || page > TOTAL_TOURNEY_PAGESP || page == currentTourneyPageP) return;  
+    currentTourneyPageP = page; 
+    renderTourneyPaginationP();
+    getTournamentHistoryP(page);
 }
 
-function changePage(page) {
-    if (page < 1 || page > TOTAL_PAGES || page == currentPage) return;  
-    currentPage = page; 
-    renderPagination();
-    getMatchHistory(page)
+function changePageP(page) {
+    if (page < 1 || page > TOTAL_PAGESP || page == currentPageP) return;  
+    currentPageP = page; 
+    renderPaginationP();
+    getMatchHistoryP(page)
 }
 
-async function makeMatches(n){
+/* async function makeMatches(n){
     const id = JSON.parse(localStorage.getItem('sessionUser')).userId;
     const response = await fetch('http://localhost:8000/dummy_matches/',{
         method: 'POST',
@@ -610,4 +664,4 @@ async function makeMatches(n){
     });
 
     const data = await response.json();
-}
+} */

@@ -393,14 +393,10 @@ function displayWinMessage() {
   // Create "Exit to Home" button
   const exitHomeButton = document.createElement("button");
   exitHomeButton.textContent = "Exit to Home";
-  exitHomeButton.addEventListener("click", exitToHome);
+  exitHomeButton.addEventListener("click", function(event) {renderPage("home");});
   winMessage.appendChild(exitHomeButton);
 
   winMessage.style.display = "block";
-}
-
-function exitToHome() {
-  window.location.href = "/home"; // Redirect to the home page
 }
 
 // Reset the game

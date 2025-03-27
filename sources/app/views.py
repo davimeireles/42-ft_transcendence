@@ -8,6 +8,7 @@ import base64
 import requests
 import random
 import urllib.parse
+from app.api.serializers import UserSerializer
 from datetime import timedelta, date, datetime
 from django.conf import settings
 from django.db import transaction
@@ -221,6 +222,12 @@ def return_user(request):
         return JsonResponse(results, safe=False)
     return JsonResponse([], safe=False)
 
+@api_view(['GET'])
+def get_user_by_id(request, search_name):
+    user = User.objects.get(username=search_name)
+    serializer = UserSerializer(user)
+    return Response(serializer.data)
+
 @api_view(['POST'])
 def get_user(request, str_user):
     if request.method == 'POST':
@@ -270,27 +277,31 @@ def logout(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(["POST"])
-def add_user(request):
+@api_view(["POST", "GET"])
+def add_userS(request):
+
     if request.method == 'POST':
-        profile_username = request.data.get('profileUsername')
+        to_add = request.data.get('toAdd')
+        adder = request.data.get('adder')
         try:
-            user = User.objects.get(username=profile_username)
-            request.user.add_friend(user)
+            user = User.objects.get(username=to_add)
+            adder_obj = User.objects.get(username=adder)
+            adder_obj.add_friend(user)
             return Response({'message': 'User added as a friend'}, status=status.HTTP_200_OK)
         except User.DoesNotExist:
             return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
     return Response({'message': 'Error'}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(["POST"])
-def remove_user(request):
+def remove_userS(request):
     if request.method == 'POST':
-        profile_username = request.data.get('profileUsername')
+        to_remove = request.data.get('toAdd')
+        remover = request.data.get('adder')
         try:
-            user = User.objects.get(username=profile_username)
-            if user:
-                request.user.remove_friend(user)
-                return Response({'message': 'User removed as a friend', "user": user.username}, status=status.HTTP_200_OK)
+            user = User.objects.get(username=to_remove)
+            remover_obj = User.objects.get(username=remover)
+            remover_obj.remove_friend(user)
+            return Response({'message': 'User removed as a friend', "user": user.username}, status=status.HTTP_200_OK)
         except User.DoesNotExist:
             return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
     return Response({'message': 'Error'}, status=status.HTTP_400_BAD_REQUEST)

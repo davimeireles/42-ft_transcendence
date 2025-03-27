@@ -7,7 +7,7 @@
                     <div id="text-user" class="user"></div>
                     <div id="online"></div>
                 </div>
-                <button class="btn btn-sm btn-outline-secondary w-100 mt-2" onclick="add_remove_friend()" id="btn-friend" data-translate-key="Add Friend">Add Friend</button>
+                <button class="btn btn-sm btn-outline-secondary w-100 mt-2" onclick="add_remove_friendP()" id="btn-friend" data-translate-key="Add Friend"></button>
             </div>
             <div class="container-fluid row semi-transparent rounded-5 h-17">
                 <div id="playingHabits">
@@ -54,14 +54,10 @@
             </div>
             <div class="friends-box">
                 <h5 data-translate-key="Friends" style="display: flex; align-items: center; justify-content: center;">Friends</h5>
-                <h6 data-translate-key="You have no friends" style="display: flex; align-items: center; justify-content: center;" id="no_friends">You have no friends</h6>
+                <h6 data-translate-key="You have no friends2" style="display: flex; align-items: center; justify-content: center;" id="no_friends_2">He has no friends</h6>
                 <ul id="friends-list">
                 </ul>
             </div>
-            <div style="align-items: center; justify-content: center; display: flex;">
-                <button style="padding: 5px 5px; font-size: medium;" id="twoFA-button" class="btn btn-custom " data-translate-key="Enable 2FA">Enable 2FA</button>
-                <button style="padding: 5px 5px; font-size: medium;" id="setting-button" class="btn btn-custom" data-translate-key="Edit Profile">Edit Profile</button>
-            </div> 
         </div>
     </div>
     <div class="modal fade custom-modal" id="profileModal" tabindex="-1" aria-hidden="true">
