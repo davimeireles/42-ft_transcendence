@@ -2,8 +2,15 @@ function initialize3DPong() {
     // Get the dimensions of the home-games div
     const homeGamesDiv = document.getElementById("home-games");
     gameButton = document.getElementById("gamesDropdown");
-  if (gameButton)
-      gameButton.style.display = "none";
+    profileButton = document.getElementById("profile-button")
+    settingsButton = document.getElementById("setting-button")
+    tournamentButton = document.getElementById("tournament-button")
+  
+    profileButton.style.display = "none";
+    gameButton.style.display = "none";
+    settingsButton.style.display = "none";
+    tournamentButton.style.display = "none";
+
     const width = homeGamesDiv.clientWidth;
     const height = homeGamesDiv.clientHeight;
 
@@ -13,10 +20,13 @@ function initialize3DPong() {
     const pongRenderer = new THREE.WebGLRenderer({ antialias: true });
     pongRenderer.setClearColor(0x000000); // Black background
     pongRenderer.setSize(width, height);
+    pongRenderer.domElement.style.position = 'absolute';
+    pongRenderer.domElement.style.left = '50%';
+    pongRenderer.domElement.style.top = '50%';
+    pongRenderer.domElement.style.transform = 'translate(-50%, -50%)';
     pongRenderer.shadowMap.enabled = true; // Enable shadows
     pongRenderer.shadowMap.type = THREE.PCFSoftShadowMap; // Smoother shadows
     homeGamesDiv.appendChild(pongRenderer.domElement);
-    pongRenderer.domElement.style.marginTop = "-100px";
 
     // Game Over Flag
     let gameOver = false;
@@ -34,6 +44,7 @@ function initialize3DPong() {
       winMessage.style.top = "50%";
       winMessage.style.left = "50%";
       winMessage.style.transform = "translate(-50%, -50%)";
+      winMessage.style.zIndex = "1000"; // Ensure it's above the 3D canvas
       winMessage.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
       winMessage.style.color = "white";
       winMessage.style.padding = "20px";
@@ -44,13 +55,17 @@ function initialize3DPong() {
 
     // Dynamically handle resizing
     window.addEventListener("resize", () => {
-      const newWidth = homeGamesDiv.clientWidth;
-      const newHeight = homeGamesDiv.clientHeight;
-
-      pongRenderer.setSize(newWidth, newHeight);
-      pongCamera.aspect = newWidth / newHeight;
-      pongCamera.updateProjectionMatrix();
-    });
+        const newWidth = homeGamesDiv.clientWidth;
+        const newHeight = homeGamesDiv.clientHeight;
+      
+        pongRenderer.setSize(newWidth, newHeight);
+        pongCamera.aspect = newWidth / newHeight;
+        pongCamera.updateProjectionMatrix();
+      
+        // Update the position of the renderer
+        pongRenderer.domElement.style.left = '50%';
+        pongRenderer.domElement.style.top = '50%';
+      });
 
     // Adjust camera position for depth perspective
     pongCamera.position.set(0, 20, 30); // Further back and higher
@@ -183,14 +198,15 @@ function initialize3DPong() {
     // Display scores - Stylized
     const scoreDisplay = document.createElement("div");
     scoreDisplay.style.position = "absolute";
-    scoreDisplay.style.top = "20px"; // Slightly lower
+    scoreDisplay.style.top = "20px";
     scoreDisplay.style.left = "50%";
     scoreDisplay.style.transform = "translateX(-50%)";
-    scoreDisplay.style.color = "#eee"; // Lighter color
-    scoreDisplay.style.fontSize = "28px"; // Bigger font
-    scoreDisplay.style.fontFamily = "Helvetica, sans-serif"; // Sleek font
-    scoreDisplay.style.textShadow = "2px 2px 4px rgba(0,0,0,0.5)"; // Add shadow
-    homeGamesDiv.appendChild(scoreDisplay); //Append scoreDisplay to homeGamesDiv
+    scoreDisplay.style.color = "#eee";
+    scoreDisplay.style.fontSize = "28px";
+    scoreDisplay.style.fontFamily = "Helvetica, sans-serif";
+    scoreDisplay.style.textShadow = "2px 2px 4px rgba(0,0,0,0.5)";
+    scoreDisplay.style.zIndex = "1000"; // Ensure it's above the 3D canvas
+    homeGamesDiv.appendChild(scoreDisplay);
 
     function updateScoreDisplay() {
         scoreDisplay.textContent = `Red: ${player1Score} | Blue: ${player2Score}`;
@@ -340,9 +356,9 @@ function initialize3DPong() {
 
         let winnerText = "";
         if (player1Score >= scoreToWin) {
-            winnerText = `Blue Wins!`;
-        } else {
             winnerText = `Red Wins!`;
+        } else {
+            winnerText = `Blue Wins!`;
         }
 
         const winnerAnnouncement = document.createElement("div");

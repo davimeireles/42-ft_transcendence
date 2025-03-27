@@ -53,9 +53,10 @@ window.onload = async function () {
             }
             const user = await response_user.json();
             const sessionUser = {
+              userId: user.id,
               username: user.username,
               email: user.email,
-              nickiname: user.nickname,
+              nickname: user.nickname,
               friends: user.friends,
               online: user.online,
               photo: user.photo,

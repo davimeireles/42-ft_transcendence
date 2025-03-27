@@ -13,7 +13,6 @@ const router = {
     profile: "/profile.html",
     profiles: "/profiles.html",
     edit: "/edit-profile.html",
-    chat: "/chat.html",
     enable2FA: "/enable-2fa.html",
     verify2FA: "/verify-2fa.html",
     tournament: "/tournament.html"
@@ -25,18 +24,13 @@ async function renderPage(page, shouldPushState = true) {
 
   const accessToken = localStorage.getItem("access_token");
 
-  const protectedPages = ["profile", "profiles", "edit", "tournament"];
-  const initialPages = ["intro", "register", "login"];
+  const protectedPages = ["profile", "profiles", "edit", "tournament", "pongpage", "home", "edit", "enable2FA"];
 
   if (!accessToken && protectedPages.includes(page)) {
-    console.warn("Unauthorized access attempt. Redirecting to login...");
-    window.location.href = "/login";
+    console.warn("Unauthorized access attempt. Redirecting to home...");
+    window.location.href = "/intro";
     return;
   }
-  /* if (accessToken && initialPages.includes(page)) {
-    window.location.href = "home";
-    return ;
-  } */
 
   if (router.currentPage === page && page != 'profiles') return;
 

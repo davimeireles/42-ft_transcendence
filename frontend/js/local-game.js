@@ -56,12 +56,17 @@ let winMessage;
 // Initialize the game
 async function renderPongGame() {
   gameButton = document.getElementById("gamesDropdown");
-  if (gameButton)
-    gameButton.style.display = "none";
+  profileButton = document.getElementById("profile-button")
+  settingsButton = document.getElementById("setting-button")
+  tournamentButton = document.getElementById("tournament-button")
+
+  profileButton.style.display = "none";
+  gameButton.style.display = "none";
+  settingsButton.style.display = "none";
+  tournamentButton.style.display = "none";
+
   board = document.getElementById("board");
   gameOver = false;
-  player1Score = 0;
-  player2Score = 0;
 
   if (board) {
     board.height = boardHeight;

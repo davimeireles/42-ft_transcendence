@@ -10,4 +10,4 @@ COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000", "--noreload"]
+CMD ["/usr/local/bin/daphne", "-b", "0.0.0.0", "-p", "8000", "backend.asgi:application"]

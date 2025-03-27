@@ -86,7 +86,14 @@ async function startGame(difficulty) {
 function renderAIgame() {
   AIboard = document.getElementById("ai-board");
   gameButton = document.getElementById("gamesDropdown");
+  profileButton = document.getElementById("profile-button")
+  settingsButton = document.getElementById("setting-button")
+  tournamentButton = document.getElementById("tournament-button")
+
+  profileButton.style.display = "none";
   gameButton.style.display = "none";
+  settingsButton.style.display = "none";
+  tournamentButton.style.display = "none";
 
   if (AIboard) {
     AIboard.height = AIboardHeight;

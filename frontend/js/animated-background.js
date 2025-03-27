@@ -225,7 +225,7 @@ const interval = 1000 / targetFPS;
 
 function renderLoop() {
   setTimeout(() => {
-    requestAnimationFrame(renderLoop);
+    // requestAnimationFrame(renderLoop);
     render();
   }, interval);
 }
