@@ -23,6 +23,7 @@
     "Login with 42": "Se connecter avec 42",
     "Logout": "Déconnexion",
     "Match History": "Historique des matchs",
+    "Next Match": "Prochain match",
     "Nickname": "Pseudonyme",
     "No file chosen": "Aucun fichier choisi",
     "Online Friends": "Amis en ligne",
@@ -35,6 +36,7 @@
     "Search users": "Rechercher des utilisateurs",
     "Settings": "Paramètres",
     "Size": "Taille",
+    "Start Tournament": "Commencer le tournoi",
     "Submit": "Soumettre",
     "Save": "Sauvegarder",
     "Title": "Titre",
@@ -44,5 +46,6 @@
     "Verify OTP": "Vérifier OTP",
     "Welcome": "Bienvenue",
     "Welcome to PONG!": "Bienvenue sur PONG !",
+    "Winner": "Vainqueur",
     "You have no friends": "Vous n'avez pas d'amis"
 }

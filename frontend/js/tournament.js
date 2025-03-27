@@ -1,5 +1,12 @@
 'use strict'
 
+let langPack = {
+    en:["Title", "Size", "Start Tournament", "Next Match", "Winner"],
+    pt:["Título", "Tamanho", "Começar Torneio", "Próxima Partida", "Vencedor"],
+    fr:["Titre", "Taille", "Commencer le tournoi", "Prochain match", "Vainqueur"]
+}
+
+let winnerAtTheEnd;
 const randomInt = function(max) {
     return (Math.floor(Math.random() * max));
 }
@@ -13,6 +20,8 @@ const shuffleArray = function(array) {
         i--;
     }
 }
+
+
 
 let tournamentButton = document.getElementById("tournament-button");
 
@@ -79,7 +88,7 @@ function tournamentCreator() {
     titleLabel.classList.add("form-label-username", "pt-3");
     titleLabel.for = "tournament-title";
     titleLabel.dataset.translateKey = "Title";
-    titleLabel.textContent = "Title";
+    titleLabel.textContent = langPack[localStorage.selectedLanguage][0];
     tournamentForm.append(titleLabel);
 
     let tournamentTitle = document.createElement("input");
@@ -93,7 +102,7 @@ function tournamentCreator() {
     sizeLabel.classList.add("form-label-username", "pt-3");
     sizeLabel.for = "tournament-size";
     sizeLabel.dataset.translateKey = "Size";
-    sizeLabel.textContent = "Size";
+    sizeLabel.textContent = langPack[localStorage.selectedLanguage][1];
     tournamentTitle.after(sizeLabel);
     
     let tournamentSize = document.createElement("input");
@@ -138,10 +147,11 @@ function tournamentCreator() {
         }
         if (i > 0)
         {
-            let confirm = document.createElement("input");
+            let confirm = document.createElement("button");
             confirm.classList.add("vapor-btn");
-            confirm.type = "submit"
-            confirm.value = "Start Tournament";
+            confirm.textContent = langPack[localStorage.selectedLanguage][3];
+            confirm.id = "createButton";
+            confirm.dataset.translateKey = "Start Tournament";
             tournamentForm.addEventListener("submit", ft_createTournament);
             tournamentTable.appendChild(confirm);
         }
@@ -170,7 +180,26 @@ function createCompetitorNode(i, tournamentTable){
 
 async function ft_createTournament(e) {
     e.preventDefault();
-    let competitors = document.querySelectorAll(".competitor-input")
+    let [...competitors] = document.querySelectorAll(".competitor-input");
+    let values = competitors.map(comp => comp.value.toLowerCase());
+    let setComp = new Set(values);
+    console.log(values.length);
+    console.log(setComp.size);
+    if (values.length != setComp.size)
+    {
+        let warning = document.querySelector("#namesWarning");
+        if (!warning)
+        {
+            warning = document.createElement("p");
+            warning.style.color = "#fc1723";
+            warning.dataset.translateKey = "Duplicated Nickname";
+            warning.textContent = "Duplicated Nickname";
+            warning.id = "namesWarning";
+            let startButton = document.getElementById("createButton");
+            startButton.before(warning);
+        }
+        return ;
+    }
     let title = document.getElementById("tournament-title");
     let competitorList = new Array();
     competitors.forEach(id => competitorList.push(id.value));
@@ -214,8 +243,11 @@ async function tournamentScreen(tournament) {
     let summarized = await playoffTable(tournament, "tournament-screen");
 
     let nextMatch = getNextMatch(summarized.matches);
-    if (!nextMatch)
+    if (!nextMatch){
+        let winner = document.querySelector(".winner").children[0].children[1];
+        winner.textContent = `: ${winnerAtTheEnd}`;
         return ;
+    }
     let nextPlayers = getNextPlayers(summarized, nextMatch);
 
     let p1 = nextPlayers[0].nickname;
@@ -229,7 +261,8 @@ async function tournamentScreen(tournament) {
     let startMatchButton = document.createElement("button");
     startMatchButton.id = "start-match-button";
     startMatchButton.classList.add("vapor-btn");
-    startMatchButton.textContent = "Start Match";
+    startMatchButton.textContent = langPack[localStorage.selectedLanguage][3];
+    startMatchButton.dataset.translateKey = "Next Match";
     tournamentScreen.append(startMatchButton);
     startMatchButton.addEventListener("click", tournamentGame.bind({tournament, nextMatch, nextPlayers}));
 }
@@ -379,13 +412,19 @@ async function playoffTable(tournament, modal) {
     let winner = document.createElement("div");
     winner.classList.add("winner", "glow-green");
     let p = document.createElement("p");
+    let span1 = document.createElement("span");
     p.classList.add("position-relative", "top-50", "translate-middle-y", "pe-4");
+    span1.textContent = `${langPack[localStorage.selectedLanguage][4]}`
+    span1.dataset.translateKey = "Winner";
+    let span2 = document.createElement("span");
     if (tournament.winner)
-        p.textContent = `Winner: ${tournament.winner}`
+        span2.textContent = `: ${tournament.winner}`
     else
-        p.textContent = `Winner:`
+        span2.textContent = `:`
     playoffTable.append(winner);
     winner.append(p);
+    p.append(span1);
+    p.append(span2);
     return ({matches: matches, players: players});
 }
 
@@ -777,7 +816,7 @@ function tournamentGame() {
         const winnerAnnouncement = document.createElement("div");
         winnerAnnouncement.textContent = winnerText;
         winMessage.appendChild(winnerAnnouncement);
-
+        winnerAtTheEnd = p_win.nickname;
         // Create "Play Again" button
         const playAgainButton = document.createElement("button");
         playAgainButton.textContent = "Continue";

@@ -23,6 +23,7 @@
     "Login with 42": "Login with 42",
     "Logout": "Logout",
     "Match History": "Match History",
+    "Next Match": "Next Match",
     "Nickname": "Nickname",
     "No file chosen": "No file chosen",
     "Online Friends": "Online Friends",
@@ -35,6 +36,7 @@
     "Search users": "Search users",
     "Settings": "Settings",
     "Size": "Size",
+    "Start Tournament": "Start Tournament",
     "Submit": "Submit",
     "Title": "Title",
     "Tournaments": "Tournaments",
@@ -43,5 +45,6 @@
     "Verify OTP": "Verify OTP",
     "Welcome": "Welcome",
     "Welcome to PONG!": "Welcome to PONG!",
+    "Winner": "Winner",
     "You have no friends": "You have no friends"
 }
