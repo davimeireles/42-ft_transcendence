@@ -7,7 +7,7 @@
 
 .competitor-label {
 	font-family: 'square';
-	color: #f9eaff;
+	color: #f9ebff;
 }
 
 .vapor-btn {
@@ -63,4 +63,8 @@
 
 #tournament-modal {
     height: 90vh;
+}
+
+.winner {
+    text-align: center;
 }

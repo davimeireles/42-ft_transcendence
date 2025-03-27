@@ -5,8 +5,8 @@ let boardHeight = 300;
 let context;
 
 // Default paddle colors
-const defaultPlayer1Color = "rgb(3, 255, 3)"; // Green
-const defaultPlayer2Color = "rgb(3, 255, 3)"; // Green
+const defaultPlayer1Color = "rgb(57, 255, 20)"; // Green
+const defaultPlayer2Color = "rgb(57, 255, 20)"; // Green
 
 // Players configs
 let playerWidth = 10;
@@ -88,8 +88,8 @@ async function renderPongGame() {
       winMessage.style.top = "50%";
       winMessage.style.left = "50%";
       winMessage.style.transform = "translate(-50%, -50%)";
-      winMessage.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
-      winMessage.style.color = "white";
+      winMessage.style.backgroundColor = "rgba(0, 0, 0, 0)";
+      winMessage.style.color = "#E3DCE6";
       winMessage.style.padding = "20px";
       winMessage.style.fontSize = "24px";
       winMessage.style.textAlign = "center";
@@ -104,8 +104,8 @@ async function renderPongGame() {
     customizationModal.style.top = "50%";
     customizationModal.style.left = "50%";
     customizationModal.style.transform = "translate(-50%, -50%)";
-    customizationModal.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
-    customizationModal.style.color = "white";
+    customizationModal.style.backgroundColor = "rgba(0, 0, 0, 0)";
+    customizationModal.style.color = "#E3DCE6";
     customizationModal.style.padding = "20px";
     customizationModal.style.fontSize = "16px";
     customizationModal.style.textAlign = "center";
@@ -134,17 +134,23 @@ function createPlayerCustomization(playerName, setColorFunction) {
   title.textContent = playerName + " - Choose Your Paddle Color:";
   container.appendChild(title);
 
-  const colors = ["green", "red", "blue"]; // Green, Red, Blue
+  const colors = [{name: "green", hex: "#39FF14"}, {name: 
+     "red", hex: "#FC1723"}, {name: "blue", hex: "#0d6efd"}]; // Green, Red, Blue
   colors.forEach(color => {
     const colorButton = document.createElement("button");
-    colorButton.textContent = color;
-    colorButton.style.backgroundColor = color;
-    colorButton.style.color = "white";
+    colorButton.textContent = color.name;
+    colorButton.style.backgroundColor = color.hex;
+    colorButton.style.color = "#151314";
     colorButton.style.padding = "5px 10px";
+    colorButton.style.width = "70px";
     colorButton.style.border = "none";
     colorButton.style.margin = "5px";
     colorButton.style.cursor = "pointer";
-    colorButton.addEventListener("click", () => setColorFunction(color));
+    colorButton.addEventListener("click", (e) => {
+        [...e.target.parentNode.children].forEach(node => node.classList.remove("color-selected"));
+        e.target.classList.add("color-selected");
+        setColorFunction(color.hex);
+    })
     container.appendChild(colorButton);
   });
 

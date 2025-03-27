@@ -113,8 +113,8 @@ function renderAIgame() {
       winMessage.style.top = "50%";
       winMessage.style.left = "50%";
       winMessage.style.transform = "translate(-50%, -50%)";
-      winMessage.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
-      winMessage.style.color = "white";
+      winMessage.style.backgroundColor = "rgba(0, 0, 0, 0.0)";
+      winMessage.style.color = "#E3DCE6";
       winMessage.style.padding = "20px";
       winMessage.style.fontSize = "24px";
       winMessage.style.textAlign = "center";

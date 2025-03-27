@@ -1,27 +1,48 @@
 <div class="container-fluid" style="font-family: 'square'; color: #e3dce6;">
     <div class="row">
         <div class="col-8 sidebar">
-            <div class="row profile-container bg-dark p-3 rounded-5">
+            <div class="row profile-container semi-transparent pt-3 pb-3 ps-3 mb-2 me-3 rounded-5">
                 <img src="" alt="" id="profileImage">
                 <div class="user-info">
-                <h4 id="text-user" class="users"></h4>
-                <h6 id="online"></h6>
-                <button class="btn btn-sm btn-outline-secondary w-100" onclick="add_remove_friend()" id="btn-friend" data-translate-key="Add Friend">Add Friend</button>
+                    <div id="text-user" class="user"></div>
+                    <div id="online"></div>
+                </div>
+                <button class="btn btn-sm btn-outline-secondary w-100 mt-2" onclick="add_remove_friend()" id="btn-friend" data-translate-key="Add Friend">Add Friend</button>
             </div>
-        </div>
-            <div class="container-fluid row">
-                <div class="row">
-                    <div class="col sidebar-tour" style="border-radius: 10px;" data-translate-key="Tournaments">
-                        Tournaments
+            <div class="container-fluid row semi-transparent rounded-5 h-17">
+                <div id="playingHabits">
+                    <canvas id="habitsCanvas"></canvas>
+                </div>
+            </div>
+            <div class="container-fluid row p-3 rounded-5 h-30">
+                <div class="col sidebar-tour rounded-5 p-3 me-2 semi-transparent overflow-auto invisible-scrollbar" data-translate-key="Tournaments">
+                    Tournaments
+                    <div id="HistoryTournament">
+                    
                     </div>
-                    <div class="col sidebar-game" style="border-radius: 10px;" data-translate-key="Match History">
-                        Match History
+                    <ul class="pagination pagination-sm" id="tournament-pages">
+                        
+                    </ul>
+                    <div id="newdiv">
+                        <canvas id="tournamentcanvas"></canvas>
+                    </div>
+                </div>
+                <div class="col sidebar-game rounded-5 p-3 semi-transparent overflow-auto invisible-scrollbar" data-translate-key="Match History">
+                    Match History
+                    <div id="HistoryGames">
+                    
+                    </div>
+                    <ul class="pagination pagination-sm justify-content-center" id="match-pages">
+                        
+                    </ul>
+                    <div id="newdiv">
+                        <canvas id="newcanvas"></canvas>
                     </div>
                 </div>
             </div>
         </div>
         <!-- Right Sidebar -->
-        <div class="col-4">
+        <div class="col-4 semi-transparent p-3 rounded-5 vh-87">
             <span style="display: flex; align-items: center; justify-content: center;" data-translate-key="Search users">Search users</span>
             <div class="input-group d-flex align-items-center justify-content-center">
                 <div class="col-6">
@@ -31,21 +52,29 @@
                     <div id="results" onclick="getProfile()" style="cursor: pointer;"></div>
                 </div>
             </div>
-            <!-- <div class="input-group mb-3">
-                <span data-translate-key="Search users">Search users</span>
-                <div class="input-group mb-3 mt-3">
-                    <input id="user-search" class="form-control" oninput="searchProfile()"
-                        autocomplete="off">
-                </div> -->
-            <div id="results" style="cursor: pointer;"></div>
-
             <div class="friends-box">
                 <h5 data-translate-key="Friends" style="display: flex; align-items: center; justify-content: center;">Friends</h5>
-                <h6 data-translate-key="No friends to show" style="display: flex; align-items: center; justify-content: center;"> No friends to show</h6>
+                <h6 data-translate-key="You have no friends" style="display: flex; align-items: center; justify-content: center;" id="no_friends">You have no friends</h6>
                 <ul id="friends-list">
                 </ul>
             </div>
-
+            <div style="align-items: center; justify-content: center; display: flex;">
+                <button style="padding: 5px 5px; font-size: medium;" id="twoFA-button" class="btn btn-custom " data-translate-key="Enable 2FA">Enable 2FA</button>
+                <button style="padding: 5px 5px; font-size: medium;" id="setting-button" class="btn btn-custom" data-translate-key="Edit Profile">Edit Profile</button>
+            </div> 
+        </div>
+    </div>
+    <div class="modal fade custom-modal" id="profileModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog position-absolute start-50 translate-middle-x">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-title">Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="profileModalBody"></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

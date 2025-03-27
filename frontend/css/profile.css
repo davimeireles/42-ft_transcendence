@@ -1,10 +1,8 @@
 .profile-container {
     align-items: center;
-    max-height: 15%;
 }
 
 #profileImage {
-    position: absolute;
     width: 100px !important;
     height: 100px !important;
     padding: 0px !important;
@@ -14,8 +12,7 @@
 .user-info {
     margin-left: 10px;
     padding: 0px;
-    display: flex;
-    flex-direction: column;
+    width: 200px;
 }
 
 #text-user {
@@ -23,19 +20,24 @@
 }
 
 .custom-modal .modal-content {
-    background-color: black;  /* Black background */
-    color: white;  /* White text */
-    border: 2px solid white;  /* White outline around the modal */
+    background-color: #151314;  /* Black background */
+    color: #E3DCE6;  /* White text */
+    border: 2px solid #E3DCE6;  /* White outline around the modal */
     border-radius: 10px;  /* Optional: rounded corners */
 }
 
 .custom-modal .modal-header {
-    background-color: black; /* Keep the header black */
-    color: white; /* White text for title */
+    background-color: #151314; /* Keep the header black */
+    color: #E3DCE6; /* White text for title */
 }
 
 .custom-modal .modal-body {
-    color: white; /* Make text inside the body white */
+    color: #E3DCE6; /* Make text inside the body white */
+}
+
+.modal-dialog {
+    top: 25%;
+    max-width: 100%;
 }
 
 #qr-code-container {
@@ -47,8 +49,21 @@
 
 #playingHabits {
     max-height: 100%;
+    max-width: 100%;
 }
 
 .sidebar-game, .sidebar-tour {
-    height: 10%;
+    height: 150%;
+}
+
+.h-17 {
+    height: 17%;
+}
+
+.h-30 {
+    height: 30%;
+}
+
+.vh-87 {
+    height: 87.5vh;
 }

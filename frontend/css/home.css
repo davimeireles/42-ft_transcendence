@@ -60,9 +60,7 @@
 
 .home-left-bar {
   width: 20%;
-  max-width: 240px;
   min-width: 230px;
-  min-height: 200px;
   color: #e3dce6;
   font-family: "square";
   overflow: hidden;
@@ -99,6 +97,8 @@
 
 .home-right-bar {
   width: 20%;
+  font-family: square;
+  color: #E3DCE6;
   text-align: center;
   white-space: normal;
   word-wrap: break-word;
@@ -238,4 +238,13 @@
 
 #create-tournament {
   min-width: 170px;
+}
+
+.text-align-center {
+    text-align: center;
+}
+
+.color-selected {
+    filter: brightness(50%);
+    transition: all 0.3s ease-in-out;
 }

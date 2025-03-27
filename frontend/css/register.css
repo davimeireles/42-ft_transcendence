@@ -14,7 +14,7 @@
 }
 
 .card-register h2 {
-    color: #f9eaff;
+    color: #f9ebff;
     text-shadow: 2px 2px black;
     font-family: 'alien';
     font-size: 3.5rem;
@@ -31,7 +31,7 @@
 }
 
 .container-register h2 {
-    color: #f9eaff;
+    color: #f9ebff;
     text-shadow: 2px 2px black;
     font-family: 'alien';
     font-size: 3.5rem;
@@ -54,7 +54,7 @@
     width: 100%;
     align-content: center;
     font-family: 'square';
-    color: #f9eaff;
+    color: #f9ebff;
 }
 
 .register-btn {
@@ -76,7 +76,7 @@
 
 .sign-in-text {
     font-family: 'square';
-    color: #f9eaff;
+    color: #f9ebff;
 }
 
 .login-here-text {

@@ -216,9 +216,19 @@ sun.position.set(0, 30, -500);
 scene.add(sun);
 
 
+
 var clock = new THREE.Clock();
 var time = 0;
-render();
+
+const targetFPS = 30;
+const interval = 1000 / targetFPS;
+
+function renderLoop() {
+  setTimeout(() => {
+    requestAnimationFrame(renderLoop);
+    render();
+  }, interval);
+}
 
 function render() {
   if (resize(renderer)) {
@@ -227,10 +237,9 @@ function render() {
   }
   time = clock.getElapsedTime();
   materialShaders.forEach(m => {
-    m.uniforms.time.value = time;
+      m.uniforms.time.value = time;
   });
   renderer.render(scene, camera);
-  //requestAnimationFrame(render);
 }
 
 function resize(renderer) {
@@ -243,3 +252,5 @@ function resize(renderer) {
   }
   return needResize;
 }
+
+  renderLoop();

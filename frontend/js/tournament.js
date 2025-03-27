@@ -376,6 +376,16 @@ async function playoffTable(tournament, modal) {
             }
         } 
     }
+    let winner = document.createElement("div");
+    winner.classList.add("winner", "glow-green");
+    let p = document.createElement("p");
+    p.classList.add("position-relative", "top-50", "translate-middle-y", "pe-4");
+    if (tournament.winner)
+        p.textContent = `Winner: ${tournament.winner}`
+    else
+        p.textContent = `Winner:`
+    playoffTable.append(winner);
+    winner.append(p);
     return ({matches: matches, players: players});
 }
 
@@ -430,7 +440,7 @@ function tournamentGame() {
     let context;
 
     // Default paddle colors
-    const defaultPlayerColor = "rgb(3, 255, 3)"; // Green
+    const defaultPlayerColor = "rgb(57, 255, 20)"; // Green
 
     // Players configs
     let playerWidth = 10;
@@ -512,8 +522,8 @@ function tournamentGame() {
             winMessage.style.top = "50%";
             winMessage.style.left = "50%";
             winMessage.style.transform = "translate(-50%, -50%)";
-            winMessage.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
-            winMessage.style.color = "white";
+            winMessage.style.backgroundColor = "rgba(0, 0, 0, 0.0)";
+            winMessage.style.color = "#E3DCE6";
             winMessage.style.padding = "20px";
             winMessage.style.fontSize = "24px";
             winMessage.style.textAlign = "center";
@@ -541,7 +551,7 @@ function tournamentGame() {
         const colorButton = document.createElement("button");
         colorButton.textContent = color;
         colorButton.style.backgroundColor = color;
-        colorButton.style.color = "white";
+        colorButton.style.color = "#E3DCE6";
         colorButton.style.padding = "5px 10px";
         colorButton.style.border = "none";
         colorButton.style.margin = "5px";

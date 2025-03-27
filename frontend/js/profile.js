@@ -251,8 +251,8 @@ async function drawCharts(gameInfo)
                 datasets: [{
                     data: [gameInfo.total_wins, (gameInfo.total_games - gameInfo.total_wins)],
                     backgroundColor: [
-                        "#0d6efd", // Bootstrap primary color
-                        "#198754", // Bootstrap success color
+                        "#660A8A", // Bootstrap primary color
+                        "#332837", // Bootstrap success color
                         "#ffc107", // Bootstrap warning color
                         "#dee2e6"  // Light gray
                     ],
@@ -323,7 +323,7 @@ function displayTournamentHistory(matchHistory) {
         const matchElement = document.createElement("div");
         matchElement.className = "tournament-entry"; // Optional: for styling
         matchElement.setAttribute("tournament-id", tournament.entry.id)
-        matchElement.style.backgroundColor = "green";
+        matchElement.style.backgroundColor = "#660A8A";
 
         matchElement.innerHTML = `
             <p>Tournament: ${tournament.entry.name}</p>
@@ -387,9 +387,9 @@ function displayMatchHistory(matchHistory) {
         matchElement.setAttribute("match-id", match.matchId)
 
         if (match.Winner === session_user.userId) {
-            matchElement.style.backgroundColor = "green";
+            matchElement.style.backgroundColor = "#660A8A";
         } else {
-            matchElement.style.backgroundColor = "red";
+            matchElement.style.backgroundColor = "#332837";
         }
 
         matchElement.innerHTML = `

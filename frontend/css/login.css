@@ -12,7 +12,7 @@
 
 .card-login h2 {
     padding-bottom: 20px;
-    color: #f9eaff;
+    color: #f9ebff;
     text-shadow: 2px 2px black;
     font-family: 'alien';
     font-size: 3.5rem;
@@ -42,13 +42,13 @@
     width: 100%;
     align-content: center;
     font-family: 'square';
-    color: #f9eaff;
+    color: #f9ebff;
 }
 
 .form-label-password {
     padding-top: 20px;
     font-family: 'square';
-    color: #f9eaff;
+    color: #f9ebff;
 }
 
 .input-group {
@@ -74,7 +74,7 @@
 
 .sing-up-text{
     font-family: 'square';
-    color: #f9eaff;
+    color: #f9ebff;
 }
 
 .register-here-text {

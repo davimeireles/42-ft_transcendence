@@ -12,7 +12,7 @@
 .btn-custom:hover {
     background-color: #151314;
     border: 3px solid #b700ff;
-    color: #f9eaff;
+    color: #f9ebff;
     transform: scale(1.1);
     transition: all 0.3s ease;
     animation: glow 1.5s infinite alternate;
@@ -40,7 +40,7 @@
 .glow {
     font-family: 'alien';
     font-size: 4rem;
-    color: #f9eaff;
+    color: #f9ebff;
     animation: glow 1.5s infinite alternate;
 }
 
