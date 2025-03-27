@@ -1,27 +1,26 @@
-<link rel="stylesheet" href="css/login.css">
+<form id="loginForm" class="login-form">
+    <div class="container-login d-flex justify-content-center align-items-center vh-100">
+        <div class="card-login p-4" style="width: 400px;">
+            <h2 class="text-center mb-4" data-translate-key="Login">Login</h2>
 
-<div class="container d-flex justify-content-center align-items-center vh-100">
-    <div class="card bg-dark text-white p-4" style="width: 400px;">
-        <h2 class="text-center mb-4">Login</h2>
-        <form id="loginForm">
-            <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
-                <input type="text" class="form-control" id="username" required>
+
+            <label for="username" class="form-label-username" data-translate-key="Username">Username</label>
+            <input type="text" class="form-control" id="username" required>
+
+            <label for="password" class="form-label-password" data-translate-key="Password">Password</label>
+            <div class="input-group">
+                <input type="password" class="form-control" id="password" required>
+                <span class="input-group-text toggle-password" onclick="togglePasswordVisibility()">
+                    <i class="fa fa-eye" id="togglePasswordIcon"></i>
+                </span>
             </div>
-            <div class="mb-3 position-relative">
-                <label for="password" class="form-label">Password</label>
-                <div class="input-group">
-                    <input type="password" class="form-control" id="password" required>
-                    <span class="input-group-text toggle-password" onclick="togglePasswordVisibility()">
-                        <i class="fa fa-eye" id="togglePasswordIcon"></i>
-                    </span>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-custom w-100 mb-3" name="action" value="loginuser">Login</button>
-        </form>
-        <button id="link42" onclick="redi42()">Login with 42</button>
-        <p class="text-center mt-3">
-            Don't have an account? <a href="/register" class="text-primary text-decoration-none fw-bold">Register</a>
-        </p>
+            <div id="login-error-message" class="error-message"></div>
+            <button type="submit" class="login-btn" name="action" value="loginuser" data-translate-key="Login">Login</button>
+            <button id="link42" class="login-btn" onclick="redi42()" data-translate-key="Login with 42">Login with 42</button>
+            <p class="sing-up-text text-center mt-3" >
+                <span data-translate-key="Don't have an account">Don't have an account?</span>
+                <a id="register-btn" class="register-here-text" data-translate-key="Register here">Register here</a>
+            </p>
+        </div>
     </div>
-</div>
+</form>

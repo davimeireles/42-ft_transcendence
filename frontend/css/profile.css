@@ -1,0 +1,69 @@
+.profile-container {
+    align-items: center;
+}
+
+#profileImage {
+    width: 100px !important;
+    height: 100px !important;
+    padding: 0px !important;
+    border-radius: 50%;
+}
+
+.user-info {
+    margin-left: 10px;
+    padding: 0px;
+    width: 200px;
+}
+
+#text-user {
+    margin-bottom: 5px;
+}
+
+.custom-modal .modal-content {
+    background-color: #151314;  /* Black background */
+    color: #E3DCE6;  /* White text */
+    border: 2px solid #E3DCE6;  /* White outline around the modal */
+    border-radius: 10px;  /* Optional: rounded corners */
+}
+
+.custom-modal .modal-header {
+    background-color: #151314; /* Keep the header black */
+    color: #E3DCE6; /* White text for title */
+}
+
+.custom-modal .modal-body {
+    color: #E3DCE6; /* Make text inside the body white */
+}
+
+.modal-dialog {
+    top: 25%;
+    max-width: 100%;
+}
+
+#qr-code-container {
+    top: 0%;
+    padding: 20px;
+    border-radius: 3%;
+    margin-top: 2%;
+}
+
+#playingHabits {
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.sidebar-game, .sidebar-tour {
+    height: 150%;
+}
+
+.h-17 {
+    height: 17%;
+}
+
+.h-30 {
+    height: 30%;
+}
+
+.vh-87 {
+    height: 87.5vh;
+}

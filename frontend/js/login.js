@@ -1,5 +1,8 @@
-console.log("Loaded login.js");
+'use strict'
+
 function LoginFormListener() {
+  let registerBtn = document.getElementById("register-btn");
+  registerBtn.addEventListener("click", function(event) {renderPage("register");});
   const form = document.getElementById("loginForm");
 
   if (!form) {
@@ -7,12 +10,7 @@ function LoginFormListener() {
     return;
   }
 
-  const passwordField = document.getElementById("password");
-  const errorMessage = document.createElement("div");
-
-  errorMessage.style.color = "red";
-  errorMessage.style.display = "none";
-  passwordField.parentNode.appendChild(errorMessage);
+  const errorMessage = document.getElementById("login-error-message");
 
   form.addEventListener("submit", async function (event) {
     event.preventDefault();
@@ -24,22 +22,71 @@ function LoginFormListener() {
     const data = { username: username, password: password };
 
     try {
-      const response = await fetch("http://localhost:8000/login/", {
+      // Step 1: Perform login
+      const loginResponse = await fetch("http://localhost:8000/login/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
+        credentials: "include",
       });
 
-      if (response.ok) {
+      if (loginResponse.ok) {
         console.log("User Login Succesfully");
-        renderPage("pongpage");
+        localStorage.removeItem("sessionUser");
+        const result = await loginResponse.json();
+        console.log(result.access_token);
+        localStorage.setItem("access_token", result.access_token);
+        localStorage.setItem("refresh_token", result.refresh_token);
+
+        try {
+          const token = localStorage.getItem("access_token");
+          if (!token) {
+            console.log("Token not found !");
+            return;
+          } else {
+            const response = await fetch(
+              "http://localhost:8000/session_user/",
+              {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+            if (!response.ok) {
+              throw new Error("Failed to fetch user");
+            }
+            const user = await response.json();
+            const sessionUser = {
+              userId: user.id,
+              username: user.username,
+              email: user.email,
+              nickname: user.nickname,
+              friends: user.friends,
+              online: user.online,
+              photo: user.photo,
+              two_fa_enable: user.two_fa_enable,
+            };
+            localStorage.setItem("sessionUser", JSON.stringify(sessionUser));
+            console.log(sessionUser);
+            if (sessionUser.two_fa_enable) {
+              renderPage("verify2FA");
+            } else {
+              renderPage("home");
+            }
+          }
+        } catch (error) {
+          console.log("Error:", error);
+        }
       } else {
-        const result = await response.json();
+        const result = await loginResponse.json();
+        errorMessage.style.color = "#fc1723";
         errorMessage.textContent = result.message;
         errorMessage.style.display = "block";
       }
     } catch (error) {
       console.log("Error:", error);
+      errorMessage.style.color = "#fc1723";
       errorMessage.textContent = "An error occurred. Please try again.";
       errorMessage.style.display = "block";
     }

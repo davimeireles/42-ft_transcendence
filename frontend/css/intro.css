@@ -1,25 +1,32 @@
 .btn-custom {
+    font-family: 'square';
     font-size: 1.5rem;
     padding: 15px 30px;
     margin: 20px;
-    border: 3px solid #00ff00;
-    background-color: #0d0d0d;
-    color: #00ff00;
+    border: 3px solid #b700ff;
+    background-color: #151314;
+    color: #e3dce6;
     transition: all 0.3s ease;
 }
 
 .btn-custom:hover {
-    background-color: #00ff00;
-    color: #0d0d0d;
+    background-color: #151314;
+    border: 3px solid #b700ff;
+    color: #f9ebff;
     transform: scale(1.1);
+    transition: all 0.3s ease;
+    animation: glow 1.5s infinite alternate;
+    box-shadow: 0 0 5px #b700ff, 0 0 10px #b700ff, 0 0 20px #b700ff, 0 0 40px #b700ff;
 }
 
 .content {
-    position: relative;
+    position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 100%;
+	width: 100%;
+	background-color: transparent;
 }
 
 .container {
@@ -31,15 +38,18 @@
 }
 
 .glow {
+    font-family: 'alien';
+    font-size: 4rem;
+    color: #f9ebff;
     animation: glow 1.5s infinite alternate;
 }
 
 @keyframes glow {
     from {
-        text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 40px #00ff00;
+        text-shadow: 0 0 5px #b700ff, 0 0 10px #b700ff, 0 0 20px #b700ff, 0 0 40px #b700ff;
     }
     to {
-        text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 40px #00ff00, 0 0 80px #00ff00;
+        text-shadow: 0 0 10px #b700ff, 0 0 20px #b700ff, 0 0 40px #b700ff, 0 0 80px #b700ff;
     }
 }
 
@@ -50,4 +60,8 @@
     width: 100%;
     height: 100%;
     z-index: 0;
+}
+
+.semi-transparent {
+  background-color: rgba(21, 19, 20, 0.90);
 }

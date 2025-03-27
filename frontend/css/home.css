@@ -1,0 +1,250 @@
+/* Existing styles (from your home.css) */
+.home-main-div {
+  width: 60%;
+  height: 90vh;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.home-main-div h1 {
+  font-size: 2.5em;
+  color: #e3dce6;
+  font-family: "square";
+  align-self: flex-start;
+  margin: 0;
+}
+
+.home-games {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  gap: 20px;
+}
+
+.home-games div {
+  font-family: "square";
+  width: 100%;
+  text-align: center;
+}
+
+.vs-local,
+.vs-ai-local,
+.vs-remote {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 5%;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.vs-local img,
+.vs-ai-local img,
+.vs-remote img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-parent {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  height: 100%;
+  width: 100%;
+}
+
+.home-left-bar {
+  width: 20%;
+  min-width: 230px;
+  color: #e3dce6;
+  font-family: "square";
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 10px;
+
+}
+
+.home-left-bar h6 {
+  position: relative;
+  text-align: center;
+  white-space: normal;
+  font-size: x-large;
+  cursor: pointer;
+}
+
+.home-left-bar h6:hover {
+    transition: all 0.3s ease;
+    color: #39ff14;
+}
+
+.home-left-bar h6:hover:after {
+    transition: all 0.3s ease;
+    color: #39ff14;
+}
+
+.home-left-bar .col {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  left: 50px;
+}
+
+.home-right-bar {
+  width: 20%;
+  font-family: square;
+  color: #E3DCE6;
+  text-align: center;
+  white-space: normal;
+  word-wrap: break-word;
+  padding: 0 10px;
+  box-sizing: border-box;
+  font-size: medium;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.home-search-bar {
+  width: 100%;
+  height: 20%;
+  padding-top: 3%;
+}
+
+.home-friends-bar {
+  color: #e3dce6;
+  width: 100%;
+  height: 78%;
+  margin-top: 10px;
+  padding: 10px;
+}
+
+/* Styles for the game container */
+#game-container {
+  /* Required for absolute positioning of win message */
+  display: flex;
+  width: 100%;
+}
+
+.game-container canvas {
+    width: 100%;
+    border-top: 5px solid #b700ff;
+    border-bottom: 5px solid #b700ff;
+}
+
+/* Styles for the win message */
+#win-message {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #e3dce6;
+  /* Use your text color */
+  padding: 20px;
+  font-size: 24px;
+  text-align: center;
+  border-radius: 5px;
+  z-index: 10;
+  /* Ensure it's on top of the canvas */
+  font-family: "square";
+  /* Use your font */
+}
+
+/* Styles for the buttons */
+#win-message button {
+  background-color: #b700ff;
+  /* Use your primary color */
+  color: #e3dce6;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin: 5px;
+  font-family: "square";
+  /* Use your font */
+  transition: background-color 0.3s ease;
+}
+
+#win-message button:hover {
+  background-color: #8000c0;
+  /* A slightly darker shade for hover */
+}
+
+.dropdown-menu {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%); /* Center the dropdown */
+    top: 100%;  /* Position below the toggle */
+    text-align: center; /* Center the text */
+    background-color: #151314; /* Dark theme */
+}
+
+.dropdown-item {
+  color: #e3dce6; /* Match sidebar text color */
+}
+
+.dropdown-item:hover {
+  background-color: #333; /* A slightly lighter shade for hover */
+  color:#39ff14;
+}
+
+.dropdown-toggle::after {
+  color: #e3dce6; /* Color of the dropdown arrow */
+}
+
+.difficulty-overlay {
+    display: flex;
+    flex-direction: column; /* Stack the text and buttons vertically */
+    align-items: center; /* Center items horizontally */
+    justify-content: center; /* Center items vertically */
+    text-align: center;
+    color: #e3dce6; /* Existing styling for text color */
+    font-family: 'square';
+    width: 100%;
+}
+
+.difficulty-buttons {
+    display: flex; /* Keep the buttons in a row */
+    gap: 10px; /* Adds spacing between buttons */
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px; /* Creates space between the text and buttons */
+}
+
+.difficulty-buttons button {
+    margin: 0; /* No margin within the row */
+    padding: 10px 20px; /* Add padding for better button size */
+    font-size: 14px; /* Adjust font size if required */
+    border: 2px solid #e3dce6; /* Matching theme */
+    background-color: #151314; /* Maintain dark theme */
+    color: #b700ff; /* Matching button font color */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.difficulty-buttons button:hover {
+    background-color: #b700ff; /* Highlight on hover */
+    color: #151314; /* Invert text color */
+    transform: scale(1.1); /* Slight zoom on hover */
+}
+
+
+#create-tournament {
+  min-width: 170px;
+}
+
+.text-align-center {
+    text-align: center;
+}
+
+.color-selected {
+    filter: brightness(50%);
+    transition: all 0.3s ease-in-out;
+}

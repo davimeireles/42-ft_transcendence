@@ -1,5 +1,8 @@
-console.log("Loaded register.js");
+'use strict'
+
 function RegisterFormListener() {
+  let loginBtn = document.getElementById("login-btn");
+  loginBtn.addEventListener("click", function(event) {renderPage("login");});
   const form = document.getElementById("registrationForm");
   if (!form) {
     console.error("Form not found");
@@ -11,7 +14,7 @@ function RegisterFormListener() {
   const submitButton = form.querySelector("button[type='submit']");
   const errorMessage = document.createElement("div");
 
-  errorMessage.style.color = "red";
+  errorMessage.style.color = "#FC1723";
   errorMessage.style.display = "none";
   errorMessage.textContent = "Passwords do not match.";
   repeatPasswordField.parentNode.appendChild(errorMessage);
@@ -55,7 +58,7 @@ function RegisterFormListener() {
       if (response.ok) {
         alert("Registered Succesfully");
         console.log("User Registered Succesfully");
-        renderPage("home");
+        renderPage("intro");
       } else {
         const result = await response.json();
         errorMessage.textContent = result.message;

@@ -1,0 +1,47 @@
+<div class="d-flex justify-content-center align-items-center mt-lg-5">
+    <div class="card semi-transparent" style="width: 400px;">
+        <div data-translate-key="Edit Profile" class="card-header text-center mb-3" style="background: #696969; color: #e3dce6; font-family: 'square'; font-size: xx-large;">
+            Edit Profile
+        </div>
+        <div class="card-body text-center align-items-center" style="background-color: transparent; color: #e3dce6; font-family: 'square'; padding: 0;">
+            
+            <form id="editProfileForm" style="background-color: transparent;">
+                <!-- Nickname Section -->
+                <span data-translate-key="Change Nickname">Change Nickname</span>
+                <div class="form mt-3 mb-3">
+                    <div class="row justify-content-center">
+                        <div class="col-9">
+                            <input type="text" class="form-control" id="changeNick" minlength="3" maxlength="128" title="Nickname must be between 3 and 128 characters." placeholder="Nickname">
+                        </div>
+                    </div>
+                </div>
+                <hr style="border-color: #b700ff; margin: 10px 0;">
+            
+                <!-- Password Section -->
+                <span data-translate-key="Change Password">Change Password</span>
+                <div class="form mt-3 mb-3">
+                    <div class="row justify-content-center">
+                        <div class="col-9">
+                            <input type="password" class="form-control" id="Password" minlength="8" maxlength="128" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}" title="Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character." placeholder="********">
+                            <input type="password" class="form-control mt-3" id="RepeatPassword" minlength="8" maxlength="128" title="Please enter the same password as above." placeholder="********">
+                            <span id="passwordMatchError" style="color: red; display: none;">Passwords do not match.</span>
+                        </div>
+                    </div>
+                </div>
+                <hr style="border-color: #b700ff; margin: 10px 0;">
+            
+                <!-- Photo Upload Section -->
+                <span data-translate-key="Change Profile Picture">Change Profile Picture</span>
+                <div class="form mt-3 mb-3">
+                    <div class="row justify-content-center">
+                        <div class="col-9">
+                            <input type="file" class="form-control" id="myFile" name="filename">
+                        </div>
+                    </div>
+                </div>
+        
+                <button type="submit" class="btn btn-custom" data-translate-key="Save">Save</button>
+            </form>
+        </div>
+    </div>
+</div>

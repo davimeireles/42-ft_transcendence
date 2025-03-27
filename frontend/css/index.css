@@ -1,4 +1,85 @@
-body {
-    background-color: black;
-    overflow: hidden;
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevent scrolling */
+	background-color: transparent;
 }
+
+#animated-background{
+	width: 100%;
+	height: 100%;
+	display: block;
+	position: absolute;
+}
+
+#animated-background canvas{
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: absolute;
+}
+
+@font-face {
+    font-family: 'alien';
+    src: url('../media/fonts/Alien-Encounters-Bold-Italic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'octo';
+    src: url('../media/fonts/TT-Octosquares-Trial-Condensed-Regular.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'square';
+    src: url('../media/fonts/Square.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+}
+
+.screen-container
+{
+	position: relative;
+    top: 0%;
+	background-color: transparent;
+	width: 100%;
+    height: 100%;
+}
+
+#main-content
+{
+	background-color: transparent;
+}
+
+
+
+
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: black;
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #660A8A;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #332837;
+  }
+  
+  .invisible-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
