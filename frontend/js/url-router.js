@@ -64,7 +64,12 @@ async function renderPage(page, shouldPushState = true, target_user = null) {
       case "profiles":
         console.log(target_user);
         if(target_user)
+        {
+          console.log(target_user);
           renderProfiles(target_user);
+        }
+        else
+          renderPage("home");
         break;
       case "edit":
         UsernameForm();
