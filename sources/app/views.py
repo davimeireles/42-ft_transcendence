@@ -324,7 +324,7 @@ def change_username(request):
             try:
                 os.rename(old_file_path, new_file_path)
             except Exception as e:
-                return Response({'message': f'Error renaming file: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                return Response({'message': f'Error renaming file: {str(e)}'}, status=status.HTTP_404_NOT_FOUND)
         return Response({'message': 'Changed Username'}, status=status.HTTP_200_OK)
     except User.DoesNotExist:
         return Response({'message': 'Error: User not found'}, status=status.HTTP_404_NOT_FOUND)
@@ -364,7 +364,7 @@ def upload_photo(request):
             f.write(chunk)
 
     if not os.path.exists(file_path):
-        return Response({"error": "File was not saved"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({"error": "File was not saved"}, status=400)
 
     file_url = f"{settings.MEDIA_URL}{new_filename}"
 
@@ -478,8 +478,8 @@ def verify_2fa(request):
     except User.DoesNotExist:
         return JsonResponse({'message': 'User not found'}, status=404)
     except Exception as e:
-        return JsonResponse({'message': 'Error', 'error': str(e)}, status=500)
-    return JsonResponse({'message': 'Error'}, status=500)
+        return JsonResponse({'message': 'Error', 'error': str(e)}, status=400)
+    return JsonResponse({'message': 'Error'}, status=400)
 
 @api_view(['POST'])
 def get_match_details(request):
@@ -526,7 +526,7 @@ def get_match_details(request):
         return Response({'error': 'One or more users not found.'}, status=404)
     except Exception as e:
         logger.error("Error: %s", str(e))
-        return Response({'error': str(e)}, status=500)
+        return Response({'error': str(e)}, status=400)
 
 @api_view(['GET'])
 def match_history_page(request, user_id, page_num):
@@ -652,7 +652,7 @@ def get_tournament_details(request):
             return Response({'message': 'Tournament details saved successfully.'}, status=201)
     except Exception as e:
         logger.error("Error: %s", str(e))
-        return Response({'error': str(e)}, status=500)
+        return Response({'error': str(e)}, status=400)
 
 @api_view(['POST'])
 def get_tournament(request):
