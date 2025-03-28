@@ -10,6 +10,13 @@ let TOTAL_PAGES;
 
 const ITEMS_PER_PAGE = 5;
 
+
+let langPackPro = {
+    en:["No previous Tournaments available", "No match history available"],
+    pt:["Nenhum torneio anterior disponível", "Nenhum histórico de partidas disponível"],
+    fr:["Aucun tournoi précédent disponible", "Aucun historique de matchs disponible",]
+}
+
 const renderProfile = async function(){
     let setting = document.getElementById("setting-button");
     setting.addEventListener("click", function() {renderPage("edit");});
@@ -61,87 +68,6 @@ const renderProfile = async function(){
     }
 }
 
-/* async function add_remove_friend(){
-    const token = localStorage.getItem("access_token")
-    if (!token)
-    {
-        console.log("Token not found !")
-        return ;
-    }
-    const session_user = JSON.parse(localStorage.getItem('sessionUser'))
-    const btn_friend = document.getElementById('btn-friend')
-    const user_text = document.getElementById('text-user');
-    const profileUsername = user_text.innerHTML;
-    if (!btn_friend){
-        return ;
-    }
-    if (btn_friend.innerHTML === 'Add Friend'){
-        try{
-            const response_add_user = await fetch("http://localhost:8000/add_user/", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    "Authorization": `Bearer ${token}`,
-                },
-                body: JSON.stringify({profileUsername})
-                });
-            if (!response_add_user.ok) {
-                throw new Error("Failed to fetch user");
-            }
-            const user = await response_add_user.json();
-            btn_friend.innerHTML = 'Friends';
-        }catch(error){
-            console.log('Cannot get add_user')
-            return;
-        }
-    }else if (btn_friend.innerHTML === 'Friends'){
-        try{
-            const response_remove_user = await fetch("http://localhost:8000/remove_user/", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    "Authorization": `Bearer ${token}`,
-                },
-                body: JSON.stringify({profileUsername})
-            });
-            if (!response_remove_user.ok) {
-                throw new Error("Failed to fetch user");
-            }
-            const user = await response_remove_user.json();
-            btn_friend.innerHTML = 'Add Friend';
-        }catch(error){
-            console.log('Cannot get remove_user')
-            return;
-        }
-    }
-    try {
-        const token = localStorage.getItem("access_token")
-        if (!token)
-        {
-          console.log("Token not found !")
-          return ;
-        }
-        else{
-            const response = await fetch("http://localhost:8000/session_user/", {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${token}`,  // Send token in headers
-                }
-            });
-            if (!response.ok) {
-              throw new Error("Failed to fetch user");
-            }
-            const user = await response.json();
-              const sessionUser = {userId: user.id, username: user.username, 
-                email: user.email, nickname: user.nickname, 
-                friends: user.friends, online: user.online, photo: user.photo}
-              localStorage.setItem('sessionUser', JSON.stringify(sessionUser));
-            }
-          } catch (error) {
-            console.log("Error:", error);
-        }
-}
- */
 async function getUserGameInfo(page)
 {
     const session_user = JSON.parse(localStorage.getItem('sessionUser'));
@@ -308,7 +234,12 @@ function displayTournamentHistory(matchHistory) {
 
     // Check if there are any matches
     if (!matchHistory || matchHistory.length === 0) {
-        historyContainer.innerHTML = "<p>No previous Tournaments available</p>";
+        let p = document.createElement("p");
+        historyContainer.appendChild(p);
+        let span1 = document.createElement("span");
+        span1.textContent = `${langPackProS[localStorage.selectedLanguage][0]}`
+        span1.dataset.translateKey = "No Tournaments";
+        p.append(span1);
         return; 
     }
 
@@ -373,7 +304,13 @@ function displayMatchHistory(matchHistory) {
 
     // Check if there are any matches
     if (!matchHistory || matchHistory.length === 0) {
-        historyContainer.innerHTML = "<p>No match history available</p>";
+        let p = document.createElement("p");
+        historyContainer.appendChild(p);
+        let span1 = document.createElement("span");
+        span1.textContent = `${langPackProS[localStorage.selectedLanguage][1]}`
+        span1.dataset.translateKey = "No Tournaments";
+        p.append(span1);
+        return; 
         return; 
     }
 
@@ -423,7 +360,7 @@ function fetchMatchDetails(matchID) {
         .catch(error => console.error("Error fetching match details:", error));
 }
 
-document.addEventListener("click", function (event) {
+document.addEventListener("click", function (event) {data
     if (event.target.closest(".match-entry")) {
         const matchElement = event.target.closest(".match-entry");
         const matchID = matchElement.getAttribute("match-id");
@@ -601,7 +538,7 @@ async function makeMatches(n){
     const response = await fetch('http://localhost:8000/dummy_matches/',{
         method: 'POST',
         headers:{
-            'COntent-Type': 'application/json',
+            'Content-Type': 'application/json',
         },
         body: JSON.stringify({
             num_matches: n,

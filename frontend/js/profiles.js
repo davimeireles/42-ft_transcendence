@@ -11,6 +11,13 @@ let TOTAL_PAGESP;
 const ITEMS_PER_PAGEP = 5;
 let session_userP;
 
+let langPackProS = {
+    en:["No previous Tournaments available", "No match history available"],
+    pt:["Nenhum torneio anterior disponível", "Nenhum histórico de partidas disponível"],
+    fr:["Aucun tournoi précédent disponible", "Aucun historique de matchs disponible",]
+}
+
+
 async function get_user_by_str(username)
 {
     try
@@ -365,7 +372,12 @@ function displayTournamentHistoryP(matchHistory) {
 
     // Check if there are any matches
     if (!matchHistory || matchHistory.length === 0) {
-        historyContainer.innerHTML = "<p>No previous Tournaments available</p>";
+        let p = document.createElement("p");
+        historyContainer.appendChild(p);
+        let span1 = document.createElement("span");
+        span1.textContent = `${langPackProS[localStorage.selectedLanguage][0]}`
+        span1.dataset.translateKey = "No Tournaments";
+        p.append(span1);
         return; 
     }
 
@@ -428,8 +440,13 @@ function displayMatchHistoryP(matchHistory) {
 
     // Check if there are any matches
     if (!matchHistory || matchHistory.length === 0) {
-        historyContainer.innerHTML = "<p>No match history available</p>";
-        return; 
+        let p = document.createElement("p");
+        historyContainer.appendChild(p);
+        let span1 = document.createElement("span");
+        span1.textContent = `${langPackProS[localStorage.selectedLanguage][1]}`
+        span1.dataset.translateKey = "No Tournaments";
+        p.append(span1);
+        return;  
     }
 
 

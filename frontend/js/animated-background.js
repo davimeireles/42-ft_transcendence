@@ -110,15 +110,6 @@ if (!document.getElementById("threejs-scene")) {
 scene.background = new THREE.Color(0x151314);
 scene.fog = new THREE.Fog(scene.background, 42.5, 50);
 
-var controls = new THREE.OrbitControls(camera, canvas);
-controls.enablePan = false;
-controls.minDistance = 5;
-controls.maxDistance = 7;
-controls.maxPolarAngle = Math.PI * 0.55;
-controls.minPolarAngle = Math.PI * 0.25;
-controls.target.set(0, 1.8, 0);
-controls.update();
-
 
 // GROUND AND ROAD
 var planeGeom = new THREE.PlaneBufferGeometry(50, 100, 200, 200);
@@ -217,19 +208,19 @@ scene.add(sun);
 
 
 
-var clock = new THREE.Clock();
+/* var clock = new THREE.Clock();
 var time = 0;
 
 const targetFPS = 30;
 const interval = 1000 / targetFPS;
 
-/* function renderLoop() {
+function renderLoop() {
   setTimeout(() => {
     requestAnimationFrame(renderLoop);
     render();
   }, interval);
 }
- */
+
 function render() {
   if (resize(renderer)) {
     camera.aspect = canvas.clientWidth / canvas.clientHeight;
@@ -255,4 +246,32 @@ function resize(renderer) {
 
 //renderLoop();
 
+render(); */
+
+var clock = new THREE.Clock();
+var time = 0;
 render();
+
+function render() {
+  if (resize(renderer)) {
+    camera.aspect = canvas.clientWidth / canvas.clientHeight;
+    camera.updateProjectionMatrix();
+  }
+  time = clock.getElapsedTime();
+  materialShaders.forEach(m => {
+    m.uniforms.time.value = time;
+  });
+  renderer.render(scene, camera);
+  //requestAnimationFrame(render);
+}
+
+function resize(renderer) {
+  const canvas = renderer.domElement;
+  const width = canvas.clientWidth;
+  const height = canvas.clientHeight;
+  const needResize = canvas.width !== width || canvas.height !== height;
+  if (needResize) {
+    renderer.setSize(width, height, false);
+  }
+  return needResize;
+}
