@@ -61,7 +61,6 @@ let AIname;
 // Initialize the game
 async function startGame(difficulty) {
   currentDifficulty = difficulty;
-  console.log(`Difficulty set to: ${difficulty}`);
 
   // Hide the difficulty overlay
   const overlay = document.getElementById("difficulty-overlay");
@@ -275,7 +274,6 @@ async function updateAI(time) {
             credentials: "include",
         });
         if (response.ok) {
-            console.log("Match details sent successfully");
         }
     } catch (error) {
         console.error('Error:', error);
@@ -424,14 +422,10 @@ function AIDisplayWinMessage() {
   // Create "Exit to Home" button
   const exitHomeButton = document.createElement("button");
   exitHomeButton.textContent = "Exit to Home";
-  exitHomeButton.addEventListener("click", exitToHome);
+  exitHomeButton.addEventListener("click", function(event) {renderPage("home");});
   winMessage.appendChild(exitHomeButton);
 
   winMessage.style.display = "block";
-}
-
-function exitToHome() {
-  window.location.href = "/home"; // Redirect to the home page
 }
 
 // Reset the game

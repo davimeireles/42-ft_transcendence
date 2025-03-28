@@ -10,7 +10,7 @@ const redi42 = async function () {
     const res = await response.json();
     window.location.href = res.url;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -26,17 +26,16 @@ window.onload = async function () {
         },
         body: JSON.stringify({ code }),
       });
+      console.log(response);
       if (response.ok) {
+        console.log("this is working");
         const res = await response.json();
         localStorage.removeItem("sessionUser");
-        console.log(res.message);
-        console.log(res.access_token);
         localStorage.setItem("access_token", res.access_token);
         localStorage.setItem("refresh_token", res.refresh_token);
         try {
           const token = localStorage.getItem("access_token");
           if (!token) {
-            console.log("Token not found !");
             return;
           } else {
             const response_user = await fetch(
@@ -70,14 +69,14 @@ window.onload = async function () {
             }
           }
         } catch (error) {
-          console.log("Error:", error);
+          console.error("Error:", error);
         }
       } else {
         const res = await response.json();
-        console.log("ERROR");
+        console.error("ERROR");
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   } else {
     return;

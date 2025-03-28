@@ -15,7 +15,8 @@ const router = {
     edit: "/edit-profile.html",
     enable2FA: "/enable-2fa.html",
     verify2FA: "/verify-2fa.html",
-    tournament: "/tournament.html"
+    tournament: "/tournament.html",
+    "42auth": "/42auth.html",
   },
 };
 
@@ -24,11 +25,19 @@ async function renderPage(page, shouldPushState = true, target_user = null) {
 
   const accessToken = localStorage.getItem("access_token");
 
-  const protectedPages = ["profile", "profiles", "edit", "tournament", "pongpage", "edit", "enable2FA"];
+  const protectedPages = ["profile", "profiles", "edit", "tournament", "pongpage", "edit", "enable2FA", "home"];
+  const initPages = ["intro", "login", "register"];
+
 
   if (!accessToken && protectedPages.includes(page)) {
     console.warn("Unauthorized access attempt. Redirecting to home...");
     window.location.href = "/intro";
+    return;
+  }
+
+  if (accessToken && initPages.includes(page)) {
+    console.warn("Unauthorized access attempt. Redirecting to home...");
+    window.location.href = "/home";
     return;
   }
 
@@ -40,9 +49,12 @@ async function renderPage(page, shouldPushState = true, target_user = null) {
     const response = await fetch(router.pages[page]);
     const html = await response.text();
     mainContent.innerHTML = html;
-
+    let helper;
     // Call the appropriate function based on the page
     switch (page) {
+      case "42auth":
+        setTimeout(function() {renderPage("home");}, 1000);
+        break;
       case "register":
         RegisterFormListener();
         break;
@@ -56,17 +68,15 @@ async function renderPage(page, shouldPushState = true, target_user = null) {
         renderUser();
         break;
       case "profile":
-        const response = await updateSessionUserP(localStorage.getItem("access_token"));
+        helper = await updateSessionUserP(localStorage.getItem("access_token"));
         renderProfile();
         getUserGameInfo();
         getMatchHistory(1);
         getTournamentHistory(1);
         break;
       case "profiles":
-        console.log(target_user);
         if(target_user)
         {
-          console.log(target_user);
           renderProfiles(target_user);
         }
         else
@@ -86,6 +96,7 @@ async function renderPage(page, shouldPushState = true, target_user = null) {
         break;
       default:
         console.warn(`No specific function defined for page: ${page}`);
+        renderPage("intro");
     }
 
     // Update history and current page                 CHECK HERE
@@ -99,7 +110,11 @@ async function renderPage(page, shouldPushState = true, target_user = null) {
     console.error("Error loading page:", error);
   }
   
-  const selectedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+  const selectedLanguage = localStorage.getItem('selectedLanguage');
+  if (!selectedLanguage) {
+    localStorage.setItem('selectedLanguage', 'en');
+    selectedLanguage = 'en';
+  }
   loadLanguage(selectedLanguage).then((translations) => {
     applyTranslations(translations);
   });

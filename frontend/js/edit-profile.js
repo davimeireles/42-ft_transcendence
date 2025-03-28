@@ -1,10 +1,11 @@
+'use strict'
+
 function UsernameForm() {
     let home = document.getElementById("btn-home");
     home.addEventListener("click", function() {renderPage("home");});
     const token = localStorage.getItem("access_token");
 
     if (!token) {
-        console.log("Token not found!");
         return;
     }
 
@@ -16,7 +17,6 @@ function UsernameForm() {
 
     editProfileForm.addEventListener("submit", async function (event) {
         event.preventDefault();
-        console.log("Edit Profile Form submitted");
 
         const changeNickInput = document.getElementById("changeNick");
         const passwordInput = document.getElementById("Password");
@@ -40,7 +40,6 @@ function UsernameForm() {
                 });
 
                 if (response.ok) {
-                    console.log("Nickname changed successfully");
                     // Update session user and render home page
                     await updateSessionUser(token); // Helper function to update session
                 } else {
@@ -49,7 +48,6 @@ function UsernameForm() {
                     errorMessage.style.display = "block";
                 }
             } catch (error) {
-                console.log("Error:", error);
                 errorMessage.textContent = "An error occurred. Please try again.";
                 errorMessage.style.display = "block";
             }
@@ -63,7 +61,6 @@ function UsernameForm() {
 
 
             if (password !== Repassword) {
-                console.log('passwords do not match');
                 passwordMatchError.textContent = "Passwords do not match.";
                 passwordMatchError.style.display = "block";
                 return; // Exit the function
@@ -86,7 +83,6 @@ function UsernameForm() {
                 });
 
                 if (response.ok) {
-                    console.log("Password changed successfully");
                     // Update session user and render home page
                     await updateSessionUser(token); // Helper function to update session
                 } else {
@@ -95,7 +91,7 @@ function UsernameForm() {
                     errorMessage.style.display = "block";
                 }
             } catch (error) {
-                console.log("Error:", error);
+                console.error("Error:", error);
                 errorMessage.textContent = "An error occurred. Please try again.";
                 errorMessage.style.display = "block";
             }
@@ -119,7 +115,6 @@ function UsernameForm() {
                 }
 
                 const data = await response.json();
-                console.log("Profile picture updated:", data);
 
                 await updateSessionUser(token);
 
@@ -156,7 +151,7 @@ function UsernameForm() {
             };
             localStorage.setItem('sessionUser', JSON.stringify(sessionUser));
         } catch (error) {
-            console.log("Error:", error);
+            console.error("Error:", error);
         }
     }
 }

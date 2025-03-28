@@ -510,7 +510,7 @@ document.addEventListener("click", function (event) {
     }
 });
 
-document.addEventListener("click", async function (event) {
+/* document.addEventListener("click", async function (event) {
     if (event.target.closest(".tournament-entry")) {
         const tourneyElement = event.target.closest(".tournament-entry");
         const tournamentID = tourneyElement.getAttribute("tournament-id");
@@ -538,7 +538,7 @@ document.addEventListener("click", async function (event) {
         const profileModal = document.getElementById("profileModalBody");
         profileModal.innerHTML = ""
     }
-});
+}); */
 
 
 function renderTourneyPaginationP() {

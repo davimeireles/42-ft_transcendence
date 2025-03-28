@@ -10,7 +10,6 @@ async function enable2FA() {
     }
 
     try {
-        console.log('Token:', token);
         const response = await fetch('http://localhost:8000/setup_2fa/', {
             method: 'POST',
             headers: {
@@ -63,7 +62,6 @@ async function check_first_time_otp() {
 
         if (response.ok) {
             const result = await response.json();
-            console.log(result.message);
             renderPage('profile');
         } else {
             const result = await response.json();

@@ -110,7 +110,7 @@ async function getUserGameInfo(page)
     const session_user = JSON.parse(localStorage.getItem('sessionUser'));
     const token = localStorage.getItem("access_token")
     if (!token){
-        console.log("Token not found !")
+        console.error("Token not found !")
         return ;
     }
 	try{
@@ -136,9 +136,6 @@ async function getUserGameInfo(page)
                 renderPagination();
             drawCharts(gameInfo);
         }
-        else{
-            console.log("not work :( @ count_user_games", response.status);
-        };
     }
     catch(error){
         console.error("Error caught @count_user_games: ", error);
@@ -151,7 +148,7 @@ async function drawCharts(gameInfo)
         const session_user = JSON.parse(localStorage.getItem('sessionUser'));
         const token = localStorage.getItem("access_token")
         if (!token){
-            console.log("Token not found !")
+            console.error("Token not found !")
             return ;
         }
         try{
@@ -164,7 +161,6 @@ async function drawCharts(gameInfo)
             })
             if(response.ok){
                 const playinghabits = await response.json();
-                console.log(playinghabits);
                 const ctx = document.getElementById("habitsCanvas")
                 new Chart(ctx, {
                     type: 'bar',
@@ -197,9 +193,6 @@ async function drawCharts(gameInfo)
                     }
                 });
             }
-            else{
-                console.log("not work :( @ drawCharts", response.status);
-            };
         }
         catch(error){
             console.error("Error caught @drawCharts: ", error);
@@ -235,7 +228,7 @@ async function getTournamentHistory(page)
     const token = localStorage.getItem("access_token")
     if (!token)
     {
-        console.log("Token not found !")
+        console.error("Token not found !")
         return ;
     }
     try
@@ -253,10 +246,6 @@ async function getTournamentHistory(page)
             const match_history = await response.json();
             displayTournamentHistory(match_history.history);
         }
-        else
-        {
-            console.log("not work :( @ getMatchHistory", response.status);
-        };
     }
     catch(error)
     {
@@ -281,11 +270,6 @@ function displayTournamentHistory(matchHistory) {
     }
 
     matchHistory.forEach(tournament => {
-        console.log("Tournament Name:", tournament.entry.name);
-        console.log("Tournament ID:", tournament.entry.id);
-        console.log("----");
-    });
-    matchHistory.forEach(tournament => {
         const matchElement = document.createElement("div");
         matchElement.className = "tournament-entry"; // Optional: for styling
         matchElement.setAttribute("tournament-id", tournament.entry.id)
@@ -305,7 +289,7 @@ async function getMatchHistory(page)
     const token = localStorage.getItem("access_token")
     if (!token)
     {
-        console.log("Token not found !")
+        console.error("Token not found !")
         return ;
     }
     try
@@ -323,10 +307,6 @@ async function getMatchHistory(page)
             const match_history = await response.json();
             displayMatchHistory(match_history.history);
         }
-        else
-        {
-            console.log("not work :( @ getMatchHistory", response.status);
-        };
     }
     catch(error)
     {
@@ -426,12 +406,11 @@ document.addEventListener("click", async function (event) {
                 if (response.ok) {
                     const tournament = await response.json();
                     document.getElementById("modal-title").innerHTML = tournament.name;
-                    console.log(tournament);
                     playoffTable(tournament, 'profileModalBody')
                 }
             }
             catch(error){
-                console.log(error)
+                console.error(error)
             }
         }
         const modalElement = document.getElementById("profileModal");

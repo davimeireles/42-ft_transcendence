@@ -14,7 +14,6 @@ function LoginFormListener() {
 
   form.addEventListener("submit", async function (event) {
     event.preventDefault();
-    console.log("Form submitted");
 
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
@@ -31,17 +30,15 @@ function LoginFormListener() {
       });
 
       if (loginResponse.ok) {
-        console.log("User Login Succesfully");
         localStorage.removeItem("sessionUser");
         const result = await loginResponse.json();
-        console.log(result.access_token);
         localStorage.setItem("access_token", result.access_token);
         localStorage.setItem("refresh_token", result.refresh_token);
 
         try {
           const token = localStorage.getItem("access_token");
           if (!token) {
-            console.log("Token not found !");
+            console.error("Token not found !");
             return;
           } else {
             const response = await fetch(
@@ -68,7 +65,6 @@ function LoginFormListener() {
               two_fa_enable: user.two_fa_enable,
             };
             localStorage.setItem("sessionUser", JSON.stringify(sessionUser));
-            console.log(sessionUser);
             if (sessionUser.two_fa_enable) {
               renderPage("verify2FA");
             } else {
@@ -76,7 +72,7 @@ function LoginFormListener() {
             }
           }
         } catch (error) {
-          console.log("Error:", error);
+          console.error("Error:", error);
         }
       } else {
         const result = await loginResponse.json();
@@ -85,7 +81,7 @@ function LoginFormListener() {
         errorMessage.style.display = "block";
       }
     } catch (error) {
-      console.log("Error:", error);
+      console.error("Error:", error);
       errorMessage.style.color = "#fc1723";
       errorMessage.textContent = "An error occurred. Please try again.";
       errorMessage.style.display = "block";

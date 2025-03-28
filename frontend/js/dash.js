@@ -28,14 +28,12 @@ const renderUser = async () => {
   if (mode)
     mode.innerHTML= `Select game mode`;
   const friends = session_user.friends
-  console.log(document.getElementById('friends-online'))
   if (friends && friends.length > 0 && friends.online) {
     friends.forEach(friend => {
       const friends_list = document.getElementById('friends-online');
       const friendItem = document.createElement("li");
       friendItem.textContent = `${friend.username}`;
       friends_list.appendChild(friendItem);
-      console.log(friend)
    });
   } else {
     return ;

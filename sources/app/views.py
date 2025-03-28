@@ -675,8 +675,8 @@ def get_tournament(request):
             }
             return JsonResponse(data)
         else:
-            return Response({'message': 'No tournament'}, status=status.HTTP_404_NOT_FOUND)
-    return Response({'message': 'Error'}, status=status.HTTP_404_NOT_FOUND)
+            return JsonResponse({'message': 'No tournament'})
+    return Response({'message': 'Error'}, status=status.HTTP_400_NOT_FOUND)
 
 @api_view(['GET'])
 def get_matches(request, tournament_id):

@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
         item.addEventListener('click', function(event) {
             event.preventDefault();
             const lang = this.dataset.lang;
-            console.log("Selected language: " + lang);
             localStorage.setItem('selectedLanguage', lang);
             loadLanguage(lang).then((translations) => {
                 applyTranslations(translations);

@@ -165,13 +165,11 @@ function createPlayerCustomization(playerName, setColorFunction) {
 // Set player 1 color
 function setPlayer1Color(color) {
   player1Color = color;
-  console.log("Player 1 color set to " + color);
 }
 
 // Set player 2 color
 function setPlayer2Color(color) {
   player2Color = color;
-  console.log("Player 2 color set to " + color);
 }
 
 // Show customization modal
@@ -280,7 +278,6 @@ async function update(time) {
         credentials: "include",
       });
       if (response.ok) {
-        console.log("Match details sent successfully");
       }
     } catch (error) {
       console.error("Error:", error);

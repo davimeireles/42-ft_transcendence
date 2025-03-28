@@ -111,6 +111,7 @@ scene.background = new THREE.Color(0x151314);
 scene.fog = new THREE.Fog(scene.background, 42.5, 50);
 
 
+
 // GROUND AND ROAD
 var planeGeom = new THREE.PlaneBufferGeometry(50, 100, 200, 200);
 planeGeom.rotateX(-Math.PI * 0.5);
@@ -262,7 +263,7 @@ function render() {
     m.uniforms.time.value = time;
   });
   renderer.render(scene, camera);
-  //requestAnimationFrame(render);
+  requestAnimationFrame(render);
 }
 
 function resize(renderer) {

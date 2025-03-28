@@ -61,6 +61,10 @@ async function getTournament() {
         })
         if (response.ok) {
             const tournament = await response.json();
+            if (tournament.message) {
+                tournamentCreator();
+                return ;
+            }
             tournamentScreen(tournament);
         }else {
             tournamentCreator();
@@ -86,7 +90,7 @@ function tournamentCreator() {
     
     let titleLabel = document.createElement("label");
     titleLabel.classList.add("form-label-username", "pt-3");
-    titleLabel.for = "tournament-title";
+    titleLabel.setAttribute("for", "tournament-title");
     titleLabel.dataset.translateKey = "Title";
     titleLabel.textContent = langPack[localStorage.selectedLanguage][0];
     tournamentForm.append(titleLabel);
@@ -100,7 +104,7 @@ function tournamentCreator() {
     
     let sizeLabel = document.createElement("label");
     sizeLabel.classList.add("form-label-username", "pt-3");
-    sizeLabel.for = "tournament-size";
+    sizeLabel.setAttribute("for", "tournament-size");
     sizeLabel.dataset.translateKey = "Size";
     sizeLabel.textContent = langPack[localStorage.selectedLanguage][1];
     tournamentTitle.after(sizeLabel);

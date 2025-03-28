@@ -331,7 +331,6 @@ function initialize3DPong() {
                   credentials: "include",
               });
               if (response.ok) {
-                  console.log("Match details sent successfully");
               }
           } catch (error) {
               console.error('Error:', error);
@@ -381,7 +380,7 @@ function initialize3DPong() {
     }
 
     function exitToHome() {
-        window.location.href = "/home"; // Redirect to the home page
+      renderPage("home");
     }
 
     function resetGame() {

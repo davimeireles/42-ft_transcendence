@@ -34,7 +34,6 @@ function RegisterFormListener() {
 
   form.addEventListener("submit", async function (event) {
     event.preventDefault();
-    console.log("Form submitted");
 
     const username = document.getElementById("floatingUsername").value;
     const email = document.getElementById("floatingInput").value;
@@ -57,7 +56,6 @@ function RegisterFormListener() {
 
       if (response.ok) {
         alert("Registered Succesfully");
-        console.log("User Registered Succesfully");
         renderPage("intro");
       } else {
         const result = await response.json();
@@ -65,7 +63,7 @@ function RegisterFormListener() {
         errorMessage.style.display = "block";
       }
     } catch (error) {
-      console.log("Error:", error);
+      console.error("Error:", error);
       errorMessage.textContent = "An error occurred. Please try again.";
       errorMessage.style.display = "block";
     }
