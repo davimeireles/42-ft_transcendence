@@ -17,8 +17,37 @@ let langPackPro = {
     fr:["Aucun tournoi précédent disponible", "Aucun historique de matchs disponible",]
 }
 
-const renderProfile = async function(){
+async function updateSessionUserP(token) {
+    localStorage.removeItem("sessionUser");
+    try {
+        const response = await fetch("http://localhost:8000/session_user/", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+            }
+        });
+        if (!response.ok) {
+            throw new Error("Failed to fetch user");
+        }
+        const user = await response.json();
+        const sessionUser = {
+            userId: user.id,
+            username: user.username,
+            email: user.email,
+            nickname: user.nickname,
+            friends: user.friends,
+            online: user.online,
+            photo: user.photo
+        };
+        localStorage.setItem('sessionUser', JSON.stringify(sessionUser));
+    } catch (error) {
+        console.log("Error:", error);
+    }
+}
+
+const renderProfile = async function() {
     let setting = document.getElementById("setting-button");
+    console.log()
     setting.addEventListener("click", function() {renderPage("edit");});
     let twoFA = document.getElementById("twoFA-button");
     twoFA.addEventListener("click", function() {renderPage("enable2FA");});
@@ -58,6 +87,14 @@ const renderProfile = async function(){
             const friends_list = document.getElementById('friends-list');
             const friendItem = document.createElement("li");
             friendItem.textContent = `${friend.username}`;
+            if(friend.online)
+            {
+                friendItem.style.color = "green";
+            }
+            else
+            {
+                friendItem.style.color = "red";
+            }
             friends_list.appendChild(friendItem);
      });
     }
@@ -311,7 +348,6 @@ function displayMatchHistory(matchHistory) {
         span1.dataset.translateKey = "No Tournaments";
         p.append(span1);
         return; 
-        return; 
     }
 
 
@@ -360,7 +396,7 @@ function fetchMatchDetails(matchID) {
         .catch(error => console.error("Error fetching match details:", error));
 }
 
-document.addEventListener("click", function (event) {data
+document.addEventListener("click", function (event) {
     if (event.target.closest(".match-entry")) {
         const matchElement = event.target.closest(".match-entry");
         const matchID = matchElement.getAttribute("match-id");

@@ -100,12 +100,11 @@ function UsernameForm() {
                 errorMessage.style.display = "block";
             }
         }
-
+        console.log()
         // Process Photo Upload
         if (myFileInput && myFileInput.files.length > 0) {
             const formData = new FormData();
             formData.append("file", myFileInput.files[0]);
-
             try {
                 const response = await fetch("http://localhost:8000/upload_photo/", {
                     method: "POST",
@@ -147,6 +146,7 @@ function UsernameForm() {
             }
             const user = await response.json();
             const sessionUser = {
+                userId: user.id,
                 username: user.username,
                 email: user.email,
                 nickname: user.nickname,

@@ -48,5 +48,5 @@ urlpatterns = [
     path('dummy_matches/', app.views.dummy_matches, name='dummy_matches'),
     path('update_match/', app.views.update_match, name='update_match'),
 ]
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

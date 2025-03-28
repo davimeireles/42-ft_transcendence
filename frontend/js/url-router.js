@@ -24,7 +24,7 @@ async function renderPage(page, shouldPushState = true, target_user = null) {
 
   const accessToken = localStorage.getItem("access_token");
 
-  const protectedPages = ["profile", "profiles", "edit", "tournament", "pongpage", "home", "edit", "enable2FA"];
+  const protectedPages = ["profile", "profiles", "edit", "tournament", "pongpage", "edit", "enable2FA"];
 
   if (!accessToken && protectedPages.includes(page)) {
     console.warn("Unauthorized access attempt. Redirecting to home...");
@@ -56,6 +56,7 @@ async function renderPage(page, shouldPushState = true, target_user = null) {
         renderUser();
         break;
       case "profile":
+        const response = await updateSessionUserP(localStorage.getItem("access_token"));
         renderProfile();
         getUserGameInfo();
         getMatchHistory(1);

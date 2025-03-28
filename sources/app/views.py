@@ -247,7 +247,7 @@ def get_user(request, str_user):
 def session_user(request):
     user = request.user
     friends = user.friends.all()
-    friends_data = [{"username": friend.username, "email": friend.email, "nickname": friend.nickname} for friend in friends]
+    friends_data = [{"username": friend.username, "email": friend.email, "nickname": friend.nickname, "online": friend.online} for friend in friends]
     return Response({
         "id": user.id,
         "email": user.email,
