@@ -3,6 +3,7 @@ services:
     build: ./frontend
     volumes:
       - ./frontend:/var/www/html
+      - frontend-data:/frontend
     ports:
       - "4000:443"
     expose:
@@ -108,4 +109,6 @@ volumes:
   prometheus-data:
     driver: local
   grafana-data:
+    driver: local
+  frontend-data:
     driver: local
