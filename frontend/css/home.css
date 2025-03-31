@@ -1,7 +1,7 @@
 /* Existing styles (from your home.css) */
 .home-main-div {
   width: 60%;
-  height: 90vh;
+  height: 100%;
   padding: 10px;
   display: flex;
   flex-direction: column;
@@ -245,6 +245,8 @@
 }
 
 .color-selected {
-    filter: brightness(50%);
-    transition: all 0.3s ease-in-out;
+    filter: brightness(100%) !important;
+    transform: translateY(-5px);
+    transition-timing-function: cubic-bezier(0.0, 0.0, 10.0, 0.0);
+    border-radius: 5px;
 }

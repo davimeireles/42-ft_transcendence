@@ -3,7 +3,7 @@
     font-size: 1.5rem;
     padding: 15px 30px;
     margin: 20px;
-    border: 3px solid #b700ff;
+    border: 3px solid rgba(183, 0, 255, 0.9);
     background-color: #151314;
     color: #e3dce6;
     transition: all 0.3s ease;
@@ -63,5 +63,15 @@
 }
 
 .semi-transparent {
-  background-color: rgba(21, 19, 20, 0.90);
+  background-color: rgba(21, 19, 20, 0.98);
+  border: 3px solid rgba(183, 0, 255, 0.3);
+  box-shadow: 0px 0px 50px rgba(183, 0, 255, 0.3);
+}
+
+.vapor-nav {
+    background-color: rgba(21, 19, 20, 0.98);
+    border-bottom: 3px;
+    border-bottom-style: solid;
+    border-color: rgba(183, 0, 255, 0.3);
+    box-shadow: 0px 0px 50px rgba(183, 0, 255, 0.3);
 }

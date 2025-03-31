@@ -80,7 +80,7 @@ function tournamentCreator() {
     let tournamentModal = document.getElementById("tournament-modal");
 
     let createTournament = document.createElement("div");
-    createTournament.classList.add("semi-transparent", "col", "w-75", "m-3");
+    createTournament.classList.add("semi-transparent", "col", "w-75", "m-3", "rounded-3");
     createTournament.id = "create-tournament";
     tournamentModal.append(createTournament);
     
@@ -234,7 +234,7 @@ async function ft_createTournament(e) {
 async function tournamentScreen(tournament) {
     let tournamentModal = document.getElementById("tournament-modal");
     let tournamentScreen = document.createElement("div");
-    tournamentScreen.classList.add("semi-transparent", "col", "w-75", "m-3");
+    tournamentScreen.classList.add("semi-transparent", "col", "w-75", "m-3", "rounded-3");
     tournamentScreen.id = "tournament-screen";
     tournamentModal.append(tournamentScreen);
 
@@ -552,7 +552,7 @@ function tournamentGame() {
             gameContainer.id = "game-container";
             board.parentNode.insertBefore(gameContainer, board);
             gameContainer.appendChild(board);
-            gameContainer.style.position = "relative"; // Required for positioning
+            gameContainer.classList.add("position-absolute", "top-50", "translate-middle-y")
         }
 
         // Create a win message element

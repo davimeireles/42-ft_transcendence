@@ -1,3 +1,5 @@
+import { OrbitControls } from 'jsm/controls/OrbitControls.js';
+
 var noise =`
 	vec3 mod289(vec3 x) {
 	return x - floor(x * (1.0 / 289.0)) * 289.0;
@@ -112,6 +114,17 @@ scene.fog = new THREE.Fog(scene.background, 42.5, 50);
 
 
 
+var controls = new OrbitControls(camera, canvas);
+controls.enablePan = false;
+controls.minDistance = 5;
+controls.maxDistance = 7;
+controls.maxPolarAngle = Math.PI * 0.55;
+controls.minPolarAngle = Math.PI * 0.25;
+controls.target.set(0, 1.8, 0);
+controls.update();
+
+
+
 // GROUND AND ROAD
 var planeGeom = new THREE.PlaneBufferGeometry(50, 100, 200, 200);
 planeGeom.rotateX(-Math.PI * 0.5);
@@ -207,47 +220,6 @@ var sun = new THREE.Mesh(sunGeom, sunMat);
 sun.position.set(0, 30, -500);
 scene.add(sun);
 
-
-
-/* var clock = new THREE.Clock();
-var time = 0;
-
-const targetFPS = 30;
-const interval = 1000 / targetFPS;
-
-function renderLoop() {
-  setTimeout(() => {
-    requestAnimationFrame(renderLoop);
-    render();
-  }, interval);
-}
-
-function render() {
-  if (resize(renderer)) {
-    camera.aspect = canvas.clientWidth / canvas.clientHeight;
-    camera.updateProjectionMatrix();
-  }
-  time = clock.getElapsedTime();
-  materialShaders.forEach(m => {
-      m.uniforms.time.value = time;
-  });
-  renderer.render(scene, camera);
-}
-
-function resize(renderer) {
-  const canvas = renderer.domElement;
-  const width = canvas.clientWidth;
-  const height = canvas.clientHeight;
-  const needResize = canvas.width !== width || canvas.height !== height;
-  if (needResize) {
-    renderer.setSize(width, height, false);
-  }
-  return needResize;
-}
-
-//renderLoop();
-
-render(); */
 
 var clock = new THREE.Clock();
 var time = 0;

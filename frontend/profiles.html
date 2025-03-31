@@ -1,21 +1,21 @@
-<div class="container-fluid" style="font-family: 'square'; color: #e3dce6;">
+<div class="container-fluid mt-3" style="font-family: 'square'; color: #e3dce6;">
     <div class="row">
-        <div class="col-8 sidebar">
-            <div class="row profile-container semi-transparent pt-3 pb-3 ps-3 mb-2 me-3 rounded-5">
+        <div class="col-8 sidebar vh-87">
+            <div class="row profile-container semi-transparent pt-3 pb-3 ps-3 mb-2 me-3 rounded-3">
                 <img src="" alt="" id="profileImage">
                 <div class="user-info">
                     <div id="text-user" class="user"></div>
                     <div id="online"></div>
+                    <button class="vapor-btn btn-outline-secondary w-100 mt-2" onclick="add_remove_friendP()" id="btn-friend" data-translate-key="Add Friend"></button>
                 </div>
-                <button class="btn btn-sm btn-outline-secondary w-100 mt-2" onclick="add_remove_friendP()" id="btn-friend" data-translate-key="Add Friend"></button>
             </div>
-            <div class="container-fluid row semi-transparent rounded-5 h-17">
+            <div class="container-fluid row semi-transparent rounded-3 h-17">
                 <div id="playingHabits">
                     <canvas id="habitsCanvas"></canvas>
                 </div>
             </div>
-            <div class="container-fluid row p-3 rounded-5 h-30">
-                <div class="col sidebar-tour rounded-5 p-3 me-2 semi-transparent overflow-auto invisible-scrollbar">
+            <div class="container-fluid row p-3 rounded-3 h-30">
+                <div class="col sidebar-tour rounded-3 p-3 me-2 semi-transparent overflow-auto invisible-scrollbar">
                     <span data-translate-key="Tournaments">Tournaments</span>
                     <div id="HistoryTournament">
                     
@@ -27,7 +27,7 @@
                         <canvas id="tournamentcanvas"></canvas>
                     </div>
                 </div>
-                <div class="col sidebar-game rounded-5 p-3 semi-transparent overflow-auto invisible-scrollbar">
+                <div class="col sidebar-game rounded-3 p-3 semi-transparent overflow-auto invisible-scrollbar">
                     <span data-translate-key="Match History">Match History</span>
                     <div id="HistoryGames">
                     
@@ -42,7 +42,7 @@
             </div>
         </div>
         <!-- Right Sidebar -->
-        <div class="col-4 semi-transparent p-3 rounded-5 vh-87">
+        <div class="col-4 semi-transparent p-3 rounded-3 vh-87">
             <span style="display: flex; align-items: center; justify-content: center;" data-translate-key="Search users">Search users</span>
             <div class="input-group d-flex align-items-center justify-content-center">
                 <div class="col-6">

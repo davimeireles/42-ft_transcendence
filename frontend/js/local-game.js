@@ -144,13 +144,17 @@ function createPlayerCustomization(playerName, setColorFunction) {
   colors.forEach(color => {
     const colorButton = document.createElement("button");
     colorButton.textContent = color.name;
+    if (color.name == 'green') colorButton.classList.add("color-selected");
     colorButton.style.backgroundColor = color.hex;
     colorButton.style.color = "#151314";
     colorButton.style.padding = "5px 10px";
     colorButton.style.width = "70px";
     colorButton.style.border = "none";
+    colorButton.style.filter = "brightness(75%)";
     colorButton.style.margin = "5px";
     colorButton.style.cursor = "pointer";
+    colorButton.style.borderRadius = "5px";
+    colorButton.style.transition = "all 0.3s ease-in-out";
     colorButton.addEventListener("click", (e) => {
         [...e.target.parentNode.children].forEach(node => node.classList.remove("color-selected"));
         e.target.classList.add("color-selected");

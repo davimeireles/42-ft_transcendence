@@ -46,9 +46,9 @@ html, body {
 {
 	position: relative;
     top: 0%;
-	background-color: transparent;
 	width: 100%;
     height: 100%;
+    background: linear-gradient(0deg, rgba(183,0,255,0.21205117789303218) 0%, rgba(224,145,255,0) 55%, rgba(255,255,255,0) 100%);
 }
 
 #main-content
