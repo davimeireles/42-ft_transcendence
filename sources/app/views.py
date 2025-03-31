@@ -217,22 +217,22 @@ def oauth42(request):
 def return_user(request):
     query = request.GET.get('q', '')
     if query:
-        users = User.objects.filter(username__icontains=query)[:10]
-        results = [{'username': user.username, 'email': user.email} for user in users]
+        users = User.objects.filter(nickname__icontains=query)[:10]
+        results = [{'nickname': user.nickname, 'email': user.email} for user in users]
         return JsonResponse(results, safe=False)
     return JsonResponse([], safe=False)
 
 @api_view(['GET'])
 def get_user_by_id(request, search_name):
-    user = User.objects.get(username=search_name)
+    user = User.objects.get(nickname=search_name)
     serializer = UserSerializer(user)
     return Response(serializer.data)
 
 @api_view(['POST'])
 def get_user(request, str_user):
     if request.method == 'POST':
-        if User.objects.filter(username=str_user).exists():
-            user = User.objects.get(username=str_user)
+        if User.objects.filter(nickname=str_user).exists():
+            user = User.objects.get(nickname=str_user)
             friends = user.friends.all()
             friends_data = [{"username": friend.username, "email": friend.email, "nickname": friend.nickname, 'photo': friend.photo} for friend in friends]
             user_data = model_to_dict(user, fields=['nickname', 'username', 'email', 'photo', 'online'])

@@ -53,7 +53,6 @@ async function renderPage(page, shouldPushState = true, target_user = null) {
     // Call the appropriate function based on the page
     switch (page) {
       case "42auth":
-        setTimeout(function() {renderPage("home");}, 1000);
         break;
       case "register":
         RegisterFormListener();

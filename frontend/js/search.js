@@ -1,5 +1,6 @@
 
 async function searchProfile(){
+    const session_user = JSON.parse(localStorage.getItem('sessionUser'));
     const search = document.getElementById('user-search');
     const results = document.getElementById('results');
     const query = search.value.trim();
@@ -13,24 +14,24 @@ async function searchProfile(){
         .then((data) => {
             results.innerHTML = '';
             data.forEach((user) => {
-                if (user.username !== 'admin' && user.username !== 'LocalPlayer'&& user.username !== 'EasyAI'&& user.username !== 'MediumAI'&& user.username !== 'HardAI'){
+                if (user.nickname !== session_user.nickname && user.nickname !== 'admin' && user.nickname !== 'LocalPlayer'&& user.nickname !== 'EasyAI'&& user.nickname !== 'MediumAI'&& user.nickname !== 'HardAI'){
                     const h6 = document.createElement('h6');
-                    h6.textContent = `${user.username}`; // Display username and email
+                    h6.textContent = `${user.nickname}`; // Display nickname and email
                     results.appendChild(h6);
-                    h6.addEventListener('click', () => getProfile(user.username))
+                    h6.addEventListener('click', () => getProfile(user.nickname))
                 }
             });
         })
         .catch((error) => console.error('Error', error));
 }
 
-async function getProfile(username) {
+async function getProfile(nickname) {
     const session_user = JSON.parse(localStorage.getItem('sessionUser'))
-    if (session_user.username == username)
+    if (session_user.nickname == nickname)
         return ;
     else{
         try {
-            const response = await fetch(`http://localhost:8000/get_user/${username}`, {
+            const response = await fetch(`http://localhost:8000/get_user/${nickname}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -40,7 +41,7 @@ async function getProfile(username) {
             if (response.ok) {
                 const user = await response.json();
                 localStorage.setItem('searchedUser', JSON.stringify(user));
-                renderPage('profiles', true, username)
+                renderPage('profiles', true, nickname)
             }
         } catch (error) {
             console.error(error)

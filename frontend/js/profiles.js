@@ -18,12 +18,11 @@ let langPackProS = {
 }
 
 
-async function get_user_by_str(username)
+async function get_user_by_str(nickname)
 {
     try
     {
-        console.log("hello" + username);
-        const response = await fetch(`http://localhost:8000/get_user_by_id/${username}/`,
+        const response = await fetch(`http://localhost:8000/get_user_by_id/${nickname}/`,
         {
             method: "GET",
             headers: {
@@ -35,10 +34,6 @@ async function get_user_by_str(username)
             const user_info = await response.json();
             return user_info;
         }
-        else
-        {
-            console.log("not work :( @ get_user_by_str", response.status);
-        };
     }
     catch(error)
     {
@@ -47,25 +42,21 @@ async function get_user_by_str(username)
 }
 
 function isUserInArray(username, users) {
-    console.log(users);
-    console.log(username);
     return users.some(user => user.username === username);
 }
 
 async function renderProfiles(target_user){
     session_userP = await get_user_by_str(target_user);
-    console.log(session_userP);
     const logged_user = JSON.parse(localStorage.getItem('sessionUser'));
     const btn_friend = document.getElementById('btn-friend');
 
     if(isUserInArray(session_userP.username, logged_user.friends))
     {
-        console.log("found");
         btn_friend.innerHTML = 'Friends';
     }
     else
     {
-        console.log("not found");
+        console.error("not found");
         btn_friend.innerHTML = 'Add Friend';
     }
 
@@ -123,18 +114,15 @@ async function add_remove_friendP(){
     const logged_user = JSON.parse(localStorage.getItem('sessionUser'));
     if (!token)
     {
-        console.log("Token not found !");
+        console.error("Token not found !");
         return ;
     }
     const btn_friend = document.getElementById('btn-friend');
     const user_text = document.getElementById('text-user');
     const profileUsername = user_text.innerHTML;
-    console.log(profileUsername);
     if (!btn_friend){
         return ;
     }
-    console.log(session_userP.username);
-    console.log(logged_user.username);
     if (btn_friend.innerHTML === 'Add Friend'){
         try{
             const response_add_user = await fetch("http://localhost:8000/add_userS/", {
@@ -147,13 +135,12 @@ async function add_remove_friendP(){
                     adder: logged_user.username
                 })});
             if (!response_add_user.ok) {
-                console.log(await response_add_user.json());
                 throw new Error("Failed to fetch user");
             }
             const user = await response_add_user.json();
             btn_friend.innerHTML = 'Friends';
         }catch(error){
-            console.log(error);
+            console.error(error);
             return;
         }
     }else if (btn_friend.innerHTML === 'Friends'){
@@ -175,7 +162,6 @@ async function add_remove_friendP(){
             const user = await response_remove_user.json();
             btn_friend.innerHTML = 'Add Friend';
         }catch(error){
-            console.log('Cannot get remove_userS')
             return;
         }
     }
@@ -183,7 +169,7 @@ async function add_remove_friendP(){
         const token = localStorage.getItem("access_token")
         if (!token)
         {
-          console.log("Token not found !")
+          console.error("Token not found !")
           return ;
         }
         else{
@@ -203,7 +189,7 @@ async function add_remove_friendP(){
               localStorage.setItem('sessionUser', JSON.stringify(sessionUser));
             }
           } catch (error) {
-            console.log("Error:", error);
+            console.error("Error:", error);
         }
 }
 
@@ -211,7 +197,6 @@ async function getUserGameInfoP(page)
 {
     const token = localStorage.getItem("access_token")
     if (!token){
-        console.log("Token not found !")
         return ;
     }
 	try{
@@ -231,18 +216,12 @@ async function getUserGameInfoP(page)
             currentTourneyPageP = 1;
             currentPageP = 1;
 
-            console.log("Total entries:", total_entriesP);
-            console.log("Total tournament entries", total_tourney_entriesP);
             if(total_tourney_entriesP > 0)
                 renderTourneyPaginationP();
             if(total_entriesP > 0)
                 renderPaginationP();
             drawChartsP(gameInfo);
-            console.log(gameInfo)
         }
-        else{
-            console.log("not work :( @ count_user_games", response.status);
-        };
     }
     catch(error){
         console.error("Error caught @count_user_games: ", error);
@@ -254,7 +233,7 @@ async function drawChartsP(gameInfo)
     if(total_entriesP > 0){
         const token = localStorage.getItem("access_token")
         if (!token){
-            console.log("Token not found !")
+            console.error("Token not found !")
             return ;
         }
         try{
@@ -267,7 +246,6 @@ async function drawChartsP(gameInfo)
             })
             if(response.ok){
                 const playinghabits = await response.json();
-                console.log(playinghabits);
                 const ctx = document.getElementById("habitsCanvas")
                 new Chart(ctx, {
                     type: 'bar',
@@ -300,9 +278,6 @@ async function drawChartsP(gameInfo)
                     }
                 });
             }
-            else{
-                console.log("not work :( @ drawCharts", response.status);
-            };
         }
         catch(error){
             console.error("Error caught @drawCharts: ", error);
@@ -337,7 +312,7 @@ async function getTournamentHistoryP(page)
     const token = localStorage.getItem("access_token")
     if (!token)
     {
-        console.log("Token not found !")
+        console.error("Token not found !")
         return ;
     }
     try
@@ -355,10 +330,6 @@ async function getTournamentHistoryP(page)
             const match_history = await response.json();
             displayTournamentHistoryP(match_history.history);
         }
-        else
-        {
-            console.log("not work :( @ getMatchHistory", response.status);
-        };
     }
     catch(error)
     {
@@ -375,17 +346,11 @@ function displayTournamentHistoryP(matchHistory) {
         let p = document.createElement("p");
         historyContainer.appendChild(p);
         let span1 = document.createElement("span");
-        span1.textContent = `${langPackProS[localStorage.selectedLanguage][0]}`
+        span1.textContent = `${langPackProS[localStorage.selectedLanguage][0]}`;
         span1.dataset.translateKey = "No Tournaments";
         p.append(span1);
         return; 
     }
-
-    matchHistory.forEach(tournament => {
-        console.log("Tournament Name:", tournament.entry.name);
-        console.log("Tournament ID:", tournament.entry.id);
-        console.log("----");
-    });
     matchHistory.forEach(tournament => {
         const matchElement = document.createElement("div");
         matchElement.className = "tournament-entry"; // Optional: for styling
@@ -405,7 +370,7 @@ async function getMatchHistoryP(page)
     const token = localStorage.getItem("access_token")
     if (!token)
     {
-        console.log("Token not found !")
+        console.error("Token not found !")
         return ;
     }
     try
@@ -423,10 +388,6 @@ async function getMatchHistoryP(page)
             const match_history = await response.json();
             displayMatchHistoryP(match_history.history);
         }
-        else
-        {
-            console.log("not work :( @ getMatchHistory", response.status);
-        };
     }
     catch(error)
     {
@@ -529,7 +490,7 @@ document.addEventListener("click", function (event) {
                 }
             }
             catch(error){
-                console.log(error)
+                console.error(error)
             }
         }
         const modalElement = document.getElementById("profileModal");

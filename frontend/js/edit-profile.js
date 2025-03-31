@@ -96,7 +96,6 @@ function UsernameForm() {
                 errorMessage.style.display = "block";
             }
         }
-        console.log()
         // Process Photo Upload
         if (myFileInput && myFileInput.files.length > 0) {
             const formData = new FormData();

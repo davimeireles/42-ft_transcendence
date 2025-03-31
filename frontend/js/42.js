@@ -26,9 +26,7 @@ window.onload = async function () {
         },
         body: JSON.stringify({ code }),
       });
-      console.log(response);
       if (response.ok) {
-        console.log("this is working");
         const res = await response.json();
         localStorage.removeItem("sessionUser");
         localStorage.setItem("access_token", res.access_token);

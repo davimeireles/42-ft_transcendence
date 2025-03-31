@@ -104,6 +104,7 @@ async function renderPongGame() {
     // Create customization modal (color picker)
     customizationModal = document.createElement("div");
     customizationModal.id = "customization-modal";
+    customizationModal.classList.add("semi-transparent", "rounded-3");
     customizationModal.style.display = "flex"; // Initially hidden
     customizationModal.style.position = "absolute";
     customizationModal.style.top = "50%";
@@ -114,7 +115,6 @@ async function renderPongGame() {
     customizationModal.style.padding = "20px";
     customizationModal.style.fontSize = "16px";
     customizationModal.style.textAlign = "center";
-    customizationModal.style.flexDirection = "column";
     gameContainer.appendChild(customizationModal);
 
     // Player 1 customization
@@ -181,6 +181,7 @@ function showCustomizationModal() {
   // Create a "Start Game" button
   const startGameButton = document.createElement("button");
   startGameButton.textContent = "Start Game";
+  startGameButton.classList.add("button-clicked");
   startGameButton.addEventListener("click", () => {
     customizationModal.style.display = "none"; // Hide modal
     document.addEventListener("keyup", stopPlayer);

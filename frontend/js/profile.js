@@ -41,13 +41,12 @@ async function updateSessionUserP(token) {
         };
         localStorage.setItem('sessionUser', JSON.stringify(sessionUser));
     } catch (error) {
-        console.log("Error:", error);
+        console.error(new Error(error));
     }
 }
 
 const renderProfile = async function() {
     let setting = document.getElementById("setting-button");
-    console.log()
     setting.addEventListener("click", function() {renderPage("edit");});
     let twoFA = document.getElementById("twoFA-button");
     twoFA.addEventListener("click", function() {renderPage("enable2FA");});
@@ -86,7 +85,7 @@ const renderProfile = async function() {
         friends.forEach(friend => {
             const friends_list = document.getElementById('friends-list');
             const friendItem = document.createElement("li");
-            friendItem.textContent = `${friend.username}`;
+            friendItem.textContent = `${friend.nickname}`;
             if(friend.online)
             {
                 friendItem.style.color = "green";

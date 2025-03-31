@@ -25,7 +25,7 @@ async function verifyOTP() {
           errorMessage.style.display = "block";
         }
       } catch (error) {
-        console.log("Error:", error);
+        console.error("Error:", error);
         errorMessage.textContent = "An error occurred. Please try again.";
         errorMessage.style.display = "block";
       }

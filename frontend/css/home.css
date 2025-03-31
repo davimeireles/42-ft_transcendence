@@ -127,7 +127,7 @@
 #game-container {
   /* Required for absolute positioning of win message */
   display: flex;
-  width: 100%;
+  width: 65%;
 }
 
 .game-container canvas {
@@ -249,4 +249,13 @@
     transform: translateY(-5px);
     transition-timing-function: cubic-bezier(0.0, 0.0, 10.0, 0.0);
     border-radius: 5px;
+}
+
+.button-clicked {
+  border-radius: 10px;
+}
+
+.button-clicked:active {
+  filter: brightness(75%);
+  transform: translate(-2px, 2px);
 }

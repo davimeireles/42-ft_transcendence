@@ -88,24 +88,33 @@ function tournamentCreator() {
     tournamentForm.id = "tournament-form";
     createTournament.append(tournamentForm);
     
+    let div = document.createElement("div");
+    div.classList.add("container", "justify-content-middle");
+
+    tournamentForm.append(div);
+    
     let titleLabel = document.createElement("label");
-    titleLabel.classList.add("form-label-username", "pt-3");
+    titleLabel.classList.add("form-label-username", "pt-3", "row");
+    titleLabel.style.width = "207px";
     titleLabel.setAttribute("for", "tournament-title");
     titleLabel.dataset.translateKey = "Title";
     titleLabel.textContent = langPack[localStorage.selectedLanguage][0];
-    tournamentForm.append(titleLabel);
+    div.append(titleLabel);
 
     let tournamentTitle = document.createElement("input");
     tournamentTitle.id = "tournament-title";
     tournamentTitle.type = "text";
     tournamentTitle.maxlength = "32";
+    tournamentTitle.style.width = "207px";
     tournamentTitle.required = true;
+    tournamentTitle.classList.add("row");
     titleLabel.after(tournamentTitle);
     
     let sizeLabel = document.createElement("label");
-    sizeLabel.classList.add("form-label-username", "pt-3");
+    sizeLabel.classList.add("form-label-username", "pt-3", "row");
     sizeLabel.setAttribute("for", "tournament-size");
     sizeLabel.dataset.translateKey = "Size";
+    sizeLabel.style.width = "207px";
     sizeLabel.textContent = langPack[localStorage.selectedLanguage][1];
     tournamentTitle.after(sizeLabel);
     
@@ -114,6 +123,8 @@ function tournamentCreator() {
     tournamentSize.type = "number";
     tournamentSize.min = "1";
     tournamentSize.max = "8";
+    tournamentSize.style.width = "207px";
+    tournamentSize.classList.add("row");
     tournamentSize.required = true;
     sizeLabel.after(tournamentSize);
     
@@ -187,21 +198,34 @@ async function ft_createTournament(e) {
     let [...competitors] = document.querySelectorAll(".competitor-input");
     let values = competitors.map(comp => comp.value.toLowerCase());
     let setComp = new Set(values);
-    console.log(values.length);
-    console.log(setComp.size);
-    if (values.length != setComp.size)
+    if (values.includes("mighty bot"))
     {
         let warning = document.querySelector("#namesWarning");
         if (!warning)
         {
             warning = document.createElement("p");
             warning.style.color = "#fc1723";
-            warning.dataset.translateKey = "Duplicated Nickname";
-            warning.textContent = "Duplicated Nickname";
             warning.id = "namesWarning";
             let startButton = document.getElementById("createButton");
             startButton.before(warning);
         }
+        warning.dataset.translateKey = "You are not the Mighty Bot!";
+        warning.textContent = "You are not the Mighty Bot!";
+        return ;
+    }
+    else if (values.length != setComp.size)
+    {
+        let warning = document.querySelector("#namesWarning");
+        if (!warning)
+        {
+            warning = document.createElement("p");
+            warning.style.color = "#fc1723";
+            warning.id = "namesWarning";
+            let startButton = document.getElementById("createButton");
+            startButton.before(warning);
+        }
+        warning.dataset.translateKey = "Duplicated Nickname";
+        warning.textContent = "Duplicated Nickname";
         return ;
     }
     let title = document.getElementById("tournament-title");
@@ -216,12 +240,6 @@ async function ft_createTournament(e) {
                 body: JSON.stringify(tournament),
                 credentials: "include",
             });
-        if (response.ok) {
-            console.log("Tournament details sent successfully");
-        }
-        else {    
-            throw ("error");
-        }
     }
     catch (error) {
         console.error(new Error(error));
@@ -811,10 +829,9 @@ function tournamentGame() {
             })
             if (response.ok) {
                 const result = await response.json();
-                console.log(result);
             }
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
 
         const winnerAnnouncement = document.createElement("div");
